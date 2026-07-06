@@ -1,0 +1,138 @@
+# ============================================================
+# Skills.md 101 — the "build your own" framework.
+# Same shape as frameworks.yaml, but only one framework (SKILL.md
+# itself) with several themes showing it applied to different
+# situations. See SKILLS_MODULE_README.md for field docs.
+# ============================================================
+
+- id: skill-md
+  name: "SKILL.md"
+  tagline: "A Skill is a folder with a SKILL.md inside it: a short frontmatter (name + description) followed by instructions Claude reads only when the description matches what's being asked."
+  best_for: "A task you (or your team) do the same way more than a couple of times — a recurring report, a recurring check, a recurring format."
+  avoid_when: "A one-off task you'll only ever ask for once — just ask directly, writing a whole Skill for it is wasted effort."
+  components:
+    - label: name
+      hint: "A short, unique id for the Skill — lowercase, hyphens, no spaces."
+    - label: description
+      hint: "Written as \"Use when...\" — worded like a search query for the situation, not a summary of what the Skill does."
+    - label: Context/setup
+      hint: "What live information the Skill should gather before acting, if any — the form that fills in today's date before you even start typing."
+    - label: Instructions
+      hint: "The steps Claude follows, in order, once the description has matched."
+    - label: Examples
+      hint: "A sample input and the output it should produce — removes ambiguity that plain instructions leave open."
+    - label: Resources
+      hint: "What the Skill points to outside itself, if anything — a reference doc, a bundled script, or an MCP connector."
+  themes:
+    - theme: "Weekly status report formatter (text-only)"
+      values:
+        name: "weekly-status-report"
+        description: "Use when the user asks to turn this week's raw notes/updates into a status report for the team."
+        Context/setup: "None needed — the user pastes in this week's raw notes directly, no live data to gather."
+        Instructions: |-
+          1. Read the pasted raw notes.
+          2. Group items into three sections: Shipped, In progress, Blocked.
+          3. Under each section, one line per item — no more than 15 words per line.
+          4. If nothing fits a section, omit that section entirely rather than writing "None."
+        Examples: |-
+          Input: "finished the onboarding email draft, still waiting on legal for the contract wording, started the Q3 budget doc but not far"
+          Output:
+          Shipped: Onboarding email draft
+          In progress: Q3 budget doc (early stages)
+          Blocked: Contract wording — waiting on legal
+        Resources: "None — this Skill is pure instructions, nothing to connect to."
+
+    - theme: "Meeting notes → action items (reference doc)"
+      values:
+        name: "meeting-notes-to-actions"
+        description: "Use when the user pastes raw meeting notes and wants action items pulled out in the team's standard format."
+        Context/setup: "Read the bundled house-style template first (see Resources) before formatting anything."
+        Instructions: |-
+          1. Read the raw meeting notes.
+          2. Pull out anything that is a concrete action — has an owner, or clearly implies one.
+          3. Format each as: Owner — Task — Due date (if mentioned, else "Not set").
+          4. Follow the bundled template's exact column order and heading style, don't invent a new layout.
+        Examples: |-
+          Input: "Priya said she'd send the budget numbers by Friday, and we agreed Marcus needs to loop in legal at some point"
+          Output:
+          | Owner | Task | Due |
+          |---|---|---|
+          | Priya | Send budget numbers | Friday |
+          | Marcus | Loop in legal | Not set |
+        Resources: "Bundled reference doc: `templates/action-item-format.md`, checked into the same folder as this SKILL.md."
+
+    - theme: "Customer email tone-checker (few-shot examples)"
+      values:
+        name: "tone-checker"
+        description: "Use when the user wants a draft customer-support email checked and rewritten to match our tone before sending."
+        Context/setup: "None needed beyond the draft email itself."
+        Instructions: |-
+          1. Read the draft email.
+          2. Compare it against the example bank of past approved emails (see Resources) — same warmth, same directness, same sign-off style.
+          3. Rewrite anything that reads too formal, too blunt, or too apologetic.
+          4. Keep every factual claim in the draft exactly as-is — only tone changes, not content.
+        Examples: |-
+          Input: "Your request has been received and will be processed in due course."
+          Output: "Got your request — we're on it, and you'll hear back from us within 1 business day."
+        Resources: "Bundled example bank: 12 past approved emails in `examples/approved-emails.md`, used as few-shot reference — not an API, just reference text."
+
+    - theme: "Expense receipt categorizer (existing MCP connector)"
+      values:
+        name: "expense-categorizer"
+        description: "Use when the user asks to pull this month's receipts and sort them into expense categories."
+        Context/setup: "Use the Google Drive MCP connector to list files in the shared \"Receipts\" folder for the current month."
+        Instructions: |-
+          1. Pull the list of receipt files for the current month via the connector.
+          2. For each one, read the vendor name and amount.
+          3. Assign a category from the fixed list: Travel, Meals, Software, Office supplies, Other.
+          4. Output one table: Vendor, Amount, Category — sorted by category.
+        Examples: |-
+          Input: receipt from "Delta Air Lines", $412.50
+          Output row: | Delta Air Lines | $412.50 | Travel |
+        Resources: "Existing MCP connector: Google Drive (already set up — this Skill just uses it, doesn't build it)."
+
+    - theme: "Team announcement poster (Slack MCP connector)"
+      values:
+        name: "post-team-announcement"
+        description: "Use when the user asks to post this week's finished status report to the team's Slack channel."
+        Context/setup: "Take the already-formatted report text as input (pairs with the weekly-status-report Skill above) — use the Slack MCP connector's \"post message\" action, don't call Slack's API directly with a token."
+        Instructions: |-
+          1. Take the finished report text.
+          2. Call the Slack connector's post-message action, targeting #team-updates, with the report text as the message body.
+          3. Confirm back to the user with what the connector actually returned (success, or the specific error) — never invent a success message it didn't return.
+        Examples: |-
+          Input: finished report text + implicit "post this"
+          Output: "Posted to #team-updates ✅"
+        Resources: |-
+          Existing MCP connector: Slack. Per Slack's own MCP documentation, the same connector also exposes search (messages, files, members, channels), reading channel history, and reading/creating Slack canvases — this Skill only uses the "send a message" piece of a much bigger toolbox.
+          Already authenticated separately, outside this file — see the .env/secret-manager lessons for why the token never lives in SKILL.md.
+
+    - theme: "Internal ticket poster (no MCP connector exists — bundle a custom script)"
+      values:
+        name: "post-to-internal-tracker"
+        description: "Use when the user asks to file a bug report into the team's internal (non-Slack, non-Jira) ticket tracker."
+        Context/setup: "Take the bug description as input — no MCP connector exists yet for this in-house tool, so this Skill ships its own small script instead of waiting for one."
+        Instructions: |-
+          1. Take the bug description.
+          2. Run the bundled `file_ticket.py` script, passing the description as its argument — the script reads the tracker's API key from a `.env` file, never from this SKILL.md.
+          3. Confirm back to the user with the ticket ID the script returns (or its exact error message).
+        Examples: |-
+          Input: "Login button does nothing on Safari" + implicit "file this"
+          Output: "Filed as TICKET-4821 ✅"
+        Resources: "Bundled custom script: `file_ticket.py`, checked into the same folder as this SKILL.md — this is the CLI-connector pattern for when nothing MCP-based exists yet."
+
+    - theme: "Personal reading-list summarizer (insecure draft → fixed version)"
+      values:
+        name: "reading-list-summary"
+        description: "Use when the user asks for a summary of articles saved to their reading list this week."
+        Context/setup: |-
+          ❌ Insecure first draft — don't do this: "Call the Pocket API directly: https://getpocket.com/v3/get?consumer_key=abc123REALKEYxyz&access_token=..." — the real API key is hardcoded in plain text, in a file that gets shared or checked into a repo.
+          ✅ Fixed version: "Use the Pocket MCP connector (already authenticated separately, outside this file) to pull this week's saved articles."
+        Instructions: |-
+          1. Pull this week's saved articles via the connector.
+          2. Summarize each in 1-2 sentences.
+          3. Group by the tags the user already applied.
+        Examples: |-
+          Input: 4 saved articles this week, tagged "AI" and "hiring"
+          Output: two grouped sections, one summary line per article
+        Resources: "Pocket MCP connector — never a hardcoded key. If no connector existed yet, the right move is setting one up outside this file, not pasting a credential into it."

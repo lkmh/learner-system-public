@@ -1,0 +1,374 @@
+# ============================================================
+# Skills.md 101 — theory + case studies deck.
+# Same shape as concepts.yaml: each entry is one sidebar "slide"
+# broken into steps. See SKILLS_MODULE_README.md for field docs.
+#
+# Grounded against:
+# - https://code.claude.com/docs/en/skills (official Claude Code docs)
+# - https://github.com/anthropics/skills (Anthropic's own example skills + spec)
+# - https://support.claude.com/en/articles/12512180-use-skills-in-claude (Claude Desktop UI, exact menu path)
+# - https://support.claude.com/en/articles/12512198-how-to-create-custom-skills (character limits, dependencies field, zip structure)
+# - https://slack.com/intl/en-sg/help/articles/48855576908307 (Slack's own MCP server capabilities)
+# - https://code.claude.com/docs/en/plugins (what a plugin bundles, plugin.json manifest)
+# - https://code.claude.com/docs/en/discover-plugins (marketplaces, install commands, security warning)
+#
+# Written assuming zero prior technical background — every term (git, diff,
+# terminal, plugin, marketplace...) is explained in plain English the first
+# time it's used, not assumed.
+# ============================================================
+
+- id: skills-1
+  title: "1. What is Markdown?"
+  steps:
+    - heading: "Plain text with a few formatting hints"
+      body: |
+        - Markdown is just regular text with a handful of extra symbols — a `#` before a line makes it a heading, a `-` before a line makes it a bullet.
+        - No special software is required to write or read it — any plain text editor works.
+        - This matters here because a Skill's instructions live in a file literally named `SKILL.md` — it's not a special format invented for AI, it's the same Markdown used in READMEs and chat messages everywhere.
+      demo: md-render
+
+- id: skills-2
+  title: "2. What's a \"tool\" a model can use?"
+  steps:
+    - heading: "A calculator on the desk, not doing math in your head"
+      body: |
+        - Left alone, a model answers everything by predicting likely-sounding text — including arithmetic, which it can get wrong the bigger the numbers get.
+        - A "tool" is a specific action the model can reach for instead of guessing — a calculator, a file reader, a search function.
+        - This is the building block a Skill actually organizes: a Skill doesn't invent new abilities, it tells the model *when* and *how* to reach for tools it already has.
+      demo: tool-use
+
+- id: skills-3
+  title: "3. What is an API / connector?"
+  steps:
+    - heading: "The plumbing that lets Claude actually do something"
+      body: |
+        - An API is how one piece of software asks another piece of software to do something — send an email, pull a file, post a message.
+        - A "connector" is just a ready-made API hookup someone already built, so Claude can use it without you wiring anything by hand.
+        - Without a connector, Claude can only *describe* what it would send to Gmail or Slack — with one, it can actually send it.
+      demo: api-connector
+
+- id: skills-4
+  title: "4. What is MCP?"
+  steps:
+    - heading: "One standard plug shape instead of custom wiring per app"
+      body: |
+        - Before MCP, every app that wanted to offer its tools to an AI needed its own custom, one-off integration.
+        - MCP (Model Context Protocol) is a shared standard — like USB instead of a different proprietary cable for every device.
+        - A real example: Slack runs its own MCP server. Once connected, an AI assistant can search Slack messages/files/channels, read and send messages, and read or create Slack canvases — all through that one standard connection, not a custom Slack-specific build.
+      demo: mcp-standard
+
+- id: skills-5
+  title: "5. What is a CLI?"
+  steps:
+    - heading: "Typing instructions instead of clicking buttons"
+      body: |
+        - A CLI (command-line interface) — also called a "terminal" — is a way of controlling software by typing a line of text instead of clicking through menus.
+        - The exact same action — say, "open this file" — can be a menu click in one app and a typed command in another; they do the same thing.
+        - This is just enough to know why "Claude Code" runs from a terminal — it's a CLI, not a website, and Skills are one of the things it reads from disk.
+      demo: cli-vs-gui
+
+- id: skills-6
+  title: "6. What is a .env file?"
+  steps:
+    - heading: "A separate file that holds settings and secrets, kept out of your actual code"
+      body: |
+        - A `.env` file is a plain text file of `KEY=value` lines — e.g. `SLACK_TOKEN=xoxb-12345`.
+        - Code reads the values out of it at run time, instead of the values being typed directly into the code (or a `SKILL.md` file).
+        - This matters here because it's the standard place API keys and other secrets go — never inside the file that describes what a Skill does. More on why in the security lessons later in this deck.
+      demo: env-file-intro
+
+- id: skills-7
+  title: "7. The folder + the frontmatter (a real example)"
+  steps:
+    - heading: "A Skill is a folder, and SKILL.md starts with a short YAML block"
+      body: |
+        - A Skill is a *folder* with a file named `SKILL.md` inside it — not a plugin, not an API integration, not anything installed in the traditional sense.
+        - Anthropic's own getting-started example creates a Skill that reads which files you've recently edited in a project and flags anything that looks risky (a hardcoded password, a missing check) before you ask a human to look at it.
+        - Quick translation of the two technical terms in that description: "uncommitted changes" just means edits you've made that haven't been saved into the project's official history yet; a "diff" is simply a before/after comparison — the old line and the new line, side by side. Neither requires any tool beyond what the Skill itself uses.
+        - The frontmatter — the block between the two `---` lines at the top of `SKILL.md` — needs only a `description` to be useful. Everything below it is Markdown instructions.
+      demo: skill-anatomy-real
+
+- id: skills-8
+  title: "8. Discovery: the description is the trigger"
+  steps:
+    - heading: "Only descriptions sit in context by default"
+      body: |
+        - The Claude Code docs put it directly: *"description — What the skill does and when to use it. Claude uses this to decide when to apply the skill."*
+        - Only the short `description` from every available Skill sits in context up front — the full instructions only load once a description matches what's being asked. This is "progressive disclosure."
+        - Real troubleshooting advice straight from the docs: if a Skill won't trigger, check the description "includes keywords users would naturally say" — rewording the description is almost always the fix, not the instructions.
+        - In the Claude.ai/Desktop app specifically, there are hard limits: a Skill's `name` tops out at 64 characters and its `description` at 200 — so put the actual trigger phrase first, not throat-clearing, in case it gets cut off.
+      demo: skill-discovery
+    - heading: "Practice \u2014 diagnose a non-triggering Skill"
+      body: |
+        - Below is a Skill that never triggers. Work out the actual cause before picking an answer.
+      demo: practice-skills-8
+
+- id: skills-9
+  title: "9. What goes in the body, and what else the folder can hold"
+  steps:
+    - heading: "Instructions, examples, resources — and files beyond SKILL.md"
+      body: |
+        - Once a Skill's description matches, the body of `SKILL.md` loads — this is where the real "how" lives.
+        - A Skill's folder can hold more than just one file: Anthropic's own docs show a layout with `SKILL.md`, a template file for Claude to fill in, a folder of examples, and a folder of small helper scripts (short pieces of code) that Claude can run.
+        - The frontmatter can also declare a `dependencies` field — any software packages the Skill's bundled scripts need to already be installed to run (e.g. a specific version of Python) — so Claude (or a person) knows what's required before trying to run them.
+        - Rule of thumb from the docs: keep `SKILL.md` itself under 500 lines, and move detailed reference material into separate files that only load when actually needed.
+      demo: skill-body
+    - heading: "Practice \u2014 spot what belongs in a resource file"
+      body: |
+        - Below is an overloaded SKILL.md. Work out what should move into a separate file before picking an answer.
+      demo: practice-skills-9
+
+- id: skills-10
+  title: "10. Who's allowed to trigger a Skill?"
+  steps:
+    - heading: "By default, both you and Claude can start one — two switches change that"
+      body: |
+        - By default, either side can trigger a Skill: you can type its name directly, or Claude can decide on its own that it's relevant and use it without being asked.
+        - One switch flips that to **"only you can start it."** The official docs' own example is a `deploy` Skill: you don't want Claude deciding on its own that your code "looks ready" and running a deployment — you want to be the one who says go.
+        - The other switch flips it to **"only Claude can use it — not something you'd type yourself."** That's for background knowledge rather than an action, like a Skill that just explains how an old, unusual part of a system works.
+        - Both switches are optional. Leave them off and a Skill behaves the normal way: either of you can use it.
+      demo: skill-invocation-control
+    - heading: "Practice \u2014 pick the right invocation switch"
+      body: |
+        - Below are two Skills with different risk profiles. Work out which invocation switch fits each.
+      demo: practice-skills-10
+
+- id: skills-11
+  title: "11. Where a Skill fits among tools, APIs, and MCP"
+  steps:
+    - heading: "A Skill can reference all of them — it isn't one of them"
+      body: |
+        - A tool is a single action Claude can take. An API/connector is the plumbing that makes a tool real. MCP is the standard plug shape connectors use.
+        - A Skill sits above all three: it's instructions that tell Claude *when* and *how* to use them for a specific recurring job.
+        - A Skill with no tools, no API, and no MCP connector at all is still completely valid — plenty of good Skills are pure instructions with nothing to "connect" to.
+      demo: skill-fits
+
+- id: skills-12
+  title: "12. Two SKILL.md files, side by side"
+  steps:
+    - heading: "Same required field, very different size"
+      body: |
+        - Picture two Skills. One: **"weekly-status-report"** — read this week's notes, sort them into three sections, done. One: **"refund-request-handler"** — read a customer's refund request, check it against the refund policy document, draft a reply, double-check the tone, and if the amount is over $100, pause and ask a person to approve it before sending anything.
+        - Both files need exactly the same one required piece of information: a `description` telling Claude when to use them. Nothing more is strictly required by the format.
+        - What differs completely is the body: one is a few short lines. The other is several stages long, because the job itself has more steps and more places something could go wrong. The file format doesn't limit how ambitious a Skill can be — the job does.
+      demo: skill-scale-compare
+
+- id: skills-13
+  title: "13. Anatomy of a small Skill"
+  steps:
+    - heading: "weekly-status-report: read, sort, done"
+      body: |
+        - Read this week's raw notes exactly as pasted in.
+        - Sort each item into one of three sections: Shipped, In progress, Blocked.
+        - Output the three sections. Stop.
+        - No extra checks, no second opinions, no other people or tools involved — a short, linear recipe from start to finish.
+      demo: skill-small-walkthrough
+    - heading: "Practice \u2014 check the small-Skill shape"
+      body: |
+        - Below is a proposed Skill design. Work out whether it actually matches the small, linear pattern.
+      demo: practice-skills-13
+
+- id: skills-14
+  title: "14. Anatomy of a big Skill"
+  steps:
+    - heading: "refund-request-handler: several stages, with a built-in pause"
+      body: |
+        - Read the customer's refund request.
+        - Check it against the refund policy document to see whether it qualifies.
+        - Draft a reply, then check that reply reads warm and on-brand rather than robotic.
+        - If the refund amount is over $100, stop and ask a person to approve it — don't send anything on your own past that point.
+        - Only after approval (or if the amount was small enough not to need it), actually send the reply and record what happened.
+        - Notice what's missing from that list: nowhere does the Skill *type out* the refund policy itself. The policy document is a **Resource** — a separate file sitting in the same folder as `SKILL.md`, referenced by name so Claude knows to open it when it needs it. Anthropic's own guidance is exactly this: reference a resource file from `SKILL.md` so Claude can decide whether it needs to load it, rather than pasting the whole policy into the instructions.
+      demo: skill-big-walkthrough
+    - heading: "Practice \u2014 spot the missing safeguard"
+      body: |
+        - Below is a multi-stage Skill design handling a risky action. Work out what's missing.
+      demo: practice-skills-14
+
+- id: skills-15
+  title: "15. What to borrow from each"
+  steps:
+    - heading: "Small lessons that apply no matter the size of Skill you write"
+      body: |
+        - Write the `description` like a search query for the *situation*, not a summary of the Skill — e.g. "Use when a customer asks for a refund," not "Handles refunds."
+        - Have the Skill actually check real, current information (the policy document, this week's real notes) before deciding what to do, rather than assuming.
+        - Start simple. A pause-and-ask-a-person step or multiple stages only earn their place once the job genuinely needs them — most Skills should look like weekly-status-report, not refund-request-handler.
+      demo: skill-takeaways
+    - heading: "Practice \u2014 trace the flaw to a lesson"
+      body: |
+        - Below is a draft Skill with a specific flaw. Work out which portable lesson it violates.
+      demo: practice-skills-15
+
+- id: skills-16
+  title: "16. Installing a Skill in the Claude Desktop app (UI)"
+  steps:
+    - heading: "No files, no terminal — everything through menus"
+      body: |
+        - First, a one-time prerequisite: **Settings → Capabilities**, and turn on **Code execution** and **File creation** — a Skill won't run without these two switched on.
+        - Then go to **Customize → Skills**, click the **+** button, choose **"+ Create skill,"** then **"Upload a skill,"** and select your Skill as a `.zip` file. It appears in your list — toggle it on to activate it.
+        - The `.zip` needs a specific shape: the Skill's folder sits at the very top of the zip (not buried inside another folder), containing the instructions file and, if you have any, a `resources` folder alongside it for the reference documents/templates the Skill points to.
+        - Custom skills you upload are private to your own account by default. On Team/Enterprise plans, an owner can turn on sharing so others can enable the same one — but Anthropic's own guidance is blunt about it: *"Only install skills from trusted sources"* and review the files inside before enabling one someone else shared.
+      demo: skill-install-ui
+    - heading: "Practice \u2014 diagnose a failed Desktop install"
+      body: |
+        - Below is a stuck Skill upload. Work out which issue is actually blocking it.
+      demo: practice-skills-16
+
+- id: skills-17
+  title: "17. Installing a Skill in Claude Code (typed commands)"
+  steps:
+    - heading: "No upload button — you create the folder yourself"
+      body: |
+        - Personal: create a folder yourself at a fixed location that every project you work on can see (Claude Code's docs call this the "personal skills" location).
+        - Project: create the same kind of folder, but inside one specific project — only that project sees it, and it's just a folder you can save into the project's shared files like anything else.
+        - Plugin: a "plugin" is a bundle of Skills (and other add-ons) someone else built and published to a shared listing called a "marketplace." You install one with a typed command, then run a second typed command to make it available in your current session.
+        - Claude Code watches these folders live — editing a `SKILL.md` takes effect immediately, no restart needed (adding a brand-new top-level skills folder is the one case that needs a restart).
+      demo: skill-install-cli
+    - heading: "Practice \u2014 diagnose a sharing-scope mixup"
+      body: |
+        - Below is a Skill visibility symptom. Work out the likely cause before picking an answer.
+      demo: practice-skills-17
+
+- id: skills-18
+  title: "18. Skills vs. Plugins — what's the difference?"
+  steps:
+    - heading: "A Skill is one recipe card. A Plugin is the whole kit."
+      body: |
+        - Everything so far in this deck has been about a single Skill: one folder, one `SKILL.md`, one recurring job.
+        - A **Plugin** is a bigger bundle: it can contain several Skills at once, plus other things — custom agents, "hooks" (small actions that run automatically on an event, like after every file edit), and ready-made connections to other apps (MCP servers) — all packaged together with one title page describing what's inside.
+        - Claude Code's own docs draw the line plainly: a Skill you create yourself in a personal or project folder is invoked with a short name like `/hello`; a Skill that came bundled inside a Plugin is invoked with the plugin's name in front of it, like `/my-plugin:hello` — so two different plugins can each ship a Skill called "hello" without colliding.
+        - Rule of thumb straight from the docs: build a standalone Skill first, for a personal or single-project workflow you're still experimenting with. Turn it into a Plugin once you want to share it with a team, distribute it more widely, or bundle it with other related pieces.
+      demo: skill-vs-plugin
+    - heading: "Practice \u2014 Skill or Plugin?"
+      body: |
+        - Below is a growing use case. Work out whether it should stay a Skill or become a Plugin.
+      demo: practice-skills-18
+
+- id: skills-19
+  title: "19. Where Plugins come from: marketplaces"
+  steps:
+    - heading: "A marketplace is a catalog — like an app store"
+      body: |
+        - A **marketplace** is a listing of Plugins that someone else built and published — you don't install anything just by adding one, you're only making its catalog browsable.
+        - Two separate steps: **add** the marketplace (register the catalog), then **install** the specific plugin(s) you actually want from it — the same two-step feel as adding an app store, then downloading one app from it.
+        - Two real, official ones from Anthropic: `claude-plugins-official` (curated by Anthropic, available automatically) and `claude-community` (third-party plugins, added manually, screened before being listed).
+        - A real example straight from the docs: installing the GitHub integration is one typed command, `/plugin install github@claude-plugins-official`.
+        - The docs' own security warning, worth repeating from earlier in this deck: *"Plugins and marketplaces are highly trusted components that can execute arbitrary code on your machine with your user privileges. Only install plugins and add marketplaces from sources you trust."*
+      demo: skill-marketplace
+
+- id: skills-20
+  title: "20. What's actually in the official marketplace"
+  steps:
+    - heading: "Not just one plugin — several real categories"
+      body: |
+        - **Code intelligence**: gives Claude a deeper, more precise understanding of your code in a specific language (needs a matching tool already installed on your machine to work).
+        - **External integrations**: ready-made connections to other apps — GitHub, Slack, Notion, Figma, Linear, and more — installed as a plugin instead of set up by hand.
+        - **Automatic security review**: a plugin that checks every change Claude makes for common security mistakes, and has Claude fix what it finds in the same session.
+        - **Development workflows**: bundles of Skills for everyday tasks — git commit workflows, pull-request review helpers, and similar.
+        - **Output styles**: change how Claude responds overall — e.g. a more explanatory, teaching-style mode instead of terser answers.
+      demo: skill-marketplace-categories
+
+- id: skills-21
+  title: "21. The plugin menu and where you install to"
+  steps:
+    - heading: "One menu, and a real choice about who else sees it"
+      body: |
+        - In Claude Code, opening the plugin menu shows four tabs: **Discover** (browse what's available across your marketplaces), **Installed** (manage what you already have), **Marketplaces** (add/update/remove catalogs), and **Errors** (see anything that failed to load).
+        - Installing a plugin asks you to pick a scope: **User** — just for you, across every project. **Project** — for everyone working on this particular shared project. **Local** — just for you, and only in this one project, not shared with teammates.
+        - Picking the right scope matters: a plugin installed at User scope follows you everywhere; one installed at Project scope means your teammates get prompted to install it too.
+      demo: skill-plugin-scopes
+    - heading: "Practice \u2014 pick the right install scope"
+      body: |
+        - Below is a team-sharing scenario. Work out which install scope actually fits.
+      demo: practice-skills-21
+
+- id: skills-22
+  title: "22. Describing your own workflow well"
+  steps:
+    - heading: "What to hand Claude: a real example, and what varies vs. what stays fixed"
+      body: |
+        - A vague ask ("help me with my weekly report") gives Claude almost nothing to build a trigger or instructions from.
+        - A good ask includes one real example of the task done manually, start to finish — the actual messy input and the actual output you wanted.
+        - Separate what changes every time (this week's numbers) from what always stays the same (the sections, the tone, the format) — that split is most of what makes a good Skill.
+      demo: skill-workflow-describe
+    - heading: "Practice \u2014 diagnose a vague Skill request"
+      body: |
+        - Below is a request for a new Skill. Work out what's missing before picking an answer.
+      demo: practice-skills-22
+
+- id: skills-23
+  title: "23. The draft, test, refine loop"
+  steps:
+    - heading: "Your first version usually won't trigger right, or won't do the right thing"
+      body: |
+        - Draft a Skill, then actually try the exact kind of request it's supposed to catch, in a fresh conversation.
+        - If it doesn't trigger at all, the `description` is usually the problem — the docs' own troubleshooting advice is to check it "includes keywords users would naturally say."
+        - Anthropic publishes an actual tool for this loop, called `skill-creator`, which runs test prompts with and without your Skill enabled and compares the results, rather than you guessing by feel.
+        - In the Claude Desktop app, you don't need to re-upload a new `.zip` for every tweak — an "Edit with Claude" option lets you edit a Skill's files directly and re-test right away.
+      demo: skill-iterate
+    - heading: "Practice \u2014 diagnose two test results"
+      body: |
+        - Below are two Skills behaving differently during testing. Work out what's actually wrong with each.
+      demo: practice-skills-23
+
+- id: skills-24
+  title: "24. No existing MCP connector? Bundle your own script"
+  steps:
+    - heading: "A folder can hold more than just SKILL.md"
+      body: |
+        - Sometimes the tool you need has no ready-made MCP connector — Anthropic's own docs show a "codebase visualizer" Skill that bundles a small helper script (a short piece of code) and runs it directly.
+        - The instructions just tell Claude to run that script — Claude executes it, it isn't something Claude writes from scratch each time.
+        - This is the same "Resources" idea as linking to an MCP connector — the difference is you (or someone on your team) wrote the resource yourself instead of using someone else's.
+      demo: skill-script-bundle
+
+- id: skills-25
+  title: "25. A Skill is code you're trusting to run"
+  steps:
+    - heading: "Read before you install, the same instinct as a browser extension"
+      body: |
+        - Installing someone else's Skill means trusting its instructions to run with whatever access Claude already has — that's a real trust decision, not just adding a note.
+        - The official docs warn about this directly: a Skill checked into a shared project "can grant itself broad tool access," and shared skills in the desktop app should be reviewed before you enable them.
+        - A friendly-sounding `description` says nothing about what the body actually tells Claude to do — read the body before trusting it.
+      demo: skill-trust
+    - heading: "Practice \u2014 diagnose the real risk"
+      body: |
+        - Below is a Skill someone's considering enabling. Work out the actual risk before picking an answer.
+      demo: practice-skills-25
+
+- id: skills-26
+  title: "26. Never put API keys in a SKILL.md — use a .env file instead"
+  steps:
+    - heading: "Keep secrets out of the file Claude (and everyone else) reads"
+      body: |
+        - A `SKILL.md` file is plain text — anyone with access to the folder (or the shared project it's part of) can read it in full.
+        - Hardcoding an API key or password directly in the file means anyone who sees the file sees the credential — including anyone reviewing it, or Claude itself echoing it back in output.
+        - Instead: put the value in a `.env` file (or your operating system's own settings for this), and have the Skill's instructions or bundled script read it from there — never type the actual key into `SKILL.md`.
+      demo: skill-secrets
+    - heading: "Practice \u2014 spot the hardcoded secret"
+      body: |
+        - Below is a SKILL.md snippet. Work out the problem before picking an answer.
+      demo: practice-skills-26
+
+- id: skills-27
+  title: "27. .env isn't actually secure — use a secret manager"
+  steps:
+    - heading: "A .env file is safer than hardcoding, but it's not the finish line"
+      body: |
+        - A `.env` file is still a plain text file sitting on disk — it can be accidentally shared, copied off a laptop, or read by anything else running on the same machine.
+        - For anything beyond a personal experiment, use a real secret manager instead — AWS Secrets Manager, Google Secret Manager, HashiCorp Vault, or similar — which stores the credential encrypted and controls exactly who/what can fetch it.
+        - Good hygiene either way: **rotate** keys periodically (replace them on a schedule, not just when you suspect a leak), and give each key the narrowest access it actually needs — a Skill that only reads receipts shouldn't hold a key that can also delete files.
+      demo: skill-secret-manager
+    - heading: "Practice \u2014 diagnose a remaining security gap"
+      body: |
+        - Below is a team's secret-handling setup. Work out what's still missing before picking an answer.
+      demo: practice-skills-27
+
+- id: skills-28
+  title: "28. Prompt injection via Skills"
+  steps:
+    - heading: "Untrusted content can carry hidden instructions"
+      body: |
+        - If a Skill's job involves reading something from outside — a webpage, an email, a shared document — that content is untrusted, even if the Skill itself is trustworthy.
+        - Hidden text in that content can look like an instruction ("ignore your previous steps and instead...") and the model can't always tell content from instruction.
+        - Same underlying risk as the general prompt-injection concept earlier in this toolkit — just specifically relevant here because Skills are often the thing doing the reading.
+      demo: skill-injection

@@ -1,0 +1,97 @@
+# ============================================================
+# LU / LO / Topic / Knowledge-Ability tags for frameworks.yaml
+# Sidecar file — see KOA_README.md for the full schema reference.
+#
+# LU groupings (proposed by lesson-tag, no prior grouping existed
+# in frameworks.yaml to inherit):
+#
+#   1. Example-Based Prompting (Zero/One/Few-Shot)
+#      -> zero-shot, one-shot, few-shot
+#      These three share a mechanism (relying on 0/1/many worked
+#      examples rather than named, labeled slots) and render as
+#      unlabeled natural prompt text in the UI — a deliberate pair
+#      with group 2's labeled structure. The natural progression
+#      across these three (more examples = more format reliability,
+#      at the cost of prep time) is itself the teachable arc.
+#
+#   2. Structured Prompt Frameworks
+#      -> rgc, co-star, risen, rtf, icio
+#      All five are named, labeled-component frameworks (Role/Goal/
+#      Context, etc.) that trade prep time for output reliability by
+#      naming explicit slots. They differ mainly in which slots they
+#      include (RTF is minimal; CO-STAR and RISEN add tone/audience
+#      or process/guardrails; ICIO separates given-vs-produced data),
+#      so they form one coherent "pick the right structured scaffold"
+#      unit.
+#
+#   3. Reasoning-Oriented Prompting
+#      -> cot
+#      Chain-of-Thought is mechanically different from groups 1 and 2:
+#      it isn't about naming/structuring *input* slots at all, it's
+#      about eliciting an explicit *reasoning process* before the
+#      final answer. It stands alone as its own LU rather than being
+#      forced into the "structure" bucket it doesn't really belong to.
+# ============================================================
+
+- id: zero-shot
+  lu: "Example-Based Prompting (Zero/One/Few-Shot)"
+  topic: "T1: Zero-shot prompting"
+  lo: "Comprehend when a plain, example-free instruction is sufficient to get a reliable model response, and when it risks a wrong guess at format."
+  knowledge: "Understanding that zero-shot prompting relies entirely on the model's own prior understanding of a task and format, with no worked example to anchor its output, making it fast to write but risky for unusual or highly specific output shapes."
+  ability: "Ability to predict whether zero-shot prompting is likely to succeed or produce a wrong-format guess for a given task, based on how standard or unusual the expected output format is."
+
+- id: one-shot
+  lu: "Example-Based Prompting (Zero/One/Few-Shot)"
+  topic: "T2: One-shot prompting"
+  lo: "Comprehend how a single worked example locks in a specific output format, and recognize when one example is enough versus when it will overfit."
+  knowledge: "Understanding that one-shot prompting supplies exactly one input/output example to demonstrate an exact format, which is effective for a single consistent shape but risks the model overfitting to that example's specifics when the real task varies."
+  ability: "Ability to diagnose when a single example is enough to lock in a format versus when relying on just one example risks the model overfitting to that example's specifics on a task that actually varies case to case."
+
+- id: few-shot
+  lu: "Example-Based Prompting (Zero/One/Few-Shot)"
+  topic: "T3: Few-shot prompting"
+  lo: "Comprehend how multiple examples improve consistency of structured output across varied inputs, and weigh that benefit against the added prep cost."
+  knowledge: "Understanding that few-shot prompting provides several (typically 2-4) input/output examples to reduce formatting drift on complex or varied structured-output tasks, at the cost of more prep time than zero- or one-shot."
+  ability: "Ability to diagnose a formatting-drift problem traceable to using only one example (one-shot) on a task varied enough to need several (few-shot), and identify the fix."
+
+- id: rgc
+  lu: "Structured Prompt Frameworks"
+  topic: "T4: Role, Goal, Context (RGC)"
+  lo: "Design fast, everyday structured prompts using the minimal who/what/why scaffold, and recognize when a task has outgrown it."
+  knowledge: "Understanding that RGC structures a prompt into Role, Goal, and Context, and that it deliberately omits process or format guidance, making it fast for everyday prompts but insufficient for multi-step or strictly formatted tasks."
+  ability: "Ability to diagnose when RGC's Role/Goal/Context alone is insufficient for a task that actually has multiple sequential steps or strict constraints, and identify that a process-oriented framework (like RISEN) is the better fit."
+
+- id: co-star
+  lu: "Structured Prompt Frameworks"
+  topic: "T5: CO-STAR"
+  lo: "Design prompts for content and writing tasks where tone, audience, and style meaningfully change the output."
+  knowledge: "Understanding that CO-STAR's six components (Context, Objective, Style, Tone, Audience, Response format) are suited to writing tasks where audience and tone actually shape the output, and that using all six on a purely factual/technical task is overkill."
+  ability: "Ability to diagnose when CO-STAR's full six-component structure is overkill for a task whose output doesn't depend on tone or audience, versus when those components are actually load-bearing."
+
+- id: risen
+  lu: "Structured Prompt Frameworks"
+  topic: "T6: RISEN"
+  lo: "Design multi-step prompts with firm process guardrails for tasks where skipping a step or exceeding a boundary would be a real problem."
+  knowledge: "Understanding that RISEN's five components (Role, Instructions, Steps, End goal, Narrowing) exist to enforce an ordered process and explicit constraints, and that its Steps/Narrowing fields add unnecessary setup for a simple single-step request."
+  ability: "Ability to diagnose when RISEN's Steps/Narrowing components are necessary guardrails for a multi-step, constrained task, versus unnecessary overhead for a simple single-step request."
+
+- id: cot
+  lu: "Reasoning-Oriented Prompting"
+  topic: "T7: Chain-of-Thought (CoT)"
+  lo: "Troubleshoot fast, overconfident model answers on multi-step problems by eliciting explicit step-by-step reasoning before the final answer."
+  knowledge: "Understanding that Chain-of-Thought prompting explicitly instructs the model to reason step by step before answering, which improves accuracy on math, logic, and multi-step problems, but adds tokens and time with no benefit on simple factual or creative tasks."
+  ability: "Ability to predict which of two tasks benefits from an explicit chain-of-thought reasoning instruction versus which doesn't, based on whether the task involves multi-step reasoning or a simple lookup/creative request."
+
+- id: rtf
+  lu: "Structured Prompt Frameworks"
+  topic: "T8: Role, Task, Format (RTF)"
+  lo: "Design the fastest possible structured prompt when tone and audience don't materially affect the outcome."
+  knowledge: "Understanding that RTF is the minimal viable structured framework (Role, Task, Format only), faster to write than CO-STAR, but with no slot for tone or audience, so a mismatched tone can slip through undetected."
+  ability: "Ability to diagnose a case where RTF's lack of a tone/audience slot let a mismatched tone slip through, versus a task where RTF's speed is the right trade-off because tone doesn't matter."
+
+- id: icio
+  lu: "Structured Prompt Frameworks"
+  topic: "T9: Input, Context, Instruction, Output (ICIO)"
+  lo: "Design data-transformation and pipeline-style prompts by clearly separating what is given to the model from what it must produce."
+  knowledge: "Understanding that ICIO explicitly separates given material (Input, Context) from the requested transformation and result (Instruction, Output), which suits data-transformation/pipeline tasks but fights open-ended creative or advisory tasks that have no single clean input or output."
+  ability: "Ability to diagnose when ICIO's explicit Input/Context/Instruction/Output separation fits a data-transformation task well, versus when it fights an open-ended creative or advisory task with no single clean input or output."

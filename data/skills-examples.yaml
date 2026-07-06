@@ -1,0 +1,67 @@
+# ============================================================
+# Skills.md 101 — "try it yourself" meta-prompts.
+# Same shape as examples.yaml, but scoped to just these two:
+# asking Claude to draft a Skill, and asking it to test/refine one.
+# See SKILLS_MODULE_README.md for field docs.
+# ============================================================
+
+- title: "Ask Claude to draft a Skill for you"
+  category: "Meta-prompt"
+  description: |
+    Don't start from a blank SKILL.md — describe the workflow you actually do, with one real example, and let Claude draft the file. Fill in the bracketed parts before sending.
+  prompt: |
+    I want you to draft a SKILL.md file for a recurring task I do.
+
+    The task: [describe what you do, in plain language]
+    How often / when I'd want this to trigger: [e.g. "whenever I paste in raw meeting notes and ask for action items"]
+    A real example, start to finish: [paste one real input you've used, and the output you actually wanted from it]
+    What stays the same every time vs. what changes: [e.g. "the format and sections always stay the same, only the content changes"]
+
+    Write the description field as "Use when...", matching the trigger above. Include the example I gave you as the Examples section. Ask me if anything is unclear before finalizing.
+  sample_output: |
+    ```
+    ---
+    name: meeting-notes-to-actions
+    description: Use when the user pastes raw meeting notes and wants action items pulled out with an owner and due date.
+    ---
+
+    # Meeting notes → action items
+
+    ## Instructions
+    1. Read the raw meeting notes.
+    2. Pull out anything that is a concrete action — has an owner, or clearly implies one.
+    3. Format each as: Owner — Task — Due date (if mentioned, else "Not set").
+
+    ## Examples
+    Input: "Priya said she'd send the budget numbers by Friday, and we agreed Marcus needs to loop in legal at some point"
+    Output:
+    | Owner | Task | Due |
+    |---|---|---|
+    | Priya | Send budget numbers | Friday |
+    | Marcus | Loop in legal | Not set |
+    ```
+
+    A couple of things I want to confirm before calling this done: should items with no clear owner be dropped, or listed with "Unassigned"? And do you want this saved as a personal Skill (just for you) or a project Skill (shared with your team)?
+
+- title: "Ask Claude to test and refine a Skill you drafted"
+  category: "Meta-prompt"
+  description: |
+    A first draft usually won't trigger right, or won't do quite the right thing. This is the follow-up prompt for that — hand back a real request that didn't behave as expected and let Claude diagnose which part is the problem.
+  prompt: |
+    Here's a SKILL.md I'm working on: [paste the current SKILL.md content]
+
+    Here's a request I tried, expecting this Skill to handle it: [paste the exact request you typed]
+
+    What actually happened: [e.g. "it didn't trigger at all" / "it triggered but formatted the output wrong" / "it triggered on something I didn't want it to"]
+
+    Diagnose whether this is a description problem (wrong trigger wording) or an instructions/examples problem (right trigger, wrong behavior), and fix just that part — don't rewrite the whole file if only one part is broken.
+  sample_output: |
+    This is a description problem, not an instructions problem. Your description says "Use when the user wants meeting notes summarized" — but your actual request asked for "action items," and "summarized" doesn't read like the same thing to a matcher scanning for intent. The instructions and example you wrote are fine and don't need to change.
+
+    Suggested fix — updated description only:
+
+    ```
+    description: Use when the user pastes raw meeting notes and wants action items, owners, or follow-ups pulled out — not for general summarization.
+    ```
+
+    Try the same request again after this change. If it still doesn't trigger, the next thing to check would be whether another Skill's description is matching first instead.

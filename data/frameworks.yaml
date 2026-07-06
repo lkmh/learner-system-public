@@ -1,0 +1,672 @@
+# ============================================================
+# PROMPT FRAMEWORKS
+# Each entry is one framework, shown in the "Prompt Frameworks"
+# page. Learners pick a framework, see its structure (the
+# `components` list), then pick a `theme` to see that framework
+# filled in as a real example prompt.
+#
+# Fields:
+#   id         - "zero-shot", "one-shot" and "few-shot" render as
+#                a natural, unlabeled block of text (like a real
+#                prompt would look). Every other id renders each
+#                component as "LABEL: value" — because those
+#                frameworks are explicitly structured, and showing
+#                the labels helps teach the structure itself.
+#   name       - shown in the framework dropdown
+#   tagline    - one-line explanation shown above the dropdowns
+#   best_for   - one-line: the situation this framework shines in
+#   avoid_when - one-line: a situation where this framework is the
+#                wrong tool, or overkill/underkill
+#   components - the named parts of this framework, in the order
+#                they get compiled into the final prompt
+#     - label  - the component name (also the key used in each
+#                theme's `values` map below — must match exactly)
+#     - hint   - one-line explanation of what goes in this part
+#   themes     - list of {theme, values: {label: filled-in text}}
+#                one values entry per component label above.
+#                Use a `|-` block scalar for any value containing
+#                quotes, JSON, or multiple lines — it avoids having
+#                to backslash-escape every quote mark.
+#
+# All 9 frameworks share the same 6 themes (the original 4 plus
+# two more complex ones — Incident postmortem report and Salary
+# negotiation counter-offer) so learners can compare the same
+# scenario across every framework.
+# ============================================================
+
+- id: zero-shot
+  name: Zero-shot prompting
+  tagline: "Just describe the task directly — no examples at all. Relies entirely on the model's own understanding of the format you're asking for."
+  best_for: "Quick, common tasks the model already knows well — no setup cost, no examples to write."
+  avoid_when: "The output format is unusual or highly specific — with nothing to anchor it, the model will guess, and might guess wrong."
+  components:
+    - label: Instruction
+      hint: Tell the model what task to perform, as clearly as possible.
+    - label: Real input
+      hint: The actual thing you want done — no example pattern to follow, just the instruction above.
+  themes:
+    - theme: Customer support reply
+      values:
+        Instruction: "Read the customer message below and write a short, empathetic reply that acknowledges the issue and explains next steps."
+        Real input: |-
+          Message: "My order arrived a week late and no one responded to my emails."
+          Reply:
+    - theme: Marketing caption
+      values:
+        Instruction: "Write a one-line Instagram caption for the product below."
+        Real input: |-
+          Product: Wireless earbuds
+          Caption:
+    - theme: Technical explainer
+      values:
+        Instruction: "Explain the technical term below in one plain-English sentence."
+        Real input: |-
+          Term: Cache
+          Explanation:
+    - theme: Travel planning
+      values:
+        Instruction: "Suggest one activity for the destination below."
+        Real input: |-
+          Destination: Lisbon
+          Activity:
+    - theme: Incident postmortem report
+      values:
+        Instruction: "Write a 3-sentence blameless summary of the incident below for an internal engineering Slack channel, focusing on impact and current status, not blame."
+        Real input: |-
+          Incident: API returned 500 errors for 22 minutes during peak traffic due to a database connection pool exhaustion after a deploy increased query volume.
+          Summary:
+    - theme: Salary negotiation counter-offer
+      values:
+        Instruction: "Write a polite but firm one-paragraph counter-offer email responding to the job offer details below."
+        Real input: |-
+          Offer: $95,000 base salary for a Senior Data Analyst role. Candidate's target: $108,000, based on 2 competing offers.
+          Email:
+
+- id: one-shot
+  name: One-shot prompting
+  tagline: "Give the model exactly ONE example of the input/output pattern you want before asking it to do the real task — especially useful for enforcing a specific output format."
+  best_for: "You need one specific output format and a single clear example is enough to lock it in."
+  avoid_when: "The task varies a lot case to case — one example won't capture the range, and the model may overfit to its specifics."
+  components:
+    - label: Instruction
+      hint: Tell the model what task to perform.
+    - label: Example
+      hint: Show one input → output pair demonstrating the exact format.
+    - label: Real input
+      hint: The actual thing you want done, in the same format as the example.
+  themes:
+    - theme: Customer support reply
+      values:
+        Instruction: "Extract structured ticket data from the customer message below into JSON with fields: issue_type, urgency (low/medium/high), and summary."
+        Example: |-
+          Message: "My package hasn't arrived in 2 weeks and I need it for an event tomorrow!"
+          Output:
+          {
+            "issue_type": "shipping_delay",
+            "urgency": "high",
+            "summary": "Package delayed 2 weeks, needed urgently for tomorrow's event."
+          }
+        Real input: |-
+          Message: "The app keeps crashing every time I try to upload a photo."
+          Output:
+    - theme: Marketing caption
+      values:
+        Instruction: "Generate a structured social post for the product below with three fields: Caption, Hashtags (3), Call_to_action."
+        Example: |-
+          Product: Ceramic coffee mug
+          Output:
+          Caption: Your Monday just got a whole lot cozier.
+          Hashtags: #MorningRitual #CeramicLove #SlowMornings
+          Call_to_action: Shop the collection — link in bio.
+        Real input: |-
+          Product: Wireless earbuds
+          Output:
+    - theme: Technical explainer
+      values:
+        Instruction: "Explain the technical term below using this exact 4-field structure: Term, Plain-English definition, Analogy, Real-world example."
+        Example: |-
+          Term: API
+          Output:
+          Term: API
+          Plain-English definition: A menu of requests one piece of software can make to another.
+          Analogy: Like a restaurant menu — you don't need to know how the kitchen works, just what you can order.
+          Real-world example: A weather app calling a weather API to get today's forecast.
+        Real input: |-
+          Term: Cache
+          Output:
+    - theme: Travel planning
+      values:
+        Instruction: "Suggest a one-day plan for the destination below, formatted as a markdown table with columns: Time, Activity, Note."
+        Example: |-
+          Destination: Rome
+          Output:
+          | Time | Activity | Note |
+          |---|---|---|
+          | Morning | Wander Trastevere | Best before crowds arrive |
+          | Afternoon | Local trattoria lunch | Avoid tourist-menu spots |
+          | Evening | Sunset at Gianicolo hill | Free, great view |
+        Real input: |-
+          Destination: Lisbon
+          Output:
+    - theme: Incident postmortem report
+      values:
+        Instruction: "Convert the incident description below into a structured postmortem entry with fields: Impact, Root cause, Resolution, Follow-up actions."
+        Example: |-
+          Incident: Checkout page failed to load for 15 minutes due to a CDN misconfiguration after a routine cache purge.
+          Output:
+          Impact: ~15 minutes of checkout downtime, an estimated 200 failed sessions.
+          Root cause: A cache purge removed a required redirect rule, causing checkout assets to 404.
+          Resolution: Redirect rule was restored manually; checkout confirmed working within 15 minutes.
+          Follow-up actions: Add a pre-purge checklist step to verify redirect rules; add automated alerting for checkout error rate spikes.
+        Real input: |-
+          Incident: API returned 500 errors for 22 minutes during peak traffic due to a database connection pool exhaustion after a deploy increased query volume.
+          Output:
+    - theme: Salary negotiation counter-offer
+      values:
+        Instruction: "Write a counter-offer email using this exact structure: Opening (gratitude), Ask (the number), Justification, Close (openness to discuss)."
+        Example: |-
+          Offer: $70,000 for a Marketing Coordinator role.
+          Output:
+          Opening: Thank you so much for the offer — I'm genuinely excited about the team and the role.
+          Ask: I'd like to ask if there's room to bring the base salary to $78,000.
+          Justification: This reflects the market range for this role in the city and my 3 years of directly relevant campaign experience.
+          Close: I'm flexible and happy to discuss further — this role is my top choice.
+        Real input: |-
+          Offer: $95,000 base salary for a Senior Data Analyst role. Candidate's target: $108,000, based on 2 competing offers.
+          Output:
+
+- id: few-shot
+  name: Few-shot prompting
+  tagline: "Give the model several examples (usually 2-4) of the input/output pattern — more examples generally means more consistent, reliable formatting, especially for complex structured output."
+  best_for: "Consistent, structured output across varied inputs — the extra examples reduce formatting drift that one-shot can't catch."
+  avoid_when: "You're prototyping quickly — writing 3 good examples takes real prep time you might not want to spend yet."
+  components:
+    - label: Instruction
+      hint: Tell the model what task to perform.
+    - label: Example 1
+      hint: First input → output example.
+    - label: Example 2
+      hint: Second input → output example.
+    - label: Example 3
+      hint: Third input → output example.
+    - label: Real input
+      hint: The actual thing you want done, in the same format as the examples.
+  themes:
+    - theme: Customer support reply
+      values:
+        Instruction: "Extract structured ticket data from the customer message below into JSON with fields: issue_type, urgency (low/medium/high), and summary."
+        Example 1: |-
+          Message: "My package hasn't arrived in 2 weeks and I need it for an event tomorrow!"
+          Output:
+          {
+            "issue_type": "shipping_delay",
+            "urgency": "high",
+            "summary": "Package delayed 2 weeks, needed urgently for tomorrow's event."
+          }
+        Example 2: |-
+          Message: "I was charged twice for the same order."
+          Output:
+          {
+            "issue_type": "billing_error",
+            "urgency": "medium",
+            "summary": "Customer was double-charged for one order."
+          }
+        Example 3: |-
+          Message: "Just wanted to say the new packaging looks great!"
+          Output:
+          {
+            "issue_type": "feedback",
+            "urgency": "low",
+            "summary": "Positive feedback about the new packaging design."
+          }
+        Real input: |-
+          Message: "The app keeps crashing every time I try to upload a photo."
+          Output:
+    - theme: Marketing caption
+      values:
+        Instruction: "Generate a structured social post for the product below with three fields: Caption, Hashtags (3), Call_to_action."
+        Example 1: |-
+          Product: Ceramic coffee mug
+          Output:
+          Caption: Your Monday just got a whole lot cozier.
+          Hashtags: #MorningRitual #CeramicLove #SlowMornings
+          Call_to_action: Shop the collection — link in bio.
+        Example 2: |-
+          Product: Yoga mat
+          Output:
+          Caption: Find your center, one stretch at a time.
+          Hashtags: #YogaEveryday #MindfulMovement #FlexibleLiving
+          Call_to_action: Roll one out today — link in bio.
+        Example 3: |-
+          Product: Scented candle
+          Output:
+          Caption: Light it up, let go of the day.
+          Hashtags: #CandleMoments #CozyNights #SelfCare
+          Call_to_action: Grab yours before they're gone.
+        Real input: |-
+          Product: Wireless earbuds
+          Output:
+    - theme: Technical explainer
+      values:
+        Instruction: "Explain the technical term below using this exact 4-field structure: Term, Plain-English definition, Analogy, Real-world example."
+        Example 1: |-
+          Term: API
+          Output:
+          Term: API
+          Plain-English definition: A menu of requests one piece of software can make to another.
+          Analogy: Like a restaurant menu — you don't need to know how the kitchen works, just what you can order.
+          Real-world example: A weather app calling a weather API to get today's forecast.
+        Example 2: |-
+          Term: Bandwidth
+          Output:
+          Term: Bandwidth
+          Plain-English definition: How much data can move through a connection at once.
+          Analogy: Like lanes on a highway — more lanes, more cars per minute.
+          Real-world example: A video call needs more bandwidth than sending a text message.
+        Example 3: |-
+          Term: Encryption
+          Output:
+          Term: Encryption
+          Plain-English definition: Scrambling data so only someone with the right key can read it.
+          Analogy: Like a locked diary only you have the key to.
+          Real-world example: Your banking app encrypts your login details before sending them over the internet.
+        Real input: |-
+          Term: Cache
+          Output:
+    - theme: Travel planning
+      values:
+        Instruction: "Suggest a one-day plan for the destination below, formatted as a markdown table with columns: Time, Activity, Note."
+        Example 1: |-
+          Destination: Rome
+          Output:
+          | Time | Activity | Note |
+          |---|---|---|
+          | Morning | Wander Trastevere | Best before crowds arrive |
+          | Afternoon | Local trattoria lunch | Avoid tourist-menu spots |
+          | Evening | Sunset at Gianicolo hill | Free, great view |
+        Example 2: |-
+          Destination: Tokyo
+          Output:
+          | Time | Activity | Note |
+          |---|---|---|
+          | Morning | Tsukiji Outer Market breakfast | Go early, it gets crowded |
+          | Afternoon | Shimokitazawa vintage shops | Skip the mainstream districts |
+          | Evening | Izakaya crawl in a back alley | Ask locals, not guidebooks |
+        Example 3: |-
+          Destination: Marrakech
+          Output:
+          | Time | Activity | Note |
+          |---|---|---|
+          | Morning | Get lost in the souks | Bargaining is expected |
+          | Afternoon | Mint tea at a rooftop cafe | Best midday break from the heat |
+          | Evening | Sunset at Jemaa el-Fnaa | Arrive before dark for full effect |
+        Real input: |-
+          Destination: Lisbon
+          Output:
+    - theme: Incident postmortem report
+      values:
+        Instruction: "Convert the incident description below into a structured postmortem entry with fields: Impact, Root cause, Resolution, Follow-up actions."
+        Example 1: |-
+          Incident: Checkout page failed to load for 15 minutes due to a CDN misconfiguration after a routine cache purge.
+          Output:
+          Impact: ~15 minutes of checkout downtime, an estimated 200 failed sessions.
+          Root cause: A cache purge removed a required redirect rule, causing checkout assets to 404.
+          Resolution: Redirect rule was restored manually; checkout confirmed working within 15 minutes.
+          Follow-up actions: Add a pre-purge checklist step to verify redirect rules; add automated alerting for checkout error rate spikes.
+        Example 2: |-
+          Incident: Email notifications were delayed by 3 hours for all users after a queue worker crashed and didn't restart automatically.
+          Output:
+          Impact: All email notifications delayed ~3 hours; no data lost, just late delivery.
+          Root cause: A queue worker process crashed on an unhandled exception and had no auto-restart configured.
+          Resolution: Worker was restarted manually; backlog cleared within 40 minutes.
+          Follow-up actions: Add auto-restart on crash for all queue workers; add alerting on queue depth exceeding a threshold.
+        Example 3: |-
+          Incident: Search results returned stale data for 6 hours after the search index failed to refresh following a schema change.
+          Output:
+          Impact: Users saw outdated product listings in search for 6 hours; no impact to direct product pages.
+          Root cause: A schema change wasn't backward-compatible with the search indexer, silently failing each refresh cycle.
+          Resolution: Rolled back the schema change and manually triggered a full re-index.
+          Follow-up actions: Add a compatibility check to the schema-change deploy pipeline; add alerting when index refresh fails.
+        Real input: |-
+          Incident: API returned 500 errors for 22 minutes during peak traffic due to a database connection pool exhaustion after a deploy increased query volume.
+          Output:
+    - theme: Salary negotiation counter-offer
+      values:
+        Instruction: "Write a counter-offer email using this exact structure: Opening (gratitude), Ask (the number), Justification, Close (openness to discuss)."
+        Example 1: |-
+          Offer: $70,000 for a Marketing Coordinator role.
+          Output:
+          Opening: Thank you so much for the offer — I'm genuinely excited about the team and the role.
+          Ask: I'd like to ask if there's room to bring the base salary to $78,000.
+          Justification: This reflects the market range for this role in the city and my 3 years of directly relevant campaign experience.
+          Close: I'm flexible and happy to discuss further — this role is my top choice.
+        Example 2: |-
+          Offer: $60/hour contract rate for a freelance UX designer role.
+          Output:
+          Opening: Thanks so much for putting this offer together — I'd love to work with the team.
+          Ask: Would you be able to move the rate to $72/hour?
+          Justification: That's in line with my recent contracts at this scope, and reflects the specialized research work included here.
+          Close: Happy to hop on a call if it's easier to discuss — I'm looking forward to getting started either way.
+        Example 3: |-
+          Offer: $130,000 base salary plus standard benefits for an Engineering Manager role.
+          Output:
+          Opening: Thank you for the offer — I'm really excited about the team and the roadmap we discussed.
+          Ask: I'd like to see if we can get the base to $145,000.
+          Justification: That aligns with my current comp plus the scope of managing a team of this size, based on my research into comparable roles.
+          Close: I'm confident we can find a number that works for both sides, and I'm happy to talk it through.
+        Real input: |-
+          Offer: $95,000 base salary for a Senior Data Analyst role. Candidate's target: $108,000, based on 2 competing offers.
+          Output:
+
+- id: rgc
+  name: Role, Goal, Context (RGC)
+  tagline: "A simple 3-part framework: tell the model WHO to be, WHAT to accomplish, and WHAT background it needs to do it well."
+  best_for: "Fast, everyday prompts where you just need to set who/what/why — minimal setup, still noticeably better than zero-shot."
+  avoid_when: "The task has multiple sequential steps or strict formatting requirements — RGC doesn't cover process or format, so add RISEN or CO-STAR instead."
+  components:
+    - label: Role
+      hint: Who should the model act as?
+    - label: Goal
+      hint: What outcome are you trying to achieve?
+    - label: Context
+      hint: What background information does it need to know?
+  themes:
+    - theme: Customer support reply
+      values:
+        Role: "You are a calm, experienced customer support agent for an online electronics retailer."
+        Goal: "Help the customer resolve their issue and leave the conversation feeling heard, without over-promising anything you can't confirm."
+        Context: "The customer's order arrived with a cracked screen. They're a repeat customer and this is their first complaint."
+    - theme: Marketing caption
+      values:
+        Role: "You are a social media copywriter for a small, sustainable homeware brand."
+        Goal: "Write a caption that feels authentic and on-brand, not like generic ad copy."
+        Context: "The brand's voice is warm, a little witty, and avoids corporate buzzwords. This post is for a new ceramic mug launch."
+    - theme: Technical explainer
+      values:
+        Role: "You are a patient senior engineer mentoring a new junior developer."
+        Goal: "Help them understand the concept well enough to explain it to someone else, not just memorize a definition."
+        Context: "The junior developer has basic programming knowledge but has never worked with distributed systems before."
+    - theme: Travel planning
+      values:
+        Role: "You are a well-traveled friend who always knows the non-touristy spots."
+        Goal: "Give a recommendation that feels personal and specific, not like a generic travel blog list."
+        Context: "Planning a trip for someone who has 3 days in a city, enjoys food and walking, and dislikes big tour groups."
+    - theme: Incident postmortem report
+      values:
+        Role: "You are a senior engineer writing the postmortem summary after an incident."
+        Goal: "Explain what happened and its impact clearly, in a blameless tone, so the team can learn from it without anyone feeling attacked."
+        Context: "A deploy increased query volume, which exhausted the database connection pool and caused the API to return 500 errors for 22 minutes during peak traffic."
+    - theme: Salary negotiation counter-offer
+      values:
+        Role: "You are the candidate replying to a job offer, negotiating for yourself."
+        Goal: "Ask for a higher salary in a way that's confident and well-justified, without sounding entitled or risking the offer."
+        Context: "The offer is $95,000 base for a Senior Data Analyst role; the candidate has two competing offers and a target of $108,000."
+
+- id: co-star
+  name: CO-STAR
+  tagline: "A 6-part framework covering Context, Objective, Style, Tone, Audience, and Response format — popular for marketing and content writing."
+  best_for: "Content and writing tasks where tone, audience, and style genuinely change the output — marketing, comms, copywriting."
+  avoid_when: "A quick factual or technical task — filling in 6 components is overkill when the answer doesn't depend on tone or audience."
+  components:
+    - label: Context
+      hint: Background information the model needs.
+    - label: Objective
+      hint: What you want the prompt to achieve.
+    - label: Style
+      hint: The writing style to use (e.g. concise, persuasive, technical).
+    - label: Tone
+      hint: The emotional tone (e.g. warm, formal, playful).
+    - label: Audience
+      hint: Who the output is written for.
+    - label: Response format
+      hint: The exact shape the output should take (length, structure).
+  themes:
+    - theme: Customer support reply
+      values:
+        Context: "A customer's order arrived with a cracked screen. They're a loyal repeat customer and this is their first complaint."
+        Objective: "Resolve the issue and offer a fair resolution without over-promising."
+        Style: "Clear and solution-focused."
+        Tone: "Warm, empathetic, and calm."
+        Audience: "A frustrated but reasonable customer."
+        Response format: "A short email, under 120 words, with one clear next step."
+    - theme: Marketing caption
+      values:
+        Context: "Launching a new ceramic mug for a sustainable homeware brand."
+        Objective: "Drive engagement and make the product feel desirable without sounding like an ad."
+        Style: "Warm and a little witty, never corporate."
+        Tone: "Friendly and approachable."
+        Audience: "Design-conscious shoppers in their late 20s to 40s who care about sustainability."
+        Response format: "One Instagram caption, under 2 sentences."
+    - theme: Technical explainer
+      values:
+        Context: "Onboarding a junior developer who has never worked with distributed systems."
+        Objective: "Build genuine understanding of the concept, not just a memorized definition."
+        Style: "Plain language, one analogy, no unnecessary jargon."
+        Tone: "Patient and encouraging."
+        Audience: "A junior developer with basic programming knowledge."
+        Response format: "3-4 sentences, ending with one concrete example."
+    - theme: Travel planning
+      values:
+        Context: "Someone has 3 days in a new city, enjoys food and walking, and wants to avoid big tour groups."
+        Objective: "Give a recommendation that feels personal, not like a generic travel blog list."
+        Style: "Specific and opinionated, not vague."
+        Tone: "Like a well-traveled friend giving advice, not a brochure."
+        Audience: "An independent traveler who wants an authentic experience."
+        Response format: "A short day-by-day plan, 2-3 sentences per day."
+    - theme: Incident postmortem report
+      values:
+        Context: "A deploy increased query volume, exhausting the database connection pool and causing the API to return 500 errors for 22 minutes during peak traffic."
+        Objective: "Summarize the incident for the internal engineering Slack channel in a blameless, factual way."
+        Style: "Concise and factual, no speculation presented as fact."
+        Tone: "Calm and blameless — focused on systems and process, not individuals."
+        Audience: "Engineers and their manager who weren't involved in the incident."
+        Response format: "3 sentences: what happened, impact, current status."
+    - theme: Salary negotiation counter-offer
+      values:
+        Context: "Candidate received a $95,000 offer for a Senior Data Analyst role and has two competing offers, with a target of $108,000."
+        Objective: "Negotiate a higher base salary while keeping the offer and relationship intact."
+        Style: "Confident, warm, and well-justified — not aggressive or apologetic."
+        Tone: "Appreciative but firm."
+        Audience: "The hiring manager who extended the offer."
+        Response format: "A single email, under 150 words, ending with an open invitation to discuss."
+
+- id: risen
+  name: RISEN
+  tagline: "A 5-part framework covering Role, Instructions, Steps, End goal, and Narrowing — good for tasks that need a clear process and firm guardrails."
+  best_for: "Multi-step processes with firm guardrails — anything where skipping a step or going out of bounds would be a real problem."
+  avoid_when: "A simple, single-step request — the Steps and Narrowing fields add setup for no benefit if there's no real process or risk to guard against."
+  components:
+    - label: Role
+      hint: Who should the model act as?
+    - label: Instructions
+      hint: The core task, stated plainly.
+    - label: Steps
+      hint: The specific steps to follow, in order.
+    - label: End goal
+      hint: What success looks like when it's done well.
+    - label: Narrowing
+      hint: Constraints, limits, or things to avoid.
+  themes:
+    - theme: Customer support reply
+      values:
+        Role: "You are a senior customer support agent."
+        Instructions: "Write a reply to a customer whose order arrived damaged."
+        Steps: "1) Acknowledge the issue and apologize once. 2) Explain what you'll do to fix it. 3) Offer a small goodwill gesture. 4) Invite them to reach out if anything else comes up."
+        End goal: "The customer feels heard and confident the issue will be resolved."
+        Narrowing: "Keep it under 120 words. Do not promise a specific refund amount — offer to check and follow up instead."
+    - theme: Marketing caption
+      values:
+        Role: "You are a social media copywriter."
+        Instructions: "Write a launch caption for a new product."
+        Steps: "1) Open with a hook, not the product name. 2) Mention the product naturally. 3) End with a short, low-pressure call to action."
+        End goal: "The caption feels native to the brand's voice and encourages likes/saves, not just a hard sell."
+        Narrowing: "Under 2 sentences. No more than 1 emoji. Avoid the words 'amazing' or 'must-have'."
+    - theme: Technical explainer
+      values:
+        Role: "You are a senior engineer writing internal documentation."
+        Instructions: "Explain a technical concept to a junior developer joining the team."
+        Steps: "1) Give a one-sentence plain-English definition. 2) Add one relatable analogy. 3) Give one concrete example from a real system."
+        End goal: "The junior developer can explain the concept back in their own words."
+        Narrowing: "No more than 4 sentences total. Avoid acronyms without spelling them out first."
+    - theme: Travel planning
+      values:
+        Role: "You are a well-traveled, local-style trip advisor."
+        Instructions: "Recommend a 3-day plan for a first-time visitor."
+        Steps: "1) Suggest one neighborhood or area per day. 2) Include one food recommendation per day. 3) Flag anything worth booking in advance."
+        End goal: "The traveler leaves with a plan they could follow without needing to research anything else."
+        Narrowing: "Avoid anything requiring a guided tour group. Keep each day to 2-3 sentences."
+    - theme: Incident postmortem report
+      values:
+        Role: "You are the engineer on-call who led the incident response."
+        Instructions: "Write the postmortem summary for the internal team."
+        Steps: "1) State what happened and when. 2) State the user-facing impact. 3) State the root cause in one sentence. 4) List 1-2 concrete follow-up actions."
+        End goal: "The team understands what happened and what's being done, without anyone feeling blamed."
+        Narrowing: "No naming of individuals. Keep it to 5 sentences or fewer."
+    - theme: Salary negotiation counter-offer
+      values:
+        Role: "You are the candidate negotiating your own offer."
+        Instructions: "Write a counter-offer email in response to the recruiter's offer."
+        Steps: "1) Thank them and express genuine enthusiasm. 2) State the specific number you're requesting. 3) Justify it with market data or competing offers. 4) Close by reaffirming interest and openness to discuss."
+        End goal: "The recruiter takes the counter seriously and comes back with a revised number or a conversation."
+        Narrowing: "Keep it to one short paragraph. Do not mention a walk-away point or ultimatum."
+
+- id: cot
+  name: Chain-of-Thought (CoT)
+  tagline: "Explicitly ask the model to reason step by step before giving a final answer — improves accuracy on math, logic, and multi-step problems by making it show its work instead of jumping straight to a guess."
+  best_for: "Math, logic, multi-step reasoning, or anything where the model is prone to a fast, confident, wrong guess."
+  avoid_when: "Simple factual lookups or creative writing — showing the work adds tokens and time with no accuracy benefit."
+  components:
+    - label: Task
+      hint: The problem or question to solve.
+    - label: Reasoning instruction
+      hint: Explicitly ask the model to work through it step by step before answering.
+    - label: Final answer format
+      hint: How the concluding answer should be presented, separate from the reasoning.
+  themes:
+    - theme: Customer support reply
+      values:
+        Task: "A customer says their order shows 'delivered' but they never received it. Decide whether to offer a reshipment or a refund."
+        Reasoning instruction: "Think through this step by step: consider how long ago it was marked delivered, whether the address was correct, and the customer's order history, before deciding."
+        Final answer format: "End with a single line starting 'Decision:' followed by the recommended action and a one-sentence reason."
+    - theme: Marketing caption
+      values:
+        Task: "Decide the best caption angle for a ceramic mug launch — cozy/comfort, sustainability, or gifting."
+        Reasoning instruction: "Think through step by step which angle best fits the brand's warm, sustainability-focused voice and the current season, before picking one."
+        Final answer format: "End with 'Chosen angle:' and the final caption."
+    - theme: Technical explainer
+      values:
+        Task: "Explain why a cache can sometimes serve stale data."
+        Reasoning instruction: "Reason step by step through what a cache does, when it updates, and what could cause it to fall out of sync, before writing the final explanation."
+        Final answer format: "End with a 2-sentence plain-English explanation, kept separate from the reasoning above it."
+    - theme: Travel planning
+      values:
+        Task: "Decide whether a 3-day Lisbon itinerary should prioritize the historic center, the coast, or both."
+        Reasoning instruction: "Think step by step about travel time between areas, the traveler's stated interests (food and walking), and how much can realistically fit in 3 days."
+        Final answer format: "End with 'Recommendation:' followed by a one-line plan per day."
+    - theme: Incident postmortem report
+      values:
+        Task: "Determine the most likely root cause of an API outage where 500 errors appeared 20 minutes after a deploy that increased query volume."
+        Reasoning instruction: "Reason step by step through what changed (the deploy), what broke (500 errors under peak load), and which resource is most likely to have been exhausted, before concluding."
+        Final answer format: "End with 'Most likely root cause:' in one sentence."
+    - theme: Salary negotiation counter-offer
+      values:
+        Task: "Decide what counter-offer number to ask for, given a $95,000 offer, a $108,000 target, and two competing offers."
+        Reasoning instruction: "Think step by step about how far above the target to ask, leaving room for negotiation without asking so high it seems unreasonable."
+        Final answer format: "End with 'Counter-offer number:' followed by the single dollar amount to ask for."
+
+- id: rtf
+  name: Role, Task, Format (RTF)
+  tagline: "The absolute minimum viable structure: WHO the model is, WHAT to do, and WHAT shape the answer should take. Faster to write than CO-STAR when tone and audience don't matter much."
+  best_for: "The fastest possible structured prompt — a step up from zero-shot without CO-STAR's full overhead."
+  avoid_when: "Tone and audience genuinely matter to the outcome — RTF has no slot for them, so a mismatched tone can slip through."
+  components:
+    - label: Role
+      hint: Who should the model act as?
+    - label: Task
+      hint: What should it do?
+    - label: Format
+      hint: What shape should the answer take?
+  themes:
+    - theme: Customer support reply
+      values:
+        Role: "You are a customer support agent."
+        Task: "Reply to a customer whose order arrived with a cracked screen."
+        Format: "A short email, 3-4 sentences, ending with a clear next step."
+    - theme: Marketing caption
+      values:
+        Role: "You are a social copywriter."
+        Task: "Write a launch caption for a new ceramic mug."
+        Format: "One sentence, under 20 words."
+    - theme: Technical explainer
+      values:
+        Role: "You are a senior engineer."
+        Task: "Explain what a cache is to a junior developer."
+        Format: "2 sentences: one plain definition, one analogy."
+    - theme: Travel planning
+      values:
+        Role: "You are a local trip planner."
+        Task: "Suggest a one-day plan for Lisbon."
+        Format: "3 bullet points: morning, afternoon, evening."
+    - theme: Incident postmortem report
+      values:
+        Role: "You are the on-call engineer."
+        Task: "Summarize a 22-minute API outage caused by database connection pool exhaustion after a deploy."
+        Format: "3 sentences: what happened, impact, current status."
+    - theme: Salary negotiation counter-offer
+      values:
+        Role: "You are the candidate."
+        Task: "Write a counter-offer email for a $95,000 offer, targeting $108,000."
+        Format: "One paragraph, under 100 words."
+
+- id: icio
+  name: Input, Context, Instruction, Output (ICIO)
+  tagline: "Explicitly separates what you're giving the model (Input, Context) from what you want it to do and produce (Instruction, Output) — good for data-transformation and pipeline-style tasks."
+  best_for: "Data-transformation and pipeline-style tasks — clearly separating what's given from what's produced."
+  avoid_when: "Open-ended creative or advisory tasks — there's no single clean 'input' or 'output' to name, so the structure fights the task."
+  components:
+    - label: Input
+      hint: The raw material the model is working from.
+    - label: Context
+      hint: Background that affects how the input should be interpreted.
+    - label: Instruction
+      hint: The transformation or task to perform.
+    - label: Output
+      hint: The exact shape the result should take.
+  themes:
+    - theme: Customer support reply
+      values:
+        Input: |-
+          Message: "My order arrived a week late and no one responded to my emails."
+        Context: "This customer has emailed twice before with no reply from support."
+        Instruction: "Write a reply that acknowledges the delay and the missed emails specifically."
+        Output: "A short email, under 100 words, with one concrete next step."
+    - theme: Marketing caption
+      values:
+        Input: "Product: Wireless earbuds."
+        Context: "Brand voice is upbeat and energetic, targeting commuters and gym-goers."
+        Instruction: "Write a launch caption."
+        Output: "One sentence, energetic tone, no more than 15 words."
+    - theme: Technical explainer
+      values:
+        Input: "Term: Cache."
+        Context: "Audience is a non-technical product manager, not an engineer."
+        Instruction: "Explain the term without any code or technical jargon."
+        Output: "2 sentences, plain English, one analogy included."
+    - theme: Travel planning
+      values:
+        Input: "Destination: Lisbon."
+        Context: "Traveler has 3 days, enjoys food and walking, dislikes tour groups."
+        Instruction: "Suggest a day-by-day plan."
+        Output: "A markdown table with columns: Day, Area, Food stop."
+    - theme: Incident postmortem report
+      values:
+        Input: "Incident: API returned 500 errors for 22 minutes during peak traffic."
+        Context: "Root cause was a database connection pool exhausted after a deploy increased query volume."
+        Instruction: "Summarize this for the internal engineering channel."
+        Output: "3 sentences: impact, root cause, current status."
+    - theme: Salary negotiation counter-offer
+      values:
+        Input: "Offer: $95,000 base salary, Senior Data Analyst role."
+        Context: "Candidate has 2 competing offers and a target of $108,000."
+        Instruction: "Draft a counter-offer email."
+        Output: "One paragraph, under 120 words, ending with openness to discuss."

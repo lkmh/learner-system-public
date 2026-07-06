@@ -1,0 +1,1364 @@
+# ============================================================
+# EXAMPLE LIBRARY
+# Add as many entries as you like. Each one becomes a card in
+# the "Library" tab, grouped by `category` — and its `addons`
+# power the "Prompt Builder" section right below it, so the
+# builder is always enhancing the SAME example you're looking at.
+#
+# Categories currently in use (4 professional, 4 personal):
+#   Work communication, Data & analysis, Career & job search,
+#   Sales & customer-facing, Travel & planning, Health & routines,
+#   Money & admin, Learning & hobbies
+# Feel free to add new categories — any string works.
+#
+# IMPORTANT — writing prompt / sample_input / description text:
+# Write each paragraph or bullet as ONE continuous line in the
+# YAML, even if it looks long in your editor. The page reflows
+# text to fit the box automatically (like Word wrap) — if you
+# manually break a sentence across multiple lines here, those
+# breaks get shown AS-IS on the page and will look like the text
+# is wrapping too early, leaving empty space on wide screens.
+# Only use a real line break where you want an actual new line
+# (e.g. between separate bullets or numbered steps).
+#
+# Fields:
+#   title          - shown in the second dropdown
+#   category       - shown in the first dropdown (grouping)
+#   suitable_llms  - list of LLMs this example works well with,
+#                    shown as small badges at the top of the card.
+#                    Free text, e.g. [Claude, ChatGPT, Copilot, Any]
+#   description    - one or two sentences explaining when/why to
+#                    use this prompt. Shown above the prompt box.
+#   prompt         - the exact prompt text (copy button uses this)
+#   sample_input   - optional. Text shown as "sample input / attachment".
+#                    Leave blank ("") if the prompt needs no input.
+#   sample_output  - optional. Pre-generated model output, hidden
+#                    behind a "Show sample output" toggle. Supports
+#                    markdown (bold, lists, tables) — it's rendered,
+#                    not shown as raw text, and reflows on its own.
+#   addons         - optional list of enhancement "types" for the
+#                    Prompt Builder. Each type is a RADIO GROUP —
+#                    learners pick ONE option per type (or "None").
+#                    Selected options are appended to the base
+#                    `prompt` above, highlighted in `color`.
+#                    Allowed colors: blue, orange, green, purple, pink
+#                      - type   : the group label (e.g. "Formatting")
+#                      - color  : highlight color for every option in this group
+#                      - options: list of {label, text}
+#                        - label: shown next to the radio button
+#                        - text : sentence appended to the compiled prompt
+# ============================================================
+
+# ---------------- PROFESSIONAL: Work communication ----------------
+
+- title: Summarize meeting minutes
+  category: Work communication
+  suitable_llms: [Claude, ChatGPT, Copilot]
+  description: |
+    Turn a page of raw meeting notes into something skimmable for people who weren't in the room — decisions, owners, and open questions only.
+  prompt: |
+    Summarize the following meeting minutes into three sections:
+    1. Key decisions made
+    2. Action items (with owner and due date if mentioned)
+    3. Open questions that still need answers
+
+    Keep it under 150 words.
+  sample_input: |
+    [ATTACH: sample_meeting_minutes.txt]
+    Attendees: Priya, Marcus, Wei Ling, Daniel
+    - Discussed Q3 marketing budget, agreed to shift $10k from print to paid social. Wei Ling to confirm final numbers by Friday.
+    - Marcus raised concern about the new CRM rollout timeline. Daniel to check with vendor and report back next week.
+    - Decided to postpone the customer survey until after the product launch.
+    - Open question: who owns the launch day social media calendar?
+  sample_output: |
+    **Key decisions:**
+    - Shift $10k from print to paid social (Q3)
+    - Postpone customer survey until after launch
+
+    **Action items:**
+
+    | Owner | Task | Due |
+    |---|---|---|
+    | Wei Ling | Confirm final ad budget numbers | Friday |
+    | Daniel | Check CRM rollout timeline with vendor | Next week |
+
+    **Open questions:** Who owns the launch day social media calendar?
+  addons:
+    - type: Format
+      color: green
+      options:
+        - label: Table
+          text: "Format the action items as a markdown table with columns: Owner, Task, Due."
+        - label: Numbered steps
+          text: "Number each action item as a numbered list instead of bullets."
+    - type: Length
+      color: blue
+      options:
+        - label: Short (50 words)
+          text: "Keep the entire summary under 50 words total."
+        - label: Detailed (200 words)
+          text: "Expand to a detailed summary up to 200 words, including context for each decision."
+    - type: Audience
+      color: purple
+      options:
+        - label: For executives
+          text: "Write it for a time-pressed executive who only reads the first line of each section."
+        - label: For the whole team
+          text: "Write it so every attendee can understand it, including people who joined the call late."
+
+- title: Simplify technical text for a non-technical audience
+  category: Work communication
+  suitable_llms: [Claude, ChatGPT, Copilot]
+  description: |
+    Good for translating jargon-heavy docs or specs into something a non-technical stakeholder can actually follow.
+  prompt: |
+    Rewrite the paragraph below for someone with no technical background. Avoid jargon, use short sentences, and use one analogy to explain the core idea.
+  sample_input: |
+    "The API uses OAuth 2.0 for authentication, issuing a short-lived access token and a longer-lived refresh token to maintain a secure session without repeated logins."
+  sample_output: |
+    Think of it like a wristband at a festival. When you log in, the system gives you a temporary wristband (a "token") that proves who you are, so you don't have to show your ID every time you want to enter a stage. A second, longer-lasting wristband lets the system quietly issue you a fresh one before the first expires, so you stay logged in without noticing.
+  addons:
+    - type: Length
+      color: blue
+      options:
+        - label: 3 sentences
+          text: "Keep the explanation to exactly 3 short sentences."
+        - label: One paragraph
+          text: "Keep it to a single short paragraph, no more than 5 sentences."
+    - type: Analogy style
+      color: purple
+      options:
+        - label: Everyday object
+          text: "Use an analogy based on a common everyday object or activity."
+        - label: No analogy
+          text: "Do not use any analogy — just plain simple language."
+
+- title: Write a project status update
+  category: Work communication
+  suitable_llms: [Claude, ChatGPT, Copilot]
+  description: |
+    Turn a jumble of project progress into a clear status update your manager or stakeholders can skim in under a minute.
+  prompt: |
+    Write a project status update for the stakeholders below. Structure it as: Overall status (on track / at risk / delayed), What shipped this week, What's next, and Blockers (if any). Keep it under 150 words.
+  sample_input: |
+    [ATTACH: project_notes.txt]
+    Shipped the new checkout flow to 20% of users, conversion up 3%. Still waiting on legal sign-off for the refund policy wording — blocking full rollout. Next week: fix the mobile layout bug reported by QA, and start on the loyalty points feature.
+  sample_output: |
+    **Status:** On track
+
+    **Shipped this week:** New checkout flow live for 20% of users (conversion up 3%).
+
+    **Next:** Fix the mobile layout bug from QA, begin loyalty points feature.
+
+    **Blockers:** Waiting on legal sign-off for refund policy wording before full rollout.
+  addons:
+    - type: Tone
+      color: blue
+      options:
+        - label: Casual, team-facing
+          text: "Use a casual, team-facing tone, like a Slack update."
+        - label: Formal, exec-facing
+          text: "Use a formal tone suitable for a leadership audience."
+    - type: Format
+      color: green
+      options:
+        - label: Bullet list
+          text: "Format as a bullet list under each heading."
+        - label: Traffic-light table
+          text: "Format as a table with a Red/Amber/Green status column."
+    - type: Length
+      color: orange
+      options:
+        - label: Very short (50 words)
+          text: "Keep it under 50 words, headline only."
+        - label: Detailed (250 words)
+          text: "Expand to a detailed update up to 250 words, including context for each blocker."
+
+# ---------------- PROFESSIONAL: Data & analysis ----------------
+
+- title: Extract action items from messy notes
+  category: Data & analysis
+  suitable_llms: [Any]
+  description: |
+    Turns scribbled, unstructured notes into a clean, consistent bullet list — handy right after a stand-up or a brainstorm.
+  prompt: |
+    Extract every action item from the notes below as a bullet list. For each one include: task, owner (if mentioned), and deadline (if mentioned). If any field is missing, write "not specified".
+  sample_input: |
+    [ATTACH: raw_notes.txt]
+    ok so priya said she'll send the deck by wed. marcus still needs to book the venue, no date given tho. also someone needs to email the vendors asap - daniel volunteered.
+  sample_output: |
+    - **Task:** Send the deck | **Owner:** Priya | **Deadline:** Wednesday
+    - **Task:** Book the venue | **Owner:** Marcus | **Deadline:** not specified
+    - **Task:** Email the vendors | **Owner:** Daniel | **Deadline:** ASAP
+  addons:
+    - type: Format
+      color: green
+      options:
+        - label: Table
+          text: "Output as a markdown table with columns: Task, Owner, Deadline."
+    - type: Missing-field handling
+      color: orange
+      options:
+        - label: Skip incomplete items
+          text: "If owner AND deadline are both missing, omit that item entirely instead of writing \"not specified\"."
+
+- title: Compare two options in a table
+  category: Data & analysis
+  suitable_llms: [Any]
+  description: |
+    Useful whenever you're weighing build-vs-buy or any other two-option decision and want the trade-offs laid out plainly.
+  prompt: |
+    Compare the two options below in a markdown table with these columns: Option, Cost, Time to implement, Main risk. Then add one sentence recommending which to choose and why.
+  sample_input: |
+    Option A: Build an in-house tool (est. 3 months, 2 engineers)
+    Option B: Buy an existing SaaS subscription (est. $500/month)
+  sample_output: |
+    | Option | Cost | Time to implement | Main risk |
+    |---|---|---|---|
+    | A: Build in-house | 2 engineers x 3 months | ~3 months | Scope creep, maintenance burden |
+    | B: Buy SaaS | ~$500/month | Days | Vendor lock-in |
+
+    **Recommendation:** Buy the SaaS option first to validate the need before investing engineering time in a custom build.
+  addons:
+    - type: Extra column
+      color: green
+      options:
+        - label: Add "Best for"
+          text: "Add a 4th column called 'Best for' describing the ideal use case for each option."
+        - label: Add scoring
+          text: "Add a 1-5 score for each option in each row, then total the scores at the bottom."
+    - type: Recommendation style
+      color: pink
+      options:
+        - label: One sentence
+          text: "Keep the recommendation to one sentence."
+        - label: With reasoning
+          text: "Give a two-to-three sentence recommendation that explains the trade-off you weighed most heavily."
+    - type: Visualization
+      color: blue
+      options:
+        - label: Add a bar chart
+          text: "Also generate a bar chart comparing the cost of each option, as an artifact if your tool supports it."
+        - label: Add a radar chart
+          text: "Also generate a radar chart comparing cost, time to implement, and risk across both options, as an artifact if your tool supports it."
+
+- title: Turn raw numbers into a plain-English insight
+  category: Data & analysis
+  suitable_llms: [Claude, ChatGPT]
+  description: |
+    Good for translating a small dataset or set of metrics into a takeaway a non-analyst can act on.
+  prompt: |
+    Look at the data below and write a 3-sentence summary of the single most important trend, plus one recommended action based on it. Avoid jargon.
+  sample_input: |
+    Monthly signups: Jan 120, Feb 135, Mar 110, Apr 95, May 80
+    Monthly churn: Jan 5%, Feb 6%, Mar 9%, Apr 12%, May 15%
+  sample_output: |
+    Signups have declined 33% since February while churn has tripled over the same period — the business is now losing customers faster than it's gaining them. This points to a retention problem, not just an acquisition slowdown. **Recommendation:** pause new-signup spend and investigate why churn is accelerating before scaling acquisition further.
+  addons:
+    - type: Depth
+      color: blue
+      options:
+        - label: One sentence only
+          text: "Cut it down to a single sentence, no recommendation."
+        - label: Full breakdown
+          text: "Add a breakdown of what might be causing the trend, with 2-3 possible explanations."
+    - type: Audience
+      color: purple
+      options:
+        - label: For a non-technical exec
+          text: "Write for a non-technical executive who has never seen this data before."
+        - label: For a fellow analyst
+          text: "Write for a fellow analyst — you can use statistical terms like 'month-over-month' freely."
+    - type: Visualization
+      color: green
+      options:
+        - label: Add a line chart
+          text: "Also generate a line chart plotting signups and churn over the 5 months, as an artifact if your tool supports it."
+        - label: Add a bar chart
+          text: "Also generate a bar chart comparing signups and churn side by side for each month, as an artifact if your tool supports it."
+
+# ---------------- PROFESSIONAL: Career & job search ----------------
+
+- title: Turn a work history into resume bullet points
+  category: Career & job search
+  suitable_llms: [Claude, ChatGPT, Copilot]
+  description: |
+    Turns a rough description of what you did in a role into punchy, results-focused resume bullets.
+  prompt: |
+    Turn the description below into 3 resume bullet points. Start each with a strong action verb, quantify the impact wherever possible, and keep each bullet to one line.
+  sample_input: |
+    I ran the social media accounts for a small bakery. Grew the Instagram following, ran some promotions around holidays that did well, and started replying to reviews which seemed to help repeat customers.
+  sample_output: |
+    - Grew Instagram following through consistent content and holiday-themed promotional campaigns
+    - Increased repeat customer engagement by proactively responding to online reviews
+    - Managed end-to-end social media strategy for a small business with measurable follower growth
+  addons:
+    - type: Quantify
+      color: blue
+      options:
+        - label: Add placeholder numbers
+          text: "Add placeholder metrics in brackets, like [X]%, so I can fill in the real numbers later."
+        - label: Keep it qualitative
+          text: "Don't invent any numbers — keep it qualitative only."
+    - type: Target role
+      color: purple
+      options:
+        - label: Marketing role
+          text: "Tailor the language toward a marketing coordinator job application."
+        - label: Social media manager role
+          text: "Tailor the language toward a dedicated social media manager job application."
+
+- title: Draft a cover letter opening paragraph
+  category: Career & job search
+  suitable_llms: [Claude, ChatGPT]
+  description: |
+    Gets past the blank-page problem for the hardest part of a cover letter — the opening hook.
+  prompt: |
+    Write a 3-sentence cover letter opening paragraph for the job and background below. Make it specific to the role, not generic, and avoid clichés like "I am excited to apply".
+  sample_input: |
+    Job: Junior Data Analyst at a healthcare startup.
+    My background: Recent statistics graduate, did a university project analyzing hospital wait-time data, no full-time work experience yet.
+  sample_output: |
+    During my statistics degree, I spent a semester analyzing hospital wait-time data — and found that a scheduling change I proposed could have cut average wait times by 15%. That project convinced me healthcare is where I want to apply data skills for real. As a recent graduate looking for my first analyst role, [Company]'s mission to make care more efficient is exactly the kind of problem I want to work on.
+  addons:
+    - type: Tone
+      color: blue
+      options:
+        - label: Confident
+          text: "Make the tone confident and direct."
+        - label: Warm and personable
+          text: "Make the tone warm and personable, like you're talking to a future colleague."
+    - type: Length
+      color: green
+      options:
+        - label: 2 sentences
+          text: "Cut it down to exactly 2 sentences."
+        - label: 5 sentences
+          text: "Expand it to 5 sentences with one more concrete detail."
+
+- title: Prep answers for a common interview question
+  category: Career & job search
+  suitable_llms: [Claude, ChatGPT, Copilot]
+  description: |
+    Turns a messy real story into a structured STAR-method answer you can actually say out loud in an interview.
+  prompt: |
+    Using the STAR method (Situation, Task, Action, Result), turn the story below into a structured interview answer for the question: "Tell me about a time you dealt with conflict." Keep the whole answer under 45 seconds if spoken aloud.
+  sample_input: |
+    Two people on my team disagreed about which vendor to use for a project. It got kind of tense in a meeting. I suggested we each list pros/cons and score them against our actual requirements instead of just opinions. We ended up picking a third option neither had originally proposed and the project went well.
+  sample_output: |
+    **Situation:** Two teammates strongly disagreed over which vendor to choose for a project, and it started to create tension in meetings.
+
+    **Task:** As the project lead, I needed to resolve the disagreement without alienating either person.
+
+    **Action:** I proposed we score each vendor against our actual project requirements instead of debating opinions, and had both teammates contribute to the criteria.
+
+    **Result:** The scoring surfaced a third vendor neither had originally proposed — we chose it, and the project shipped successfully with both teammates on board.
+  addons:
+    - type: Length
+      color: blue
+      options:
+        - label: Even shorter (20 seconds)
+          text: "Trim it down to a 20-second version, hitting only the key points."
+        - label: More detail
+          text: "Add one more sentence of detail to the Action step."
+    - type: Question type
+      color: purple
+      options:
+        - label: Leadership question
+          text: "Adapt this for the question 'Tell me about a time you showed leadership' instead."
+        - label: Failure question
+          text: "Adapt this for the question 'Tell me about a time you failed' instead."
+
+# ---------------- PROFESSIONAL: Sales & customer-facing ----------------
+
+- title: Draft a customer complaint response
+  category: Sales & customer-facing
+  suitable_llms: [Claude, ChatGPT]
+  description: |
+    A quick way to draft a professional, empathetic reply to an upset customer without starting from a blank page.
+  prompt: |
+    Write a reply to the customer email below. Acknowledge the issue, apologize once, explain the fix, and offer a small goodwill gesture. Keep it under 120 words, warm but professional.
+  sample_input: |
+    [ATTACH: customer_email.txt]
+    "My order #4021 arrived 5 days late and the box was damaged. This is the second time this has happened. Very disappointed."
+  sample_output: |
+    Hi [Name], I'm really sorry order #4021 arrived late and damaged — especially given this isn't the first time. I've flagged this with our warehouse team to prevent a repeat, and I've issued a **full refund on the shipping cost** plus a **15% discount code** for your next order. Thank you for your patience, and please reach out directly if anything else comes up.
+  addons:
+    - type: Tone
+      color: blue
+      options:
+        - label: Formal
+          text: "Use a formal, corporate tone."
+        - label: Warm & personal
+          text: "Use a warm, personal tone as if written by a real person, not a template."
+    - type: Goodwill gesture
+      color: orange
+      options:
+        - label: Discount code
+          text: "Offer a 15% discount code on their next order."
+        - label: Free shipping
+          text: "Offer free shipping on their next two orders."
+        - label: No gesture
+          text: "Do not offer any discount or compensation — just acknowledge and apologize."
+    - type: Length
+      color: green
+      options:
+        - label: Short (80 words)
+          text: "Keep the email under 80 words."
+        - label: Standard (120 words)
+          text: "Keep the email under 120 words."
+
+- title: Brainstorm product name ideas
+  category: Sales & customer-facing
+  suitable_llms: [Any]
+  description: |
+    A fast way to get a long list of name candidates with reasoning, so you're picking from options instead of staring at a blank page.
+  prompt: |
+    Generate 10 name ideas for a mobile app that helps freelancers track invoices and get paid faster. For each name, give a one-line reason it fits. Avoid names that sound like existing major brands.
+  sample_input: ""
+  sample_output: |
+    1. **Ledgerly** – evokes "ledger" + approachable tone
+    2. **PayTrail** – emphasizes tracking payments over time
+    3. **Invoiceable** – playful, implies ease
+    ... (7 more)
+  addons:
+    - type: Quantity
+      color: blue
+      options:
+        - label: 5 ideas
+          text: "Generate only 5 name ideas instead of 10."
+        - label: 20 ideas
+          text: "Generate 20 name ideas instead of 10."
+    - type: Style
+      color: purple
+      options:
+        - label: Playful
+          text: "Make the names playful and fun, even a little silly."
+        - label: Professional / serious
+          text: "Make the names sound professional and trustworthy, suitable for enterprise clients."
+
+- title: Write a follow-up email after a sales call
+  category: Sales & customer-facing
+  suitable_llms: [Claude, ChatGPT, Copilot]
+  description: |
+    Keeps momentum after a sales call by turning your rough notes into a polished, action-oriented follow-up.
+  prompt: |
+    Write a follow-up email to the prospect based on the call notes below. Thank them for their time, recap the 2-3 key points discussed, and end with one clear next step. Keep it under 100 words.
+  sample_input: |
+    [ATTACH: call_notes.txt]
+    Spoke with Jamie (Head of Ops) for 30 min. Main pain point: manual data entry between two systems. Interested in our API integration, budget likely available in Q3. Wants a demo with their tech lead before deciding.
+  sample_output: |
+    Hi Jamie, thanks for the time today. It sounds like the manual data entry between your two systems is the biggest pain point, and our API integration is a strong fit for that. Since budget opens up in Q3 and your tech lead should be part of the decision, let's set up a technical demo together — does next Tuesday or Wednesday work?
+  addons:
+    - type: Tone
+      color: blue
+      options:
+        - label: Warm and consultative
+          text: "Use a warm, consultative tone, not pushy."
+        - label: Direct and brief
+          text: "Use a direct, no-fluff tone."
+    - type: Call to action
+      color: orange
+      options:
+        - label: Book a demo
+          text: "End with a specific ask to book a technical demo."
+        - label: Send more info
+          text: "End by offering to send a one-page product overview instead of asking for a meeting."
+
+# ---------------- PERSONAL: Travel & planning ----------------
+
+- title: Build a day-by-day trip itinerary
+  category: Travel & planning
+  suitable_llms: [Claude, ChatGPT, Any]
+  description: |
+    Turns a destination and a few preferences into a ready-to-follow day-by-day plan.
+  prompt: |
+    Plan a 4-day itinerary for a trip to Kyoto, Japan for 2 adults who enjoy food and history but want to avoid overly touristy spots. Split each day into Morning/Afternoon/Evening.
+  sample_input: ""
+  sample_output: |
+    | Day | Morning | Afternoon | Evening |
+    |---|---|---|---|
+    | Day 1 | Fushimi Inari shrine early to beat crowds | Nishiki Market for local snacks | Small izakaya in Pontocho alley |
+    | Day 2 | Arashiyama bamboo grove at sunrise | Okochi Sanso villa gardens | Kaiseki dinner |
+    | Day 3-4 | ... | ... | ... |
+  addons:
+    - type: Budget
+      color: pink
+      options:
+        - label: Budget-conscious
+          text: "Keep total daily spend under $80 per person, excluding accommodation."
+        - label: Mid-range
+          text: "Assume a mid-range budget of about $150 per person per day."
+    - type: Pace
+      color: green
+      options:
+        - label: Relaxed
+          text: "Keep the pace relaxed — no more than 2 major activities per day."
+        - label: Packed
+          text: "Pack the itinerary tightly to see as much as possible."
+    - type: Traveler type
+      color: purple
+      options:
+        - label: Solo traveler
+          text: "Adapt this for one solo traveler instead of two."
+        - label: With kids
+          text: "Adapt this for a family with two children aged 8 and 11."
+
+- title: Make a packing list for a trip
+  category: Travel & planning
+  suitable_llms: [Any]
+  description: |
+    Skip the mental checklist stress — get a packing list tailored to your actual trip.
+  prompt: |
+    Make a packing list for a 5-day trip to a cold, rainy climate, mostly city walking with one nice dinner planned. Group items into categories (Clothing, Toiletries, Electronics, Documents, Other).
+  sample_input: ""
+  sample_output: |
+    **Clothing:** Waterproof jacket, 2 pairs of walking shoes (1 waterproof), thermal layers, 1 outfit for the nice dinner.
+
+    **Toiletries:** Travel-size essentials, any prescriptions.
+
+    **Electronics:** Phone charger, universal adapter, portable battery.
+
+    **Documents:** Passport, travel insurance, hotel confirmations.
+
+    **Other:** Compact umbrella, reusable water bottle.
+  addons:
+    - type: Trip length
+      color: blue
+      options:
+        - label: Weekend (2-3 days)
+          text: "Adjust this for a shorter 2-3 day weekend trip instead."
+        - label: Extended (2+ weeks)
+          text: "Adjust this for a longer 2+ week trip, including laundry planning."
+    - type: Climate
+      color: orange
+      options:
+        - label: Hot and humid
+          text: "Adapt the list for a hot, humid climate instead."
+        - label: Mixed/unpredictable
+          text: "Adapt the list for unpredictable weather that could swing hot or cold."
+
+- title: Plan a weekend trip on a tight budget
+  category: Travel & planning
+  suitable_llms: [Claude, ChatGPT]
+  description: |
+    For when you want a getaway without a big spreadsheet — a simple budget-aware weekend plan.
+  prompt: |
+    Suggest a budget weekend trip (Friday evening to Sunday) within a 3-hour drive of a mid-sized city, total cost under $300 for two people including accommodation. Include a rough cost breakdown.
+  sample_input: ""
+  sample_output: |
+    **Destination:** A nearby lake town, 2-hour drive.
+
+    **Friday:** Drive up after work, casual dinner (~$40).
+
+    **Saturday:** Hiking trail (free), lakeside picnic lunch (~$25), budget cabin stay (~$120/night).
+
+    **Sunday:** Farmers market breakfast (~$20), drive home.
+
+    **Total estimate:** ~$285 for two people.
+  addons:
+    - type: Budget cap
+      color: pink
+      options:
+        - label: Even tighter ($150)
+          text: "Lower the total budget cap to $150 for two people."
+        - label: More flexible ($500)
+          text: "Raise the total budget cap to $500 for two people."
+    - type: Activity focus
+      color: green
+      options:
+        - label: Outdoorsy
+          text: "Focus the plan on outdoor activities like hiking or kayaking."
+        - label: Relaxation
+          text: "Focus the plan on relaxation — spa, slow mornings, minimal driving."
+
+# ---------------- PERSONAL: Health & routines ----------------
+
+- title: Build a simple weekly meal plan
+  category: Health & routines
+  suitable_llms: [Any]
+  description: |
+    Takes the daily "what's for dinner" decision fatigue away with a ready-made weekly plan.
+  prompt: |
+    Create a 5-day dinner meal plan for one person who wants quick meals (30 minutes or less) and eats a mostly vegetarian diet. Include a short grocery list.
+  sample_input: ""
+  sample_output: |
+    | Day | Dinner | Time |
+    |---|---|---|
+    | Mon | Chickpea stir-fry with rice | 25 min |
+    | Tue | Caprese pasta | 20 min |
+    | Wed | Black bean quesadillas | 15 min |
+    | Thu | Veggie stir-fried noodles | 25 min |
+    | Fri | Lentil soup with bread | 30 min |
+
+    **Grocery list:** Chickpeas, black beans, lentils, rice, pasta, tortillas, mixed vegetables, mozzarella, tomatoes, basil, noodles, soy sauce.
+  addons:
+    - type: Diet
+      color: green
+      options:
+        - label: Fully vegan
+          text: "Make every meal fully vegan, no dairy or eggs."
+        - label: Add meat option
+          text: "Add one optional meat variation for each meal."
+    - type: Servings
+      color: blue
+      options:
+        - label: For 2 people
+          text: "Scale the recipes and grocery list for 2 people instead of 1."
+        - label: For a family of 4
+          text: "Scale the recipes and grocery list for a family of 4."
+    - type: Time budget
+      color: orange
+      options:
+        - label: 15 minutes or less
+          text: "Limit every meal to 15 minutes or less prep and cook time."
+        - label: Batch-cook friendly
+          text: "Prefer meals that batch-cook well for leftovers."
+
+- title: Design a beginner home workout routine
+  category: Health & routines
+  suitable_llms: [Claude, ChatGPT]
+  description: |
+    A safe starting point for someone who wants to start exercising at home with no equipment.
+  prompt: |
+    Design a 3-day-a-week beginner home workout routine, no equipment needed, roughly 20 minutes per session. Include a brief warm-up and note which muscle groups each day targets.
+  sample_input: ""
+  sample_output: |
+    | Day | Focus | Exercises |
+    |---|---|---|
+    | Day 1 | Full body | 5-min warm-up, bodyweight squats, push-ups (knee variation ok), plank holds, glute bridges |
+    | Day 2 | Cardio + core | 5-min warm-up, jumping jacks, mountain climbers, bicycle crunches, high knees |
+    | Day 3 | Full body | 5-min warm-up, lunges, incline push-ups, superman holds, wall sits |
+
+    Rest at least one day between sessions.
+  addons:
+    - type: Equipment
+      color: blue
+      options:
+        - label: Add light dumbbells
+          text: "Assume access to a pair of light dumbbells and add exercises using them."
+        - label: Resistance bands only
+          text: "Adapt this to use resistance bands instead of pure bodyweight."
+    - type: Session length
+      color: purple
+      options:
+        - label: 10-minute quick version
+          text: "Shorten each session to 10 minutes, hitting only the essentials."
+        - label: 40-minute version
+          text: "Expand each session to 40 minutes with more exercises per muscle group."
+
+- title: Create a simple daily habit tracker template
+  category: Health & routines
+  suitable_llms: [Any]
+  description: |
+    Gives structure to a new habit goal without over-engineering it into an app you'll abandon.
+  prompt: |
+    Design a simple daily habit tracker template for someone trying to build a consistent reading habit (goal: 20 minutes a day). Describe the format in text (rows/columns) since this will be copied into a notes app, not a spreadsheet.
+  sample_input: ""
+  sample_output: |
+    **Format:** One row per day (Mon-Sun), columns: Date, Minutes read, Did I hit 20 min? (Y/N), One-line note.
+
+    **Weekly summary row:** Total minutes this week, days hit goal out of 7.
+
+    Example row: Mon 6/2, 25 min, Y, "Read on the train, easier than expected."
+  addons:
+    - type: Habit type
+      color: green
+      options:
+        - label: Exercise habit
+          text: "Adapt this template for tracking a daily exercise habit instead of reading."
+        - label: Water intake
+          text: "Adapt this template for tracking daily water intake instead of reading."
+    - type: Format style
+      color: blue
+      options:
+        - label: Spreadsheet-style
+          text: "Describe it as a spreadsheet format instead, with explicit column headers."
+        - label: Checklist style
+          text: "Describe it as a simple checklist instead of a table."
+
+# ---------------- PERSONAL: Money & admin ----------------
+
+- title: Build a simple monthly budget breakdown
+  category: Money & admin
+  suitable_llms: [Claude, ChatGPT]
+  description: |
+    Turns a rough list of income and expenses into an organized budget with categories.
+  prompt: |
+    Organize the income and expenses below into a monthly budget with categories (Housing, Food, Transport, Savings, Other) and show what percentage of income each category takes.
+  sample_input: |
+    Income: $4200/month.
+    Expenses: Rent $1500, groceries $400, eating out $250, car payment $300, gas $120, phone $60, gym $40, subscriptions $35, savings transfer $500, misc $200.
+  sample_output: |
+    **Housing:** $1500 (36%)
+
+    **Food:** $650 (15%) — groceries $400 + eating out $250
+
+    **Transport:** $420 (10%) — car payment + gas
+
+    **Savings:** $500 (12%)
+
+    **Other:** $335 (8%) — phone, gym, subscriptions, misc
+
+    **Unallocated:** $795 (19%) remains uncategorized — worth reviewing where this goes.
+  addons:
+    - type: Goal
+      color: green
+      options:
+        - label: Flag overspending
+          text: "Flag any category that looks unusually high compared to typical budgeting guidelines (e.g. the 50/30/20 rule)."
+        - label: Suggest cuts
+          text: "Suggest 2 specific expenses that could realistically be cut or reduced."
+    - type: Format
+      color: blue
+      options:
+        - label: As a table
+          text: "Format the whole breakdown as a markdown table."
+        - label: As a narrative
+          text: "Write it as a short narrative paragraph instead of a list."
+    - type: Visualization
+      color: orange
+      options:
+        - label: Add a pie chart
+          text: "Also generate a pie chart showing what percentage of income each category takes, as an artifact if your tool supports it."
+        - label: Add a bar chart
+          text: "Also generate a bar chart comparing the dollar amount spent in each category, as an artifact if your tool supports it."
+
+- title: Compare two purchase options before buying
+  category: Money & admin
+  suitable_llms: [Any]
+  description: |
+    The same build-vs-buy comparison logic, but for everyday purchase decisions like appliances or gadgets.
+  prompt: |
+    Compare the two purchase options below across price, expected lifespan, and key trade-offs, then recommend one with a one-sentence reason.
+  sample_input: |
+    Option A: Budget washing machine, $350, 2-year warranty, mixed reviews on durability.
+    Option B: Mid-range washing machine, $650, 5-year warranty, strong reviews on durability.
+  sample_output: |
+    | Option | Price | Lifespan/warranty | Trade-off |
+    |---|---|---|---|
+    | A: Budget | $350 | 2-year warranty | Cheaper upfront, mixed durability reviews |
+    | B: Mid-range | $650 | 5-year warranty | Higher upfront cost, stronger reliability |
+
+    **Recommendation:** Option B is likely the better value — the longer warranty and stronger reviews suggest a lower cost-per-year despite the higher sticker price.
+  addons:
+    - type: Priority
+      color: pink
+      options:
+        - label: Optimize for cheapest upfront
+          text: "Weight the recommendation toward whichever option is cheapest upfront, even if less durable."
+        - label: Optimize for long-term value
+          text: "Weight the recommendation toward long-term cost-per-year value, not upfront price."
+    - type: Extra detail
+      color: green
+      options:
+        - label: Add a 3rd option
+          text: "Ask me for a 3rd option to compare instead of just two."
+        - label: Keep it to two
+          text: "Keep the comparison limited to exactly these two options."
+    - type: Visualization
+      color: blue
+      options:
+        - label: Add a bar chart
+          text: "Also generate a bar chart comparing the price of each option, as an artifact if your tool supports it."
+        - label: Add a cost-over-time chart
+          text: "Also generate a line chart projecting the cost-per-year of each option over its expected lifespan, as an artifact if your tool supports it."
+
+- title: Explain a confusing bill or contract in plain English
+  category: Money & admin
+  suitable_llms: [Claude, ChatGPT]
+  description: |
+    Cuts through dense fine print so you actually understand what you're signing or paying for.
+  prompt: |
+    Explain the text below in plain English, as if to someone with no legal or financial background. Highlight anything that seems like an important cost, deadline, or catch.
+  sample_input: |
+    "Early termination of this agreement prior to the completion of the minimum service term will incur a pro-rated early termination fee equivalent to the remaining monthly service charges, up to a maximum of $200, payable within 30 days of termination notice."
+  sample_output: |
+    This means: if you cancel before your contract period ends, you'll owe a fee based on how many months are left — capped at $200 — and you have to pay it within 30 days of telling them you're cancelling. **Key catch:** the fee scales with how early you cancel, so cancelling right after signing costs more than cancelling near the end of the term.
+  addons:
+    - type: Detail level
+      color: purple
+      options:
+        - label: Even simpler
+          text: "Simplify further — explain it like to a teenager, one short paragraph only."
+        - label: More detail
+          text: "Add a bit more nuance about what 'pro-rated' typically means in these contracts."
+    - type: Focus
+      color: orange
+      options:
+        - label: Focus on cost
+          text: "Focus specifically on identifying every cost mentioned in the text."
+        - label: Focus on deadlines
+          text: "Focus specifically on identifying every deadline or time limit mentioned."
+
+# ---------------- PERSONAL: Learning & hobbies ----------------
+
+- title: Create a simple study plan for a topic
+  category: Learning & hobbies
+  suitable_llms: [Claude, ChatGPT, Copilot]
+  description: |
+    Breaks an intimidating new subject into a manageable, dated study plan.
+  prompt: |
+    Create a 2-week study plan to learn the basics of a new topic, studying about 30 minutes a day. Break it into daily topics building from fundamentals to more advanced ideas.
+  sample_input: |
+    Topic: Basic personal investing (stocks, index funds, retirement accounts).
+  sample_output: |
+    | Days | Topic |
+    |---|---|
+    | 1-2 | What is a stock, what is a bond, why prices move |
+    | 3-4 | Index funds and ETFs — what they are and why they're popular |
+    | 5-6 | Risk and diversification basics |
+    | 7-8 | Retirement accounts (401k/IRA basics) and tax advantages |
+    | 9-10 | Fees and expense ratios — what to watch for |
+    | 11-14 | Putting it together — reading a simple portfolio, review week |
+  addons:
+    - type: Pace
+      color: blue
+      options:
+        - label: 1 week instead of 2
+          text: "Compress this into a 1-week plan instead of 2."
+        - label: 1 month instead of 2 weeks
+          text: "Stretch this into a more gradual 1-month plan."
+    - type: Format
+      color: green
+      options:
+        - label: Include resources
+          text: "Suggest one type of resource (book, video, course) to use for each stage, without naming specific brands."
+        - label: Just the topics
+          text: "Keep it to just the daily topic list, no resource suggestions."
+
+- title: Explain a hobby topic to a total beginner
+  category: Learning & hobbies
+  suitable_llms: [Any]
+  description: |
+    Great for onboarding a friend (or yourself) into a hobby's confusing jargon and unwritten rules.
+  prompt: |
+    Explain the basics of the topic below to someone who has never tried it, using simple language and one relatable analogy. Keep it under 120 words.
+  sample_input: |
+    Topic: How scoring works in bouldering (climbing).
+  sample_output: |
+    Bouldering routes are called "problems," and each one is graded by difficulty, like a video game's difficulty levels. In competitions, you get points for reaching handholds marked as "zones" along the way, and bonus points for reaching the very top ("topping"). Fewer attempts to complete a problem usually score higher — so it's not just about finishing, but finishing efficiently. Think of it like a golf score: lower attempts is better, and partial progress still counts for something.
+  addons:
+    - type: Length
+      color: blue
+      options:
+        - label: Even shorter (50 words)
+          text: "Cut this down to about 50 words."
+        - label: More detail
+          text: "Expand with one more example or edge case."
+    - type: Tone
+      color: purple
+      options:
+        - label: Playful
+          text: "Make the tone playful and a bit informal."
+        - label: Straightforward
+          text: "Keep the tone straightforward and neutral."
+
+- title: Brainstorm gift ideas for someone
+  category: Learning & hobbies
+  suitable_llms: [Any]
+  description: |
+    Beats staring at a blank search bar when you don't know what to get someone.
+  prompt: |
+    Suggest 8 gift ideas for the person described below, within the stated budget. For each idea, give a one-line reason it fits them.
+  sample_input: |
+    Person: My sister, mid-30s, loves cooking and hiking, already owns most basic kitchen gear. Budget: under $60.
+  sample_output: |
+    1. Specialty spice subscription — for someone who already has the basics, this keeps cooking interesting.
+    2. Collapsible hiking mug — useful for both hobbies at once.
+    3. A cookbook from a specific cuisine she hasn't tried — novelty without redundant gear.
+    ... (5 more)
+  addons:
+    - type: Budget
+      color: pink
+      options:
+        - label: Lower budget ($25)
+          text: "Lower the budget cap to $25 and adjust ideas accordingly."
+        - label: Higher budget ($150)
+          text: "Raise the budget cap to $150 and include a couple bigger-ticket ideas."
+    - type: Style
+      color: green
+      options:
+        - label: Experiences over objects
+          text: "Prioritize experience-based gifts (classes, activities) over physical objects."
+        - label: Practical only
+          text: "Only suggest practical, useful items — no novelty gifts."
+
+- title: Analyze ad campaign performance from a CSV
+  category: Data & analysis
+  suitable_llms: [Claude]
+  description: |
+    Turns a raw ad platform export into a ranked list of what's working and what to cut, using cost-per-acquisition (CPA — how much you spent to get one customer) and return on ad spend (ROAS — revenue earned per dollar spent). On real Claude, this triggers a tool call — Claude writes and runs a short script against the CSV instead of estimating the math itself, because LLMs are unreliable at exact arithmetic on their own.
+  prompt: |
+    Analyze the ad campaign data in the attached CSV. For each campaign, calculate CTR (clicks/impressions), CPA (spend/conversions), and ROAS (revenue/spend). Rank campaigns from best to worst ROAS, flag any campaign with CPA more than 50% above the account average, and recommend which 1-2 campaigns to pause.
+  sample_input: |
+    [ATTACH: ad_campaigns.csv]
+    campaign,spend,impressions,clicks,conversions,revenue
+    Search - Brand,1200,45000,2200,180,9800
+    Search - Generic,3400,120000,3100,95,4200
+    Social - Retargeting,900,30000,1800,140,7600
+    Social - Prospecting,2600,200000,4000,60,2100
+  sample_output: |
+    🛠️ *What actually happens when you run this on Claude: it doesn't do this math "in its head." It writes and runs a short script against the file, then builds the answer from that script's real output.*
+
+    ```python
+    import pandas as pd
+    df = pd.read_csv("ad_campaigns.csv")
+    df["ctr"] = df.clicks / df.impressions
+    df["cpa"] = df.spend / df.conversions
+    df["roas"] = df.revenue / df.spend
+    df.sort_values("roas", ascending=False)
+    ```
+
+    **Tool result:** exact CTR/CPA/ROAS per campaign, computed by the script — not guessed by the model.
+
+    | Campaign | CTR | CPA | ROAS |
+    |---|---|---|---|
+    | Social - Retargeting | 6.0% | $6.43 | 8.4x |
+    | Search - Brand | 4.9% | $6.67 | 8.2x |
+    | Search - Generic | 2.6% | $35.79 | 1.2x |
+    | Social - Prospecting | 2.0% | $43.33 | 0.8x |
+
+    **Flagged:** Search - Generic and Social - Prospecting both have CPA far above the ~$23 account average.
+
+    **Recommendation:** Pause Social - Prospecting (ROAS below 1x, losing money) and cut budget on Search - Generic while testing tighter keyword targeting.
+  addons:
+    - type: Depth
+      color: blue
+      options:
+        - label: Just the ranking
+          text: "Skip the recommendation — just give me the ranked table."
+        - label: Add channel-level rollup
+          text: "Also add a rollup comparing total Search spend/ROAS vs. total Social spend/ROAS."
+    - type: Visualization
+      color: green
+      options:
+        - label: Add a chart
+          text: "Also generate a bar chart comparing ROAS across all campaigns, as an artifact if your tool supports it."
+
+- title: Find the biggest drop-off in a conversion funnel
+  category: Data & analysis
+  suitable_llms: [Claude]
+  description: |
+    Spot exactly which stage of a signup or checkout funnel is leaking the most users, from a simple stage-by-stage CSV. Claude runs this as a tool call — computing exact conversion rates with code rather than eyeballing the percentages, since that's not something an LLM should trust itself to do unaided.
+  prompt: |
+    The attached CSV shows a funnel with stage and count. Calculate the conversion rate between each consecutive stage, identify the single stage with the largest percentage-point drop-off, and suggest two possible reasons for that specific drop-off.
+  sample_input: |
+    [ATTACH: funnel.csv]
+    stage,count
+    Visited pricing page,10000
+    Started signup,2400
+    Verified email,2100
+    Added payment method,900
+    Completed purchase,820
+  sample_output: |
+    🛠️ *Claude reaches for its code tool here rather than computing five ratios in its head — this is what that tool call looks like.*
+
+    ```python
+    import pandas as pd
+    df = pd.read_csv("funnel.csv")
+    df["conv_rate"] = df["count"] / df["count"].shift(1)
+    df
+    ```
+
+    **Tool result:** the conversion rate for each step, calculated exactly rather than approximated.
+
+    | Stage | Count | Conversion from previous |
+    |---|---|---|
+    | Visited pricing page | 10,000 | — |
+    | Started signup | 2,400 | 24.0% |
+    | Verified email | 2,100 | 87.5% |
+    | Added payment method | 900 | 42.9% |
+    | Completed purchase | 820 | 91.1% |
+
+    **Biggest drop-off:** "Added payment method" — only 42.9% of verified users continue past this step.
+
+    **Possible reasons:** (1) the payment form is too long or asks for unnecessary fields, (2) users hit unexpected pricing or fees at this step that weren't made clear earlier in the funnel.
+  addons:
+    - type: Format
+      color: green
+      options:
+        - label: Add a funnel chart
+          text: "Also generate a funnel chart visualizing the drop-off at each stage, as an artifact if your tool supports it."
+    - type: Segment
+      color: purple
+      options:
+        - label: By traffic source
+          text: "If a traffic-source column exists, break the funnel down separately for each source."
+
+- title: Segment customers by recency, frequency, and spend (RFM)
+  category: Data & analysis
+  suitable_llms: [Claude]
+  description: |
+    A classic customer-segmentation technique — turns a raw purchase-history export into tiers like "champions" and "at risk" without needing a data team. This is exactly the kind of multi-step grouping-and-scoring math where Claude reaches for a code tool rather than tracking every customer's numbers by "thinking" alone.
+  prompt: |
+    Using the attached CSV of customer purchase history, calculate for each customer: recency (days since last purchase), frequency (number of orders), and monetary value (total spend). Score each on a 1-5 scale relative to the other customers, then assign each customer to one of these segments: Champions, Loyal, At Risk, or Lost. Summarize how many customers fall into each segment.
+  sample_input: |
+    [ATTACH: purchases.csv]
+    customer_id,order_date,order_value
+    C001,2025-01-05,120
+    C001,2025-03-14,95
+    C001,2025-06-01,150
+    C002,2024-08-20,60
+    C003,2025-05-30,300
+    C003,2025-06-10,280
+  sample_output: |
+    🛠️ *This one has real grouping, date math, and scoring across customers — exactly the kind of task where Claude runs code instead of tallying it in its head.*
+
+    ```python
+    import pandas as pd
+    df = pd.read_csv("purchases.csv", parse_dates=["order_date"])
+    grouped = df.groupby("customer_id").agg(
+        recency=("order_date", lambda x: (df.order_date.max() - x.max()).days),
+        frequency=("order_date", "count"),
+        monetary=("order_value", "sum")
+    )
+    ```
+
+    **Tool result:** the raw recency/frequency/monetary numbers per customer, which then get scored 1-5 and mapped to a segment.
+
+    | Customer | Recency score | Frequency score | Monetary score | Segment |
+    |---|---|---|---|---|
+    | C001 | 4 | 4 | 3 | Loyal |
+    | C002 | 1 | 1 | 1 | Lost |
+    | C003 | 5 | 3 | 5 | Champions |
+
+    **Segment summary (this sample):** 1 Champion, 1 Loyal, 0 At Risk, 1 Lost.
+  addons:
+    - type: Action plan
+      color: orange
+      options:
+        - label: Add a recommendation per segment
+          text: "Add one recommended action for each segment (e.g. what to do for 'At Risk' customers)."
+    - type: Output
+      color: blue
+      options:
+        - label: Just the summary counts
+          text: "Skip the per-customer table — just give me the segment summary counts."
+
+- title: Build a monthly retention (cohort) table
+  category: Data & analysis
+  suitable_llms: [Claude]
+  description: |
+    Turns raw signup and activity data into the classic cohort-retention table SaaS teams use to see whether newer users are stickier than older ones (a "cohort" here just means everyone who signed up in the same week or month, tracked as a group over time). Claude computes every percentage in this table with a script — a dozen divisions is exactly the kind of thing an LLM shouldn't be trusted to do unaided.
+  prompt: |
+    Using the attached CSV of monthly active users by signup cohort, build a retention table showing what percentage of each cohort was still active in each subsequent month. Then write two sentences on whether retention is improving or worsening for newer cohorts.
+  sample_input: |
+    [ATTACH: cohorts.csv]
+    cohort_month,users_at_signup,month_1_active,month_2_active,month_3_active
+    Jan,500,350,280,240
+    Feb,600,468,390,
+    Mar,700,595,511,
+  sample_output: |
+    🛠️ *A dozen percentages across three cohorts — Claude runs this through code rather than computing each one mentally.*
+
+    ```python
+    import pandas as pd
+    df = pd.read_csv("cohorts.csv")
+    for col in ["month_1_active", "month_2_active", "month_3_active"]:
+        df[col.replace("_active", "_pct")] = df[col] / df["users_at_signup"]
+    ```
+
+    **Tool result:** the retention percentage for every cohort/month cell, computed exactly.
+
+    | Cohort | Month 0 | Month 1 | Month 2 | Month 3 |
+    |---|---|---|---|---|
+    | Jan | 100% | 70% | 56% | 48% |
+    | Feb | 100% | 78% | 65% | — |
+    | Mar | 100% | 85% | 73% | — |
+
+    Retention is clearly improving for newer cohorts — the March cohort retains 73% at month 2 versus 56% for January at the same point. This suggests a recent product or onboarding change is helping new users stick around.
+  addons:
+    - type: Visualization
+      color: green
+      options:
+        - label: Add a retention curve chart
+          text: "Also generate a line chart with one line per cohort showing retention over time, as an artifact if your tool supports it."
+    - type: Depth
+      color: blue
+      options:
+        - label: Add a hypothesis
+          text: "Suggest one specific product or marketing change that could explain the improvement."
+
+- title: Analyze an investment portfolio's allocation and returns
+  category: Data & analysis
+  suitable_llms: [Claude]
+  description: |
+    For a personal or client portfolio CSV — calculates weighting, concentration risk, and overall return without needing a brokerage's built-in analytics. With real money on the line, Claude computes every figure here via a tool call rather than mental math — this is not a place to let an LLM "estimate."
+  prompt: |
+    Using the attached CSV of portfolio holdings, calculate each position's weight as a percentage of the total current portfolio value, the unrealized gain/loss in dollars and percent for each holding, and the overall portfolio return. Flag any single position that makes up more than 25% of the portfolio as a concentration risk.
+  sample_input: |
+    [ATTACH: portfolio.csv]
+    ticker,shares,cost_basis,current_price
+    AAPL,50,145.00,192.00
+    VOO,20,380.00,410.00
+    TSLA,30,220.00,175.00
+    BND,100,72.00,70.50
+  sample_output: |
+    🛠️ *Real dollar figures, not estimates — Claude runs a script against the numbers rather than computing portfolio math by "feel."*
+
+    ```python
+    import pandas as pd
+    df = pd.read_csv("portfolio.csv")
+    df["value"] = df.shares * df.current_price
+    df["cost"] = df.shares * df.cost_basis
+    df["weight"] = df.value / df.value.sum()
+    df["gain_loss"] = df.value - df.cost
+    df["gain_loss_pct"] = df.gain_loss / df.cost
+    ```
+
+    **Tool result:** exact weight and gain/loss per position, computed from the real share counts and prices — no rounding-by-eye.
+
+    | Ticker | Weight | Gain/Loss | Gain/Loss % |
+    |---|---|---|---|
+    | AAPL | 31.9% | +$2,350 | +32.4% |
+    | VOO | 27.2% | +$600 | +7.9% |
+    | TSLA | 17.4% | -$1,350 | -20.5% |
+    | BND | 23.4% | -$150 | -2.1% |
+
+    **Overall portfolio return:** approximately +5.1% (+$1,450 on $28,650 invested).
+
+    **Concentration risk flagged:** AAPL at 31.9% of the portfolio is above the 25% threshold.
+  addons:
+    - type: Depth
+      color: blue
+      options:
+        - label: Add rebalancing suggestion
+          text: "Suggest specific trades to bring AAPL's weight down to around 20-25%."
+        - label: Add sector breakdown
+          text: "If you can infer each ticker's sector, also break down the portfolio by sector weight."
+    - type: Visualization
+      color: green
+      options:
+        - label: Add a pie chart
+          text: "Also generate a pie chart of portfolio allocation by ticker, as an artifact if your tool supports it."
+
+- title: Spot budget variance red flags (actual vs. budget)
+  category: Data & analysis
+  suitable_llms: [Claude]
+  description: |
+    A lightweight version of what finance teams call variance analysis — compares actual spend to budget line by line and flags anything that needs an explanation. Claude runs the variance math as a tool call, the same way a finance analyst would trust a spreadsheet formula over doing it by hand.
+  prompt: |
+    Using the attached CSV of budget vs. actual spend by department, calculate the variance in dollars and percent for each line item. Flag any line item where actual spend is more than 10% over budget, and write a one-line note for each flagged item suggesting what to ask that department about.
+  sample_input: |
+    [ATTACH: budget_actuals.csv]
+    department,budget,actual
+    Marketing,50000,58500
+    Engineering,120000,118000
+    Sales,80000,95000
+    Facilities,20000,19500
+  sample_output: |
+    🛠️ *Claude runs this as a tool call — the same instinct a finance analyst has to trust a spreadsheet formula over mental math.*
+
+    ```python
+    import pandas as pd
+    df = pd.read_csv("budget_actuals.csv")
+    df["variance"] = df.actual - df.budget
+    df["variance_pct"] = df.variance / df.budget
+    ```
+
+    **Tool result:** exact variance in dollars and percent per department, ready to sort and flag.
+
+    | Department | Budget | Actual | Variance | Variance % |
+    |---|---|---|---|---|
+    | Marketing | $50,000 | $58,500 | +$8,500 | +17.0% |
+    | Engineering | $120,000 | $118,000 | -$2,000 | -1.7% |
+    | Sales | $80,000 | $95,000 | +$15,000 | +18.8% |
+    | Facilities | $20,000 | $19,500 | -$500 | -2.5% |
+
+    **Flagged (>10% over budget):**
+    - **Marketing** (+17.0%): ask whether this was a planned campaign push or unplanned overspend.
+    - **Sales** (+18.8%): ask whether this tracks with higher-than-planned commission payouts from strong bookings, or a budgeting error.
+  addons:
+    - type: Format
+      color: green
+      options:
+        - label: Sort by variance
+          text: "Sort the table by variance percent, largest overage first."
+    - type: Depth
+      color: blue
+      options:
+        - label: Add a total row
+          text: "Add a total row summing budget, actual, and overall variance across all departments."
+
+- title: Forecast next quarter's revenue from historical trend
+  category: Data & analysis
+  suitable_llms: [Claude]
+  description: |
+    A simple, explainable forecast — good for a quick planning estimate, not a replacement for a proper statistical model. Claude computes the growth rate and projections via code, since compounding a growth rate across 3 months is the kind of chained arithmetic where a purely "mental" answer tends to drift.
+  prompt: |
+    Using the attached CSV of monthly revenue, identify the overall trend (e.g. average month-over-month growth rate), then project revenue for the next 3 months using that trend. Show your calculation, and note any month that looks like an outlier that might be skewing the trend.
+  sample_input: |
+    [ATTACH: monthly_revenue.csv]
+    month,revenue
+    Jan,42000
+    Feb,44500
+    Mar,46800
+    Apr,45200
+    May,61000
+    Jun,50100
+  sample_output: |
+    🛠️ *Compounding a growth rate across 3 future months is chained arithmetic — exactly where Claude hands off to a script instead of drifting through it mentally.*
+
+    ```python
+    import pandas as pd
+    df = pd.read_csv("monthly_revenue.csv")
+    growth = df.revenue.pct_change().drop(index=4)  # excluding the May outlier
+    avg_growth = growth.mean()
+    last = df.revenue.iloc[-1]
+    projection = [last := last * (1 + avg_growth) for _ in range(3)]
+    ```
+
+    **Tool result:** an average growth rate of +3.7%, and three compounded projections from it.
+
+    Excluding May (a clear outlier — likely a one-time spike, possibly a large one-off deal), average month-over-month growth across the other months is roughly +3.7%.
+
+    **Projected next 3 months** (applying 3.7% growth to June's $50,100):
+    - Jul: ~$51,950
+    - Aug: ~$53,875
+    - Sep: ~$55,870
+
+    **Outlier flagged:** May ($61,000) is ~30% above the surrounding trend — worth confirming whether it was a real, repeatable jump or a one-off before trusting a forecast that includes it.
+  addons:
+    - type: Method
+      color: purple
+      options:
+        - label: Exclude the outlier from the trend calc
+          text: "Recalculate the growth rate and forecast with May excluded entirely from the average."
+        - label: Show a best/worst case range
+          text: "Also show an optimistic (higher growth) and conservative (lower growth) forecast range, not just one number."
+    - type: Visualization
+      color: green
+      options:
+        - label: Add a trend chart
+          text: "Also generate a line chart of actual revenue plus the 3-month projection, as an artifact if your tool supports it."
+
+- title: Check if an A/B test result is meaningful
+  category: Data & analysis
+  suitable_llms: [Claude]
+  description: |
+    Translates a raw test result CSV into a plain-English verdict on whether the difference between variants is likely real or just noise. Claude calculates the conversion rates and lift via a tool call — this is a case where getting the ratio slightly wrong could send you the wrong verdict entirely.
+  prompt: |
+    Using the attached CSV of A/B test results, calculate the conversion rate for each variant and the relative lift of the variant over control. Explain in plain English whether the sample size looks large enough to trust this result, and what you'd want to see before rolling out the winner to 100% of users.
+  sample_input: |
+    [ATTACH: ab_test.csv]
+    variant,visitors,conversions
+    Control,5000,410
+    Variant B,5050,468
+  sample_output: |
+    🛠️ *A wrong-by-a-hair ratio here could flip the verdict — Claude computes the rates and lift with code rather than approximating them.*
+
+    ```python
+    import pandas as pd
+    df = pd.read_csv("ab_test.csv")
+    df["conv_rate"] = df.conversions / df.visitors
+    lift = df.conv_rate.iloc[1] / df.conv_rate.iloc[0] - 1
+    ```
+
+    **Tool result:** exact conversion rates and lift, calculated from the raw counts.
+
+    | Variant | Visitors | Conversions | Conversion rate |
+    |---|---|---|---|
+    | Control | 5,000 | 410 | 8.2% |
+    | Variant B | 5,050 | 468 | 9.3% |
+
+    **Relative lift:** Variant B converts about 13.1% better than Control.
+
+    With roughly 5,000 visitors per variant and about a 1-point difference in conversion rate, this is in a reasonable range to be a real effect rather than pure noise, but it's not an overwhelming margin. Before rolling out to 100%, I'd want to see the test run for at least one full business cycle (including weekends) and confirm the lift holds up in a formal significance test rather than relying on the raw percentages alone.
+  addons:
+    - type: Depth
+      color: blue
+      options:
+        - label: Run an actual significance test
+          text: "Calculate an actual statistical significance test (e.g. a two-proportion z-test) and report the p-value, not just a plain-English gut check."
+    - type: Segment
+      color: purple
+      options:
+        - label: By device type
+          text: "If a device-type column exists, break the results down separately for mobile vs. desktop."
+
+- title: Find anomalies in a transaction ledger
+  category: Data & analysis
+  suitable_llms: [Claude]
+  description: |
+    A lightweight reconciliation pass — spots duplicate charges, round-number outliers, and miscategorized entries in a raw transaction export. On a real ledger with hundreds of rows, Claude groups and filters this with code rather than scanning by eye, so nothing gets missed.
+  prompt: |
+    Using the attached CSV of transactions, flag anything that looks like a likely duplicate charge (same amount and vendor within a few days of each other), any transaction that's unusually large compared to the rest in its category, and any transaction where the category looks mismatched to the vendor name. List each flag with a one-line reason.
+  sample_input: |
+    [ATTACH: transactions.csv]
+    date,vendor,category,amount
+    2025-06-01,AWS,Software,1200
+    2025-06-02,AWS,Software,1200
+    2025-06-03,Staples,Office Supplies,45
+    2025-06-05,Delta Airlines,Office Supplies,890
+    2025-06-10,Software,Marketing,300
+  sample_output: |
+    🛠️ *Beyond a handful of rows, "scan for duplicates by eye" stops being reliable — Claude groups and filters the data with code instead.*
+
+    ```python
+    import pandas as pd
+    df = pd.read_csv("transactions.csv")
+    dupes = df[df.duplicated(subset=["vendor", "amount"], keep=False)]
+    category_avg = df.groupby("category").amount.transform("mean")
+    outliers = df[df.amount > category_avg * 3]
+    ```
+
+    **Tool result:** the exact duplicate pair and the exact category outlier, found by the script rather than a visual scan.
+
+    **Likely duplicate:** AWS charged $1,200 on both June 1 and June 2 — same vendor, same amount, one day apart.
+
+    **Unusually large for category:** Delta Airlines, $890 under "Office Supplies" — that's an airline charge, not office supplies, and far above the ~$45 typical for that category.
+
+    **Category/vendor mismatch:** vendor listed simply as "Software" under category "Marketing" — this looks like the vendor name and category were swapped or mis-entered.
+  addons:
+    - type: Output
+      color: green
+      options:
+        - label: As a table
+          text: "Format the flags as a table with columns: Date, Vendor, Amount, Flag reason."
+    - type: Depth
+      color: blue
+      options:
+        - label: Add a suggested fix
+          text: "For each flag, suggest the specific correction (e.g. which category it probably should be)."
+
+- title: Find which marketing channel is actually driving revenue
+  category: Data & analysis
+  suitable_llms: [Claude]
+  description: |
+    A simple correlation pass across channels — useful before a budget-reallocation conversation, without needing a full attribution model. Real correlation coefficients come from a tool call, not from Claude "sensing" which lines move together.
+  prompt: |
+    Using the attached CSV of weekly spend by channel and total weekly revenue, identify which channel's spend correlates most strongly with revenue changes week to week. Note that correlation isn't the same as proof of causation, and mention one confounding factor that could be affecting the result.
+  sample_input: |
+    [ATTACH: channel_revenue.csv]
+    week,search_spend,social_spend,email_spend,revenue
+    1,4000,3000,200,52000
+    2,4500,3200,220,55000
+    3,3800,4500,210,54500
+    4,5200,3100,250,58000
+    5,4900,3400,240,57500
+  sample_output: |
+    🛠️ *"Which line moves with revenue" is a correlation calculation, not a vibe — Claude runs it as code.*
+
+    ```python
+    import pandas as pd
+    df = pd.read_csv("channel_revenue.csv")
+    df[["search_spend", "social_spend", "email_spend"]].corrwith(df.revenue)
+    ```
+
+    **Tool result:** search spend has the highest correlation with revenue of the three channels.
+
+    Search spend shows the strongest week-to-week relationship with revenue — the highest-search weeks (4 and 5) also had the highest revenue, while the lower-search Week 3 underperformed despite a social spend increase that week.
+
+    **Caveat:** this is a correlation across only 5 weeks, which is a small sample, and doesn't prove search spend *causes* the revenue — a confounding factor like a seasonal demand spike (e.g. a holiday week) could be driving both search spend and revenue up at the same time.
+  addons:
+    - type: Depth
+      color: blue
+      options:
+        - label: Calculate actual correlation coefficients
+          text: "Calculate the actual Pearson correlation coefficient between each channel's spend and revenue, not just a qualitative read."
+    - type: Visualization
+      color: green
+      options:
+        - label: Add a scatter plot
+          text: "Also generate a scatter plot of search spend vs. revenue across the 5 weeks, as an artifact if your tool supports it."

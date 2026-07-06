@@ -1,0 +1,412 @@
+# ============================================================
+# LU / LO / Topic / Knowledge-Ability tags for concepts.yaml
+# Sidecar file — see KOA_README.md for the full schema reference.
+# Transcribed from the user's own reverse-mapping pass (done via
+# Gemini) over all 46 concepts, reformatted into this schema.
+# `lu` values are the 5 groupings already implicit in concepts.yaml's
+# structure (Core Engine Foundations / The 10-Part RAG Pipeline /
+# Capabilities and Autonomous Behaviors / Security, Privacy, and
+# Ethics / Optimization and Economics).
+# ============================================================
+
+- id: statistics
+  lu: "Core Engine Foundations"
+  topic: "T1: LLMs are statistics machines"
+  lo: "Comprehend how large language models generate text responses through predictive text patterns rather than programmed grammatical rules."
+  knowledge: "Understanding that LLMs are trained on massive datasets to guess the next word based on statistical repetition, and that fluency scales directly with the amount of training text processed."
+  ability: "Ability to analyze token patterns and predict sequential next-word text strings manually to trace basic model architecture logic."
+
+- id: stateless
+  lu: "Core Engine Foundations"
+  topic: "T2: LLMs are stateless — they forget everything"
+  lo: "Troubleshoot conversation history management in LLM architectures by understanding data persistence trade-offs."
+  knowledge: "Knowledge that raw LLMs maintain zero internal memory between distinct API requests and require the complete conversation history to be resent with each query to retain context."
+  ability: "Ability to diagnose a broken multi-turn conversation by identifying when conversation history was not resent to the model, as distinct from other possible causes like model capability or ambiguous phrasing."
+
+- id: instructions
+  lu: "Core Engine Foundations"
+  topic: "T3: Every conversation has layers of instructions"
+  lo: "Orchestrate complex prompt hierarchies to govern model personas and operational limits predictably."
+  knowledge: "Understanding the hidden structural merge of platform rules, system prompts, custom instructions, and user queries into a singular continuous text stream under the hood."
+  ability: "Ability to diagnose a conflicting-instructions failure by identifying which layer (platform rule, system prompt, custom instruction, or user message) actually won, as distinct from blaming the model for being inconsistent."
+
+- id: prompt-elements
+  lu: "Core Engine Foundations"
+  topic: "T4: Elements of a prompt"
+  lo: "Construct highly explicit structural prompts to prevent model improvisation and unguided behavioral assumptions."
+  knowledge: "Knowledge of the six foundational prompt building blocks (role, task, context, format, constraints, examples) and how models process them simultaneously rather than sequentially."
+  ability: "Ability to identify which specific prompt element (role, task, context, format, constraints, or examples) is missing from a prompt, given an output that went wrong in a way that missing element would explain."
+
+- id: negative-prompting
+  lu: "Core Engine Foundations"
+  topic: "T5: Negative prompting pitfalls"
+  lo: "Formulate effective prompt constraints using positive, directive parameters rather than negative exclusions."
+  knowledge: "Understanding why negative phrasing (\"don't do X\") frequently increases errors due to internal attention processing and leaves ambiguous execution gaps for the model to guess."
+  ability: "Ability to rewrite a negatively-framed prompt constraint (\"don't do X\") into an equivalent positive, directive instruction that removes the model's guesswork."
+
+- id: iterative-prompting
+  lu: "Core Engine Foundations"
+  topic: "T6: Iterative prompting: treat the first draft as a draft"
+  lo: "Refine model performance systematically through isolated diagnostic analysis and multi-variant regression checking."
+  knowledge: "Understanding that prompt engineering is a cyclic refinement loop, and that patching a single bad output requires validation testing against historical edge cases to prevent downstream breakage."
+  ability: "Ability to diagnose why a given prompt output went wrong (naming the specific cause) before proposing a targeted rewrite, rather than rewriting the whole prompt from scratch."
+
+- id: tokens
+  lu: "Core Engine Foundations"
+  topic: "T7: Text is broken into tokens, not words"
+  lo: "Optimize system prompt layouts and cost profiles by tracking non-standard sub-word tokenization weights."
+  knowledge: "Knowledge that text is processed in sub-word data chunks called tokens, and that mathematical expressions, source code, and non-English text require higher token counts than standard English."
+  ability: "Ability to estimate, given a sample of text, whether its token count will be roughly in line with the ~750-words-per-1,000-tokens rule of thumb or significantly higher, based on its content type."
+
+- id: context-window
+  lu: "Core Engine Foundations"
+  topic: "T8: Context windows have a limited attention span"
+  lo: "Maximize structural message retention inside hard context limits while preventing model recall degradation."
+  knowledge: "Understanding maximum token limits, how apps silently prune historical chat lines, and the \"lost in the middle\" effect where model recall degrades for data centered inside long text buffers."
+  ability: "Ability to diagnose whether a long-conversation failure (forgotten detail, dropped instruction) is caused by silent truncation past the context window, the \"lost in the middle\" effect, or something else, and recommend edit-vs-append accordingly."
+
+- id: hallucination
+  lu: "Core Engine Foundations"
+  topic: "T9: Hallucination: confident doesn't mean correct"
+  lo: "Isolate and trace factual fabrications caused by the text-prediction optimization mechanics of language models."
+  knowledge: "Understanding that LLMs optimize for plausible-sounding sentence structures rather than database verification, rendering them incapable of naturally distinguishing factual accuracy from fiction."
+  ability: "None"
+
+- id: knowledge-cutoff
+  lu: "Core Engine Foundations"
+  topic: "T10: Knowledge cutoff — and how apps work around it"
+  lo: "Overcome time-bound model dataset restrictions by architecting real-time external data retrieval steps."
+  knowledge: "Knowledge that a base model's internal data is statically locked at its training cutoff date, and that applications bypass this by injecting live web context payloads dynamically."
+  ability: "Ability to diagnose whether an incorrect or outdated model answer is a knowledge-cutoff limitation versus a case where web search should have been triggered but wasn't, and identify the correct fix."
+
+- id: tool-use
+  lu: "Core Engine Foundations"
+  topic: "T11: Models can call tools, not just chat"
+  lo: "Connect generative models to external programmatic utilities to resolve non-textual or deterministic calculation constraints."
+  knowledge: "Understanding how text-prediction architectures can decide mid-generation to route complex math, search operations, or database steps to functional software tools."
+  ability: "Ability to identify, given a task, whether it should be delegated to an external tool (calculator, code runner, database lookup) versus answered directly by the model, and explain why."
+
+- id: temperature
+  lu: "Core Engine Foundations"
+  topic: "T12: Temperature controls how \"creative\" vs. predictable answers are"
+  lo: "Adjust model distribution variance to suit deterministic verification or open-ended creative requirements."
+  knowledge: "Understanding how the temperature setting mathematically modifies the probability distribution curve of next-word candidates prior to sampling."
+  ability: "Ability to diagnose a temperature misconfiguration (output too repetitive or too erratic for the task) from a sampling config and recommend the correct direction to adjust it."
+
+- id: model-choice
+  lu: "Core Engine Foundations"
+  topic: "T13: Choosing the right model for the job"
+  lo: "Select appropriate model tiers to balance cost constraints, response speed, and complex logic demands."
+  knowledge: "Knowledge of the structural trade-offs across micro, mid-tier, and top-tier foundational models concerning latency, token pricing, and reasoning depths."
+  ability: "Ability to diagnose a model-choice mismatch (an over-powered or under-powered model assigned to a task) from a described workload and recommend the right-sized tier instead."
+
+- id: parameters-model-size
+  lu: "Core Engine Foundations"
+  topic: "T14: Parameters and model size"
+  lo: "Outperform broad, massive networks on specialized tasks by employing highly optimized, compact model configurations."
+  knowledge: "Understanding that parameters are learned weights that distribute information globally across a network, and that finely tuned small models can beat larger general ones on narrow tasks."
+  ability: "Ability to diagnose whether a claim about parameter count (e.g. \"bigger will definitely fix this\") is well-founded or a misunderstanding of what parameter count actually predicts for a given narrow task."
+
+- id: attention-paper
+  lu: "Core Engine Foundations"
+  topic: "T15: \"Attention Is All You Need\": how transformers actually work"
+  lo: "Evaluate the architectural mechanisms that enable parallel processing and long-range contextual tracking within transformer networks."
+  knowledge: "Comprehensive knowledge of sequential RNN processing limitations, self-attention calculations, parallel multi-head tracking specializations, positional numeric encoding, and decoder-only scaling."
+  ability: "Ability to identify which transformer component (self-attention, multi-head attention, or positional encoding) explains a given architectural symptom or design description, as distinct from the others."
+
+- id: fine-tuning
+  lu: "Core Engine Foundations"
+  topic: "T16: Prompting vs. fine-tuning"
+  lo: "Select the correct optimization path between contextual prompt design, factual retrieval systems, and architectural weight updates."
+  knowledge: "Understanding that fine-tuning modifies default behavioral formats, styles, and tones, but serves as a costly, destructive way to teach corporate facts compared to RAG."
+  ability: "None"
+
+- id: embeddings
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T17: Embeddings: turning meaning into numbers"
+  lo: "Transform unstructured semantic text concepts into spatial vector arrays for advanced proximity evaluations."
+  knowledge: "Understanding how embedding models plot linguistic concepts into high-dimensional coordinate spaces where close geometric points represent equivalent contextual meanings."
+  ability: "Ability to predict which of several candidate phrases would embed closest to a reference phrase based on shared meaning rather than shared wording, and spot a lexical look-alike that would actually land far away in embedding space."
+
+- id: rag-basics
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T18: RAG 1/10 — Grounding answers in your own documents"
+  lo: "Design an open-book data injection pipeline to mitigate hallucination risks using localized private documents."
+  knowledge: "Understanding that Retrieval-Augmented Generation extracts and appends contextual reference nodes directly to prompts without altering base network weights."
+  ability: "Ability to diagnose whether a RAG chatbot's wrong answer is a retrieval-fixable problem (the knowledge base is missing or stale) versus a problem RAG cannot fix by design (needs fine-tuning or a different base model)."
+
+- id: rag-chunking
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T19: RAG 2/10 — Chunking: splitting documents into retrievable pieces"
+  lo: "Parse long-form text files into discrete, manageable sub-segments without destroying contextual relationships across text boundaries."
+  knowledge: "Knowledge of semantic trade-offs between oversized chunks (which dilute relevance) and undersized chunks (which break context), and the importance of boundary text overlap."
+  ability: "Ability to diagnose a retrieval miss caused by poor chunking — a fact split across a chunk boundary, or a chunk sized too large or too small — and pick the correct chunking fix."
+
+- id: rag-vector-db
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T20: RAG 3/10 — Storing chunks in a vector database"
+  lo: "Organize high-dimensional vector embeddings within spatial indexing structures to optimize proximity queries."
+  knowledge: "Understanding the fundamental architecture contrast between relational exact-match databases and approximate vector databases engineered for similarity lookups."
+  ability: "Ability to identify which of several lookup tasks a vector database is architecturally suited for (approximate, meaning-based search) versus poorly suited for (exact-match lookups a relational database handles directly)."
+
+- id: rag-similarity-search
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T21: RAG 4/10 — Similarity search: finding nearest neighbors"
+  lo: "Retrieve topical reference context items using mathematical cosine similarity calculations across large text arrays."
+  knowledge: "Understanding that vector space proximity tracks shared topics rather than verified factual truth, and that massive datasets require approximate nearest-neighbor shorthand indexing for speed."
+  ability: "Ability to diagnose a similarity-search result that is topically close but factually wrong or contradictory, and explain why a high similarity score doesn't guarantee correctness."
+
+- id: rag-query-embedding
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T22: RAG 5/10 — Turning the question into a vector too"
+  lo: "Align conversational search phrases with existing dataset coordinate vectors by using matching text models."
+  knowledge: "Knowledge that using mismatched models for queries and database assets invalidates space comparisons, and that query rewriting helps normalize vague inputs."
+  ability: "Ability to diagnose a retrieval failure caused by embedding the query with a different model than the one used to embed the documents, as distinct from other retrieval bugs like bad chunking or a low top-k."
+
+- id: rag-topk
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T23: RAG 6/10 — Top-k retrieval: how many chunks to pull"
+  lo: "Tune retrieved document quantities (k) to optimize prompt information density against system budget constraints."
+  knowledge: "Understanding how varying the k retrieval value balances the hazard of omitting vital data against the penalties of token bloat and model distraction."
+  ability: "Ability to diagnose a top-k misconfiguration — telling apart the symptoms of k set too low (missing a needed fact) from k set too high (diluted, distracted answers) — and pick the correct adjustment."
+
+- id: rag-context-assembly
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T24: RAG 7/10 — Assembling retrieved chunks into the prompt"
+  lo: "Construct highly secure, auditable prompt payloads by consolidating raw text components alongside tracking metadata."
+  knowledge: "Knowledge of prompt injection risks born from concatenating untrusted text data alongside instructions, and how source indexing enables reliable model citations."
+  ability: "Ability to spot a prompt-injection risk inside an assembled RAG prompt, where a retrieved chunk contains embedded instructions that could be mistaken by the model for real system instructions."
+
+- id: rag-reranking
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T25: RAG 8/10 — Re-ranking: a smarter second pass"
+  lo: "Implement a two-tier retrieval architecture that utilizes fast vector comparisons followed by heavy cross-encoder verification."
+  knowledge: "Understanding why cross-encoder evaluations are too slow for raw database filtering but highly effective for sorting top-tier vector shortlists."
+  ability: "Ability to predict how a cross-encoder re-ranker would reorder an initial vector-search shortlist, given a query and a short list of candidate chunks with their raw similarity scores."
+
+- id: rag-hybrid-search
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T26: RAG 9/10 — Hybrid search: combining keyword and vector search"
+  lo: "Combine sparse lexical keyword data with dense semantic vector spaces to cover search blind spots."
+  knowledge: "Understanding semantic search's failure modes with unique text strings (serial numbers, codes) and the underlying mechanics of BM25 frequency calculations."
+  ability: "Ability to diagnose a semantic-search miss on an exact-term query (a product code, serial number, or error code) and identify that a hybrid keyword pass (e.g. BM25) would have caught it."
+
+- id: rag-eval
+  lu: "The 10-Part RAG Pipeline"
+  topic: "T27: RAG 10/10 — Evaluating a RAG system"
+  lo: "Quantify independent operational error rates across isolated document retrieval stages and generation components."
+  knowledge: "Distinguishing retrieval accuracy metrics (precision and recall checks) from downstream model performance markers (groundedness verifications)."
+  ability: "Ability to classify a wrong RAG answer as either a retrieval failure (precision/recall — the wrong chunks were pulled) or a generation failure (groundedness — the model ignored or misread good retrieved content)."
+
+- id: reasoning
+  lu: "Capabilities and Autonomous Behaviors"
+  topic: "T28: Step-by-step reasoning improves accuracy"
+  lo: "Solve complex logical or mathematical tasks by structuring intermediate reasoning steps into the generation stream."
+  knowledge: "Understanding that generating progressive token paths acts as an explicit memory buffer that checks intermediate logic, balancing higher token latency against error reduction."
+  ability: "Ability to predict which of two problems would benefit from step-by-step reasoning (multi-step math/logic) versus which would not (simple factual recall), and diagnose a wrong multi-step answer as a skipped-reasoning failure."
+
+- id: multimodal
+  lu: "Capabilities and Autonomous Behaviors"
+  topic: "T29: Modern models handle more than text"
+  lo: "Integrate visual or auditory data arrays directly into text-based generative reasoning loops."
+  knowledge: "Knowing that visual or auditory media inputs are tokenized via specialized encoder blocks to interface natively with core transformer structures."
+  ability: "Ability to diagnose whether a failed or refused response is caused by a genuine multimodal-input limitation (unsupported image/audio for that model or plan) rather than a prompt-wording problem."
+
+- id: agents
+  lu: "Capabilities and Autonomous Behaviors"
+  topic: "T30: Agents: models that plan and act in a loop"
+  lo: "Architect multi-step autonomous model execution loops capable of self-directed tool invocation and error recovery."
+  knowledge: "Understanding the structural design of read-decide-act loops and how early tactical missteps can compound over extended autonomous run cycles."
+  ability: "Ability to trace which step in a logged read-decide-act loop caused a downstream failure, distinguishing an unchecked tool-call result from a bad initial decision."
+
+- id: agent-patterns
+  lu: "Capabilities and Autonomous Behaviors"
+  topic: "T31: Agent patterns: reason, act, observe"
+  lo: "Implement structured execution frameworks like ReAct to coordinate logical reasoning alongside environmental tool actions."
+  knowledge: "Knowing the functional design differences between instant reactive execution steps and proactive upstream planning arrays within agent environments."
+  ability: "Ability to classify a given agent trace excerpt as reactive (deciding one step at a time from the latest observation) or planning (committing to a multi-step plan up front), and identify the Thought/Action/Observation components in a ReAct-style trace."
+
+- id: harness
+  lu: "Capabilities and Autonomous Behaviors"
+  topic: "T32: The harness: what wraps an agent"
+  lo: "Enforce strict access permissions and environment boundaries around autonomous model agents using external software wrappers."
+  knowledge: "Understanding that the model only acts as a decision block while the host application harness executes tools, logs changes, and implements security rules."
+  ability: "Ability to diagnose whether an unsafe or broken agent behavior is caused by the model's own decision versus a gap in the harness (missing permission check, unimplemented guardrail, tool implementation bug)."
+
+- id: prompt-injection
+  lu: "Security, Privacy, and Ethics"
+  topic: "T33: Prompt injection: untrusted text can hijack instructions"
+  lo: "Secure integrated model applications against malicious instruction hijacking embedded within external source data."
+  knowledge: "Understanding that prompt injection is an architectural reality born from processing application commands and input data within a single shared text sequence."
+  ability: "Ability to spot injected instructions hidden inside untrusted content (a webpage, email, or tool output) that an agent reads, and identify the actual risk when that agent has real-world tools available."
+
+- id: jailbreak-vs-injection
+  lu: "Security, Privacy, and Ethics"
+  topic: "T34: Jailbreaks vs. prompt injection: same tools, different attacker"
+  lo: "Deploy specialized defensive barriers tailored to counter direct user attacks and passive third-party data exploits separately."
+  knowledge: "Differentiating user-driven system jailbreaks (targeting refusal barriers) from indirect third-party prompt injections (targeting data handling strings) based on the threat actor."
+  ability: "Ability to classify a given attack scenario as a jailbreak (the user directly attacking the model's own restrictions) or a prompt injection (third-party content hijacking the model against the actual user's or developer's intent), based on who the attacker is and who the intended victim is."
+
+- id: alignment
+  lu: "Security, Privacy, and Ethics"
+  topic: "T35: Why models refuse or add caveats"
+  lo: "Analyze safety limits and conversational behaviors conditioned via human preference training protocols."
+  knowledge: "Understanding that post-training safety alignments (RLHF/DPO) function as behavioral filters over a model's outputs without erasing underlying token capabilities from the base network."
+  ability: "Ability to diagnose whether a model's refusal or added caveat is a trained alignment behavior (a safety/style filter) rather than an actual capability limitation, given a scenario describing what the model refused and why."
+
+- id: bias
+  lu: "Security, Privacy, and Ethics"
+  topic: "T36: Bias in training data shows up in outputs"
+  lo: "Identify and apply correctives to counteract historical biases and demographic skew inherited from uncurated source materials."
+  knowledge: "Understanding that models display societal stereotypes because they reflect statistical associations found across their raw internet text training sets."
+  ability: "Ability to identify a biased default assumption in a model's output (e.g. defaulting a profession or scenario to one gender or culture) and state the corrected, non-default alternative."
+
+- id: data-privacy
+  lu: "Security, Privacy, and Ethics"
+  topic: "T37: Data privacy and training: does your input get used?"
+  lo: "Minimize intellectual property data exposure by matching operational payloads to appropriate data-governance service tiers."
+  knowledge: "Knowledge of data-governance policy splits between consumer tools (which train models on data by default) and developer APIs (which protect inputs under corporate terms)."
+  ability: "Ability to determine, given a specific product and tier described, whether a user's input is likely to be used for training and/or retained in logs, rather than assuming one product's policy applies universally."
+
+- id: llm-misuse
+  lu: "Security, Privacy, and Ethics"
+  topic: "T38: Misusing LLM output — trusting it too much"
+  lo: "Formulate human oversight frameworks to mitigate automated overreliance errors on plausible-sounding text completions."
+  knowledge: "Recognizing that syntactic fluency does not confirm factuality, and knowing the downstream legal and security liabilities of deploying unverified code or screening systems."
+  ability: "Ability to diagnose an LLM-misuse scenario (unverified output shipped or acted on) and determine the correct level of human review required, matched to the stakes involved."
+
+- id: human-in-the-loop
+  lu: "Security, Privacy, and Ethics"
+  topic: "T39: Human in the loop: what to actually check"
+  lo: "Deploy objective checking procedures to counter human reviewer complacency caused by highly polished model outputs."
+  knowledge: "Understanding how text fluency promotes user confirmation bias, requiring structured multi-point checklists instead of informal reviews."
+  ability: "Ability to identify which specific checklist-style check was skipped in a scenario where a flawed LLM output shipped anyway, and determine the review rigor that should have applied."
+
+- id: pricing
+  lu: "Optimization and Economics"
+  topic: "T40: How LLM pricing actually works"
+  lo: "Model and control API expenditures across multi-turn user chats by optimizing token consumption ratios."
+  knowledge: "Understanding that output tokens carry higher price premiums due to sequential computation demands, and that resubmitting chat history compounds input costs exponentially."
+  ability: "Ability to estimate which of two request patterns would cost more, given that output tokens are priced higher than input tokens and that a multi-turn conversation resends its full history every turn."
+
+- id: prompt-caching
+  lu: "Optimization and Economics"
+  topic: "T41: Prompt caching: paying less for repeated context"
+  lo: "Format system contexts to maximize provider prompt caching rewards and minimize processing times."
+  knowledge: "Understanding that prompt cache discounts only trigger when early text segments match past runs identically, character-for-character."
+  ability: "Ability to diagnose why a prompt-caching setup isn't getting cache hits, by tracing the cause to a change in the stable prefix (e.g. dynamic content placed before it, or a request-level detail that breaks the exact match)."
+
+- id: latency-throughput
+  lu: "Optimization and Economics"
+  topic: "T42: Latency vs. throughput"
+  lo: "Optimize system streaming connections and batch configurations to balance user interaction speeds against total processing volumes."
+  knowledge: "Discerning time-to-first-token latency values from aggregate generation throughput metrics, and knowing why grouping transactions raises data volumes but slows single response starts."
+  ability: "Ability to diagnose whether a 'feels slow' complaint is actually a latency (time-to-first-token) problem or a throughput problem, and pick the fix that matches which one it is."
+
+- id: evals
+  lu: "Optimization and Economics"
+  topic: "T43: Evals: measuring whether a prompt or model is actually good"
+  lo: "Develop standalone verification benchmarks to detect performance regressions when upgrading prompts or shifting base models."
+  knowledge: "Knowing why public academic benchmarks fail to measure distinct operational business logic, and understanding the role of custom test sets over informal reviews."
+  ability: "Ability to diagnose why a prompt change that looks better on one example might still be a regression, and identify what a proper eval set (as opposed to a single example or a generic public benchmark) would catch that a quick look wouldn't."
+
+- id: ab-testing
+  lu: "Optimization and Economics"
+  topic: "T44: A/B testing prompts"
+  lo: "Run live production experiments to measure real-world user interaction shifts against distinct variant prompt instructions."
+  knowledge: "Understanding when to launch live traffic splits over offline evaluations based on system user volumes and clear behavioral tracking signals."
+  ability: "Ability to decide, given a described scenario's traffic volume and stakes, whether A/B testing or an offline eval set is the more appropriate tool for validating a prompt change."
+
+- id: rate-limits
+  lu: "Optimization and Economics"
+  topic: "T45: Rate limits and quotas"
+  lo: "Build robust API connections capable of handling infrastructure throttle exceptions smoothly."
+  knowledge: "Understanding how requests-per-minute and tokens-per-minute caps protect infrastructure, and recognizing the functional handling of HTTP 429 exceptions."
+  ability: "Ability to diagnose a rate-limit (429) scenario and identify the correct client behavior (backoff-and-retry) as opposed to a naive response that makes the problem worse."
+
+- id: structured-output
+  lu: "Optimization and Economics"
+  topic: "T46: Structured output / JSON mode"
+  lo: "Enforce strict programmatic data constraints over free-form model responses to feed downstream software systems reliably."
+  knowledge: "Understanding how constrained decoding enforces rigid schema patterns, and why placing reasoning blocks before structured data attributes preserves logical optimization steps."
+  ability: "Ability to diagnose why a structured-output schema produced a worse-reasoned answer, tracing it to field ordering (the answer field being forced before a reasoning field)."
+
+
+- id: prompt-guardrails
+  lu: "Foundations of Prompt Design"
+  topic: "T3: Setting Boundaries: Implementing Negative Constraints and Safety Directives"
+  lo: "Discern common prompt misuses and risks, and how to prevent them, by setting explicit boundaries within a prompt."
+  knowledge: "Guardrails to prevent prompts from creating unexpected outputs — scope limits, refusal conditions, format locks, and explicit exclusions as the four common ways to keep a model's output inside an intended boundary."
+  ability: "None"
+
+- id: prompt-misuse-risks
+  lu: "Foundations of Prompt Design"
+  topic: "T4: Common Prompt Misuses and Risks"
+  lo: "Discern common prompt misuses and risks, and how to prevent them, by setting explicit boundaries within a prompt."
+  knowledge: "None"
+  ability: "Ability to identify common prompt misuses (vague instructions, missing context) as the cause of a poor real-world output, as distinct from a model or configuration problem."
+
+- id: privacy-regulations-overview
+  lu: "Foundations of Prompt Design"
+  topic: "T5: Foundations of Data Privacy: Key Regulations and Their AI Implications"
+  lo: "Implement basic anonymisation methods when interacting with generative AI tools to protect sensitive data and information."
+  knowledge: "Overview of data privacy regulations (GDPR's lawful/fair/transparent/purpose-limited processing principles; Singapore's PDPA and its 2024 AI-specific advisory guidelines) and why they apply to data pasted into a prompt, not just data stored in a database."
+  ability: "None"
+
+- id: data-anonymisation
+  lu: "Foundations of Prompt Design"
+  topic: "T6: Practical Data Anonymisation for AI Inputs"
+  lo: "Implement basic anonymisation methods when interacting with generative AI tools to protect sensitive data and information."
+  knowledge: "None"
+  ability: "Ability to apply basic anonymisation techniques (data masking, pseudonymisation, perturbation) — choosing the technique that fits a given data-handling scenario rather than applying the same one by default."
+
+- id: prompt-design-concept
+  lu: "Foundations of Prompt Design"
+  topic: "T7: Prompt Designs for Diverse Use Cases"
+  lo: "Formulate different prompts using fundamental prompt design techniques."
+  knowledge: "Concept of prompt design — the hands-on subset of prompt engineering concerned with structuring a specific prompt well — and how the right amount of design effort scales with a use case's stakes and repeatability."
+  ability: "None"
+
+- id: prompt-building-practice
+  lu: "Foundations of Prompt Design"
+  topic: "T8: Hands-on Prompt Building: Structuring Key Components"
+  lo: "Formulate different prompts using fundamental prompt design techniques."
+  knowledge: "None"
+  ability: "Ability to recognize a correctly-assembled prompt for a given scenario — one that combines the right elements (role, task, context, format, constraints) — versus a draft missing one or more of what the scenario actually requires."
+
+
+- id: prompt-best-practices
+  lu: "Advanced Prompt Design"
+  topic: "T10: Best Practices for Crafting Highly Effective Prompts"
+  lo: "Formulate effective prompts by applying different techniques and best practices."
+  knowledge: "None"
+  ability: "Ability to identify which documented prompt-design best practice (specificity, examples, explaining the goal, iteration) was skipped, given a flawed prompt and its disappointing output."
+
+- id: tailoring-output-format
+  lu: "Advanced Prompt Design"
+  topic: "T11: Tailoring Prompts for Diverse AI Output Formats and Styles"
+  lo: "Modify prompt designs to tailor AI instructions for diverse tasks and achieve desired outcomes."
+  knowledge: "Impact of prompts on different modes of AI output — how explicitly specifying response format, style, and tone (as the CO-STAR framework's Response component does) changes the shape of the output, and why matching format to whether a human or a downstream system reads it matters."
+  ability: "None"
+
+
+- id: ai-troubleshooting-framework
+  lu: "Troubleshooting AI Interactions"
+  topic: "T13: Diagnostic Framework for AI Output Malfunctions"
+  lo: "Troubleshoot common issues encountered when working with AI tools and their outputs."
+  knowledge: "Techniques in troubleshooting AI tools — an isolate, categorize, test, confirm framework for diagnosing a malfunction against known failure categories (prompt issue, retrieval issue, model-capability limit, configuration setting) before attempting a fix."
+  ability: "None"
+
+- id: recognising-ai-pitfalls
+  lu: "Troubleshooting AI Interactions"
+  topic: "T14: Common AI Pitfalls: Recognising Hallucinations, Bias, and Repetitive Responses"
+  lo: "Troubleshoot common issues encountered when working with AI tools and their outputs."
+  knowledge: "None"
+  ability: "Ability to recognise and classify an AI output issue as a hallucination, a bias-driven default, or a repetition/sampling problem, since each requires a different fix."
+
+- id: systematic-troubleshooting
+  lu: "Troubleshooting AI Interactions"
+  topic: "T15: Systematic Resolution: Step-by-Step AI Troubleshooting"
+  lo: "Troubleshoot common issues encountered when working with AI tools and their outputs."
+  knowledge: "None"
+  ability: "Ability to follow a standard troubleshooting procedure (isolate, categorize, test one change, confirm) by identifying the correct next step given a malfunction partway through the process."

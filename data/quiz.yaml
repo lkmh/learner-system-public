@@ -1,0 +1,103 @@
+# ============================================================
+# SELF-QUIZ (revision, self-paced, auto-graded)
+# Three question types. All are graded automatically —
+# no free text, no manual self-marking.
+#
+# mcq:         multiple choice, `answer` is the 0-based index
+#              of the correct option.
+# sequence:    learner reorders `items` into `correct_order`.
+#              Grading is all-or-nothing (fully correct sequence
+#              required to mark right).
+# word_bank:   learner drags words from `word_bank` (includes
+#              decoys) into blanks to build `correct_sequence`.
+#              Also all-or-nothing.
+# ============================================================
+
+mcq:
+  - question: "What does 'few-shot prompting' mean?"
+    options:
+      - "Giving the model one or more examples of the desired input/output inside the prompt"
+      - "Limiting your prompt to a small number of words"
+      - "Using a smaller, faster model"
+      - "Asking the model the same question multiple times"
+    answer: 0
+    explanation: "Few-shot = showing the model examples of what you want, directly in the prompt, before asking it to do the real task."
+
+  - question: "Which of these is the most effective way to control output formatting?"
+    options:
+      - "Repeating 'please format nicely' several times"
+      - "Showing an explicit example of the exact format you want"
+      - "Using more exclamation marks"
+      - "Making the prompt shorter"
+    answer: 1
+    explanation: "Models follow concrete examples far more reliably than vague formatting requests."
+
+  - question: "What is 'role' or 'persona' prompting?"
+    options:
+      - "Asking the model to remember your name"
+      - "Telling the model to act as a specific character or expert (e.g. 'act as a travel consultant')"
+      - "Running the same prompt through two different models"
+      - "Assigning a difficulty level to the prompt"
+    answer: 1
+    explanation: "Persona prompting sets context/tone/expertise by asking the model to adopt a specific role."
+
+  - question: "Why might 'think step by step' improve a model's answer on a multi-step problem?"
+    options:
+      - "It makes the model respond faster"
+      - "It forces the model to use fewer tokens"
+      - "It encourages the model to reason through intermediate steps before the final answer"
+      - "It changes the model's temperature setting"
+    answer: 2
+    explanation: "This is chain-of-thought prompting — breaking reasoning into visible steps tends to reduce errors on multi-step tasks."
+
+  - question: "You ask a model for a list, but it keeps giving inconsistent formatting each time. What's the best fix?"
+    options:
+      - "Ask nicely and hope it improves"
+      - "Add a concrete example of the exact output format you want"
+      - "Switch to a different topic"
+      - "Make the prompt vaguer so the model has more freedom"
+    answer: 1
+    explanation: "Concrete examples (few-shot) reduce formatting inconsistency far more reliably than a polite request."
+
+sequence:
+  - question: "Put these steps of building a good prompt in the order you'd typically add them:"
+    items:
+      - "Write the base task in plain language"
+      - "Add specific constraints (length, exclusions)"
+      - "Add formatting instructions"
+      - "Add a persona/role if useful"
+    correct_order:
+      - "Write the base task in plain language"
+      - "Add specific constraints (length, exclusions)"
+      - "Add formatting instructions"
+      - "Add a persona/role if useful"
+    explanation: "Starting from the plain task and layering on constraints, format, then persona mirrors how you'd iteratively refine a prompt live."
+
+  - question: "Order these from LEAST to MOST guidance given to the model:"
+    items:
+      - "Zero-shot (no examples)"
+      - "One-shot (one example)"
+      - "Few-shot (multiple examples)"
+      - "Few-shot + explicit formatting rules"
+    correct_order:
+      - "Zero-shot (no examples)"
+      - "One-shot (one example)"
+      - "Few-shot (multiple examples)"
+      - "Few-shot + explicit formatting rules"
+    explanation: "Each step adds more explicit guidance for the model to follow."
+
+word_bank:
+  - question: "Complete the sentence: To get more consistent formatting from a model, you should ___ ___ ___ ___ ___."
+    word_bank: [give, an, example, of, the, output, format, ask, nicely, hope, guess, politely]
+    correct_sequence: [give, an, example, of, the]
+    explanation: "Showing the exact format you want (few-shot) is more reliable than just describing or requesting it."
+
+  - question: "Complete the sentence: Asking a model to ___ ___ ___ ___ often improves accuracy on multi-step problems."
+    word_bank: [think, step, by, step, answer, fast, guess, quickly, respond, immediately]
+    correct_sequence: [think, step, by, step]
+    explanation: "This is chain-of-thought prompting."
+
+  - question: "Complete the sentence: Telling a model to ___ ___ ___ ___ ___ sets tone and expertise for its response."
+    word_bank: [act, as, a, specific, expert, be, very, fast, and, short]
+    correct_sequence: [act, as, a, specific, expert]
+    explanation: "This is persona/role prompting."

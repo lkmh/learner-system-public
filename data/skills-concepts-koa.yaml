@@ -1,0 +1,215 @@
+# ============================================================
+# LU / LO / Topic / Knowledge-Ability tags for skills-concepts.yaml
+# Sidecar file — see KOA_README.md for the full schema reference.
+#
+# skills-concepts.yaml had no existing LU grouping (unlike concepts.yaml's
+# 5 inherited groupings), so this pass proposes 4 groupings that partition
+# the deck's actual 28 entries by what the learner is doing at that point
+# in the deck:
+#   1. Foundations Before Skills   (skills-1..6)  — prerequisite vocabulary
+#      (Markdown, tools, APIs/connectors, MCP, CLI, .env) needed before
+#      "Skill" itself makes sense.
+#   2. Anatomy of a SKILL.md        (skills-7..15) — what the file actually
+#      contains and how it's structured/discovered/scaled, small vs. big.
+#   3. Installing, Distributing, and Iterating on Skills (skills-16..23) —
+#      the operational/tooling side: UI install, CLI install, Plugins,
+#      marketplaces, menus/scopes, and the draft-test-refine authoring loop.
+#   4. Security and Trust for Skills (skills-24..28) — bundled scripts,
+#      trusting third-party skills, secrets handling, and prompt injection.
+# ============================================================
+
+- id: skills-1
+  lu: "Foundations Before Skills"
+  topic: "T1: What is Markdown?"
+  lo: "Comprehend the plain-text formatting convention that SKILL.md files are written in, as a prerequisite to reading or writing one."
+  knowledge: "Understanding that Markdown is plain text with a small set of formatting symbols (e.g. # for headings, - for bullets), requires no special software, and is the same format SKILL.md files and everyday READMEs/chat messages use."
+  ability: "None"
+
+- id: skills-2
+  lu: "Foundations Before Skills"
+  topic: "T2: What's a \"tool\" a model can use?"
+  lo: "Comprehend the tool-use concept that a Skill organizes, as distinct from the Skill itself."
+  knowledge: "Understanding that a model left alone answers everything by predicting likely text (including arithmetic it can get wrong), and that a \"tool\" is a specific external action (calculator, file reader, search function) it can invoke instead of guessing — and that a Skill doesn't invent new abilities, it tells the model when/how to reach for tools it already has."
+  ability: "None"
+
+- id: skills-3
+  lu: "Foundations Before Skills"
+  topic: "T3: What is an API / connector?"
+  lo: "Comprehend the plumbing layer (APIs and connectors) that turns a described action into a real one."
+  knowledge: "Understanding that an API is how one piece of software asks another to do something, that a connector is a ready-made API hookup someone already built, and that without a connector Claude can only describe an action (e.g. sending a Gmail/Slack message) rather than actually perform it."
+  ability: "None"
+
+- id: skills-4
+  lu: "Foundations Before Skills"
+  topic: "T4: What is MCP?"
+  lo: "Comprehend MCP as the standardized alternative to bespoke, per-app integrations."
+  knowledge: "Understanding that MCP (Model Context Protocol) is a shared standard connection shape (like USB versus a proprietary cable) replacing one-off custom integrations per app, illustrated by Slack's own MCP server exposing search, read/send messages, and canvas creation through one standard connection."
+  ability: "None"
+
+- id: skills-5
+  lu: "Foundations Before Skills"
+  topic: "T5: What is a CLI?"
+  lo: "Comprehend the CLI/terminal interaction model that Claude Code (and Skills stored on disk) runs from."
+  knowledge: "Understanding that a CLI (command-line interface / terminal) controls software by typing text commands rather than clicking menus, performing the same underlying actions as a GUI, and that Claude Code is a CLI application that reads Skills from disk."
+  ability: "None"
+
+- id: skills-6
+  lu: "Foundations Before Skills"
+  topic: "T6: What is a .env file?"
+  lo: "Comprehend where secrets and settings belong outside of a Skill's instructions, as groundwork for the later security lessons."
+  knowledge: "Understanding that a .env file is a plain text file of KEY=value lines that code reads at run time, and that it is the standard place API keys and secrets belong — never typed directly into a SKILL.md file."
+  ability: "None"
+
+- id: skills-7
+  lu: "Anatomy of a SKILL.md"
+  topic: "T1: The folder + the frontmatter (a real example)"
+  lo: "Comprehend the minimal physical and structural requirements of a valid Skill."
+  knowledge: "Understanding that a Skill is a folder containing a file literally named SKILL.md, that the frontmatter (the YAML block between the two --- lines) needs only a description field to be functional, and that everything below the frontmatter is ordinary Markdown instructions, illustrated by Anthropic's own uncommitted-changes/diff-reviewing example Skill."
+  ability: "None"
+
+- id: skills-8
+  lu: "Anatomy of a SKILL.md"
+  topic: "T2: Discovery: the description is the trigger"
+  lo: "Design Skill descriptions that reliably trigger at the right moment via progressive disclosure."
+  knowledge: "Understanding that only the short description field of every available Skill sits in context by default (progressive disclosure), that Claude uses it to decide when to apply a Skill, and that the Desktop/Claude.ai app enforces hard limits (64 chars for name, 200 for description)."
+  ability: "Ability to diagnose why a Skill isn't triggering by identifying a description that's missing the natural keywords a user would actually say, as distinct from a problem in the Skill's body/instructions."
+
+- id: skills-9
+  lu: "Anatomy of a SKILL.md"
+  topic: "T3: What goes in the body, and what else the folder can hold"
+  lo: "Design a Skill's folder contents and body scope appropriately, separating instructions from bundled reference material."
+  knowledge: "Understanding that a Skill's body is where the \"how\" lives once triggered, that its folder can hold more than SKILL.md (templates, example folders, helper scripts), that a dependencies field can declare required software packages, and the rule of thumb to keep SKILL.md itself under 500 lines by moving detail into separate files."
+  ability: "Ability to identify which part of an overloaded SKILL.md (inline reference tables, long procedures) should be moved into a separate resource/script file instead of the body, to keep SKILL.md itself lean."
+
+- id: skills-10
+  lu: "Anatomy of a SKILL.md"
+  topic: "T4: Who's allowed to trigger a Skill?"
+  lo: "Design invocation-control settings appropriate to a Skill's risk level."
+  knowledge: "Understanding the two optional invocation switches — restricting a Skill to human-only triggering (e.g. a deploy Skill) versus Claude-only triggering (e.g. background knowledge) — and that leaving both off gives the normal, either-side-can-trigger default."
+  ability: "Ability to decide, given a Skill's purpose and risk level, whether it should be left at the default (either side can trigger), restricted to human-only triggering, or restricted to Claude-only triggering."
+
+- id: skills-11
+  lu: "Anatomy of a SKILL.md"
+  topic: "T5: Where a Skill fits among tools, APIs, and MCP"
+  lo: "Comprehend how a Skill relates to, without being, the tools/API/MCP layers underneath it."
+  knowledge: "Understanding that a Skill sits above tools, APIs/connectors, and MCP — it is instructions for when/how to use them for a recurring job — and that a Skill with none of those underlying pieces (pure instructions) is still completely valid."
+  ability: "None"
+
+- id: skills-12
+  lu: "Anatomy of a SKILL.md"
+  topic: "T6: Two SKILL.md files, side by side"
+  lo: "Comprehend that a Skill's required format doesn't constrain its complexity — the job does."
+  knowledge: "Understanding that a minimal Skill (weekly-status-report) and a heavily-staged Skill (refund-request-handler) both require only the same single description field, and that what differs is entirely the body's length and structure, driven by the job's own complexity."
+  ability: "None"
+
+- id: skills-13
+  lu: "Anatomy of a SKILL.md"
+  topic: "T7: Anatomy of a small Skill"
+  lo: "Recognize when a linear, no-branching Skill design is the appropriate (and preferred) level of complexity."
+  knowledge: "Understanding the weekly-status-report Skill as a short, linear recipe — read notes, sort into three fixed sections, output, stop — with no checks, approvals, or other tools/people involved."
+  ability: "Ability to recognize whether a proposed Skill design matches the simple, linear 'small Skill' shape or has been given unnecessary stages/checks it doesn't actually need."
+
+- id: skills-14
+  lu: "Anatomy of a SKILL.md"
+  topic: "T8: Anatomy of a big Skill"
+  lo: "Design multi-stage Skills that separate reusable reference material (Resources) from procedural instructions and include human-approval checkpoints where warranted."
+  knowledge: "Understanding the refund-request-handler Skill's multiple stages (check against policy, draft, tone-check, pause for human approval above a dollar threshold, send and record), and that the refund policy itself is a separate Resource file referenced by name rather than pasted into the instructions."
+  ability: "Ability to identify a missing safeguard (like a human-approval gate) in a multi-stage Skill design that handles a high-risk or costly action."
+
+- id: skills-15
+  lu: "Anatomy of a SKILL.md"
+  topic: "T9: What to borrow from each"
+  lo: "Apply the shared best practices common to both small and large Skills when authoring a new one."
+  knowledge: "Understanding the three portable lessons: write descriptions like a search query for the situation (not a summary), have the Skill check real current information before deciding, and default to the simplest linear design unless the job genuinely needs more stages."
+  ability: "Ability to trace a specific flaw in a draft Skill back to which of the three portable lessons (situation-based description, checking real current information, starting simple) it violates."
+
+- id: skills-16
+  lu: "Installing, Distributing, and Iterating"
+  topic: "T1: Installing a Skill in the Claude Desktop app (UI)"
+  lo: "Apply the correct UI-based procedure to install and enable a Skill in the Claude Desktop app."
+  knowledge: "Understanding the prerequisite Capabilities switches (Code execution, File creation), the Customize → Skills → + → Upload a skill flow, the required .zip shape (Skill folder at the top level, resources folder alongside it), and that shared skills should be reviewed before enabling per Anthropic's own trust guidance."
+  ability: "Ability to diagnose why a Skill upload in the Claude Desktop app failed, tracing it to a missing prerequisite (Capabilities toggle) or an incorrectly-shaped .zip, as distinct from a description/triggering problem."
+
+- id: skills-17
+  lu: "Installing, Distributing, and Iterating"
+  topic: "T2: Installing a Skill in Claude Code (typed commands)"
+  lo: "Apply the correct scope choice (personal, project, or plugin) when installing a Skill in Claude Code."
+  knowledge: "Understanding the three Claude Code Skill locations — personal (visible across all projects), project (visible only to that project), and plugin (bundled and installed via typed commands) — and that Claude Code picks up edited SKILL.md files live, except a brand-new top-level skills folder which needs a restart."
+  ability: "Ability to decide which Claude Code Skill location (personal, project, or plugin) fits a given sharing scenario, given a symptom about who can or can't see a Skill."
+
+- id: skills-18
+  lu: "Installing, Distributing, and Iterating"
+  topic: "T3: Skills vs. Plugins — what's the difference?"
+  lo: "Distinguish when a workflow should remain a standalone Skill versus be packaged as a Plugin."
+  knowledge: "Understanding that a Plugin bundles multiple Skills plus agents, hooks, and MCP servers under one manifest, that plugin-bundled Skills are invoked with the plugin name prefixed (e.g. /my-plugin:hello) to avoid name collisions, and the rule of thumb to start standalone and convert to a Plugin only once sharing/distribution is needed."
+  ability: "Ability to decide, given a scenario, whether something should stay a standalone Skill or be converted into a Plugin, based on whether it needs to be shared/distributed/bundled with other pieces."
+
+- id: skills-19
+  lu: "Installing, Distributing, and Iterating"
+  topic: "T4: Where Plugins come from: marketplaces"
+  lo: "Comprehend the two-step marketplace-then-plugin installation model and its trust implications."
+  knowledge: "Understanding that a marketplace is a browsable catalog (not an install by itself), that adding a marketplace and installing a plugin from it are two separate steps, the two real Anthropic marketplaces (claude-plugins-official, claude-community), and the docs' explicit warning that plugins/marketplaces can execute arbitrary code and should only come from trusted sources."
+  ability: "None"
+
+- id: skills-20
+  lu: "Installing, Distributing, and Iterating"
+  topic: "T5: What's actually in the official marketplace"
+  lo: "Comprehend the range of plugin categories available so as to select the right one for a given need."
+  knowledge: "Knowledge of the marketplace's real categories — code intelligence, external integrations, automatic security review, development workflows, and output styles — and what each category is for."
+  ability: "None"
+
+- id: skills-21
+  lu: "Installing, Distributing, and Iterating"
+  topic: "T6: The plugin menu and where you install to"
+  lo: "Apply the correct installation scope (User, Project, or Local) based on who should see a given plugin."
+  knowledge: "Understanding the plugin menu's four tabs (Discover, Installed, Marketplaces, Errors) and the three install scopes — User (follows you everywhere), Project (shared with teammates on that project), Local (just you, just this project)."
+  ability: "Ability to diagnose which plugin install scope (User, Project, or Local) fits a given team-sharing scenario."
+
+- id: skills-22
+  lu: "Installing, Distributing, and Iterating"
+  topic: "T7: Describing your own workflow well"
+  lo: "Design a clear, example-driven workflow description that gives Claude enough material to build a Skill from."
+  knowledge: "Understanding that a vague ask gives Claude little to build a trigger or instructions from, that a good ask includes one real start-to-finish example, and that separating what varies each time from what stays fixed is most of what makes a good Skill."
+  ability: "Ability to diagnose why a request to build a Skill is too vague to act on, and identify what a good request needs (a real worked example, and a clear split between what varies and what stays fixed)."
+
+- id: skills-23
+  lu: "Installing, Distributing, and Iterating"
+  topic: "T8: The draft, test, refine loop"
+  lo: "Apply an iterative test-and-refine process to fix a Skill that doesn't trigger or behave correctly on its first draft."
+  knowledge: "Understanding that a first Skill draft usually won't trigger correctly or won't behave correctly, that a non-triggering Skill usually has a description problem, that Anthropic's skill-creator tool runs test prompts with/without the Skill to compare results, and that the Desktop app supports in-place editing without re-uploading a .zip."
+  ability: "Ability to diagnose a non-triggering versus a misbehaving-but-triggering Skill during testing and identify whether the description or the instructions is the actual problem in each case."
+
+- id: skills-24
+  lu: "Security and Trust for Skills"
+  topic: "T1: No existing MCP connector? Bundle your own script"
+  lo: "Design a Skill that bundles a custom helper script when no ready-made MCP connector exists for the needed tool."
+  knowledge: "Understanding that a Skill's folder can bundle a small helper script that Claude executes directly (not writes from scratch each time), illustrated by Anthropic's codebase-visualizer example, and that this is the same Resources concept as linking to an MCP connector, just self-authored."
+  ability: "None"
+
+- id: skills-25
+  lu: "Security and Trust for Skills"
+  topic: "T2: A Skill is code you're trusting to run"
+  lo: "Evaluate whether an unfamiliar Skill should be trusted before enabling it."
+  knowledge: "Understanding that installing someone else's Skill means trusting its instructions to run with Claude's existing access, that the official docs warn a shared Skill can grant itself broad tool access, and that a friendly-sounding description says nothing about what the body actually instructs Claude to do."
+  ability: "Ability to identify the actual risk in installing someone else's Skill by tracing it to what the body instructs Claude to do, as distinct from trusting a friendly-sounding description alone."
+
+- id: skills-26
+  lu: "Security and Trust for Skills"
+  topic: "T3: Never put API keys in a SKILL.md — use a .env file instead"
+  lo: "Apply correct secret-handling practice by keeping credentials out of a Skill's instructions."
+  knowledge: "Understanding that SKILL.md is plain text readable by anyone with folder/project access, that hardcoding a credential in it exposes that credential to anyone reviewing the file (including Claude echoing it in output), and that the fix is storing the value in a .env file and having the Skill read it from there."
+  ability: "Ability to spot a hardcoded credential inside a SKILL.md file and identify the fix (moving it to a .env file read at runtime)."
+
+- id: skills-27
+  lu: "Security and Trust for Skills"
+  topic: "T4: .env isn't actually secure — use a secret manager"
+  lo: "Evaluate when a .env file is insufficient and a real secret manager plus key hygiene practices are warranted."
+  knowledge: "Understanding that a .env file is still a plain text file on disk vulnerable to accidental sharing/copying/access, that real secret managers (AWS Secrets Manager, Google Secret Manager, HashiCorp Vault) store credentials encrypted with controlled access, and the hygiene practices of periodic key rotation and narrowest-necessary access scope."
+  ability: "Ability to diagnose when a .env file is insufficient protection for a credential and a real secret manager (with rotation and least-privilege scoping) is warranted instead."
+
+- id: skills-28
+  lu: "Security and Trust for Skills"
+  topic: "T5: Prompt injection via Skills"
+  lo: "Comprehend the prompt-injection risk that arises whenever a Skill reads untrusted external content."
+  knowledge: "Understanding that any content a Skill reads from outside (webpage, email, shared document) is untrusted regardless of the Skill's own trustworthiness, that hidden text in that content can resemble instructions the model can't reliably distinguish from real ones, and that this is the same general prompt-injection risk applied specifically to Skills-as-readers."
+  ability: "None"

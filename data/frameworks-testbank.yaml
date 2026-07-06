@@ -1,0 +1,811 @@
+# ============================================================
+# Test bank for frameworks.yaml — sidecar of frameworks-koa.yaml.
+# One block per {id, koa} pair, exactly 4 questions each.
+# See KOA_README.md for the schema reference.
+# ============================================================
+
+- "id": "zero-shot"
+  "koa": "K"
+  "assessment_mode": "auto_marked"
+  "questions":
+  - "question": "Why does zero-shot prompting risk producing the wrong output format?"
+    "options":
+    - "Because the model has no worked example to anchor the exact format, so it must guess based on its own prior understanding of the task."
+    - "Because zero-shot prompts are always too short for the model to parse correctly."
+    - "Because the model refuses to respond unless at least one example is provided."
+    - "Because zero-shot prompting disables the model's ability to follow any instructions at all."
+    "answer": 0
+    "explanation": "Zero-shot relies entirely on the model's own understanding of the task and format, with nothing to anchor an unusual or highly specific format — that's exactly where it can guess wrong."
+    "written_prompt": "In your own words, explain why a zero-shot prompt can produce an unexpected output format, and what would make that risk higher or lower."
+  - "question": "A team wants the fastest possible prompt for a task the model already handles well and commonly. Why is zero-shot a good fit here?"
+    "options":
+    - "Because zero-shot always outperforms few-shot regardless of task."
+    - "Because there's no setup cost and no examples to write, and the model's prior knowledge of a common task is already reliable enough."
+    - "Because zero-shot prompts are shorter and therefore always cheaper to run, which is the only consideration that matters."
+    - "Because common tasks require more examples to work correctly, so zero-shot is only for rare tasks."
+    "answer": 1
+    "explanation": "Zero-shot's advantage is speed/no setup cost, which pays off specifically when the task is common and well understood by the model already — not a universal performance claim."
+    "written_prompt": "Explain the specific situation where zero-shot prompting is the right tool, and why it stops being the right tool once the format gets unusual."
+  - "question": "What is a common misconception about zero-shot prompting?"
+    "options":
+    - "That it never works for any task without an example."
+    - "That adding one example to a zero-shot prompt turns it into one-shot, changing its risk profile."
+    - "That zero-shot prompts are less clear or more vague than prompts with examples, when in fact the instruction itself must do all the anchoring work."
+    - "That zero-shot means giving the model zero instructions at all, rather than zero examples."
+    "answer": 3
+    "explanation": "A common confusion is thinking 'zero-shot' means no instruction is given — in fact the instruction is still explicit and clear; it's specifically the example count that is zero."
+    "written_prompt": "Someone says 'zero-shot prompting means you just give the model a vague, open-ended request.' Correct this misunderstanding."
+  - "question": "Why might a highly specific, unusual output format be a bad candidate for zero-shot prompting?"
+    "options":
+    - "Because unusual formats always exceed the model's context window."
+    - "Because the model has nothing to anchor its guess to, so it may default to a more familiar, generic format instead of the specific one requested."
+    - "Because zero-shot prompting is incompatible with any format instructions whatsoever."
+    - "Because unusual formats require the Chain-of-Thought framework specifically, and no other framework can produce them."
+    "answer": 1
+    "explanation": "With no example, the model must infer the format purely from the instruction's wording, and an unusual/specific shape is exactly where that inference is most likely to default to something generic and wrong."
+    "written_prompt": "Explain why asking for an unusual, highly specific output format is a weak spot for zero-shot prompting specifically, compared to one-shot or few-shot."
+- "id": "one-shot"
+  "koa": "K"
+  "assessment_mode": "auto_marked"
+  "questions":
+  - "question": "Why is one-shot prompting especially useful for enforcing a specific output format?"
+    "options":
+    - "Because a single demonstrated example gives the model a concrete pattern to match, which is more reliable than describing the format in words alone."
+    - "Because one-shot prompts are always shorter than zero-shot prompts."
+    - "Because the model ignores the instruction entirely and only copies the example verbatim."
+    - "Because one example guarantees perfect accuracy on every subsequent input, no matter how different."
+    "answer": 0
+    "explanation": "A single worked example gives the model a concrete, demonstrated pattern to imitate, which locks in a format more reliably than a purely verbal description — but it does not guarantee perfection on every future input, which rules out the overreaching claim."
+    "written_prompt": "Explain why showing one example of the input/output pattern helps lock in a format better than just describing the format in words."
+  - "question": "What is the main risk of using one-shot prompting when the real task varies a lot from case to case?"
+    "options":
+    - "The model may overfit to the specifics of that single example, applying details that don't generalize to different inputs."
+    - "The model will refuse to process any input that doesn't match the example exactly."
+    - "One-shot prompts cannot handle any variation at all, even superficial wording changes."
+    - "The prompt will exceed the model's maximum context length."
+    "answer": 0
+    "explanation": "With only one example to generalize from, the model risks anchoring too tightly to that example's particular details rather than the underlying pattern — that's the overfitting risk the framework's own guidance calls out."
+    "written_prompt": "Describe a scenario where giving the model just one example could backfire because the real inputs vary too much, and explain why."
+  - "question": "A learner believes one-shot prompting means giving the model exactly one instruction. What's the actual meaning?"
+    "options":
+    - "One-shot means giving exactly one complete input->output example pair before the real task, in addition to the instruction — not restricting the number of instructions."
+    - "One-shot means the model gets only one attempt to answer, with no retries permitted by the API."
+    - "One-shot and zero-shot are the same technique with different names."
+    - "One-shot means the prompt must be exactly one sentence long."
+    "answer": 0
+    "explanation": "'Shot' refers to the number of demonstrated examples, not instructions, attempts, or prompt length — one-shot means exactly one worked example."
+    "written_prompt": "Correct this misunderstanding: 'One-shot prompting just means keeping your prompt really short, like one sentence.'"
+  - "question": "Compared to few-shot, what trade-off does one-shot make?"
+    "options":
+    - "One-shot takes more prep time than few-shot but produces less consistent output."
+    - "One-shot is faster to prepare than few-shot (only one example needed) but provides less coverage of format variation, since a single example can't demonstrate multiple valid shapes."
+    - "One-shot and few-shot have no meaningful differences in either prep time or reliability."
+    - "One-shot always produces more accurate results than few-shot because there's less for the model to get confused by."
+    "answer": 1
+    "explanation": "One-shot's single example is cheaper to write but demonstrates only one instance of the pattern, whereas few-shot's multiple examples reduce formatting drift at the cost of more prep time — that's the actual trade-off, not a blanket accuracy claim."
+    "written_prompt": "Explain the trade-off a prompt writer is making when they choose one-shot over few-shot for a task with a moderately varied set of possible inputs."
+- "id": "few-shot"
+  "koa": "K"
+  "assessment_mode": "auto_marked"
+  "questions":
+  - "question": "Why does few-shot prompting generally produce more consistent structured output than one-shot?"
+    "options":
+    - "Because multiple examples show the range of valid variation in the pattern, reducing the chance the model latches onto one example's incidental specifics as if they were required."
+    - "Because few-shot prompts are always shorter than one-shot prompts, which models process more accurately."
+    - "Because few-shot disables the model's own prior knowledge, forcing it to rely purely on the examples."
+    - "Because more examples always means the model spends less time processing the request."
+    "answer": 0
+    "explanation": "Multiple examples reveal what varies and what stays fixed across the pattern, which is precisely what reduces the formatting drift that a single example can't rule out."
+    "written_prompt": "Explain why 2-4 examples generally produce more reliable structured output than a single example, using the idea of 'formatting drift.'"
+  - "question": "When is few-shot prompting the wrong choice, according to its own stated trade-offs?"
+    "options":
+    - "When prototyping quickly, since writing 3 good examples takes real prep time that may not be worth spending yet."
+    - "Whenever the task involves JSON output, since few-shot cannot produce structured formats."
+    - "When the model already performs the task well without any examples, which few-shot can never handle."
+    - "Never — few-shot is strictly better than zero-shot and one-shot in every situation."
+    "answer": 0
+    "explanation": "Few-shot's own trade-off is prep time: writing several good examples is real work, which makes it a poor fit specifically during fast prototyping — it's not a blanket 'always better' technique."
+    "written_prompt": "Describe a situation where the extra prep time required by few-shot prompting outweighs the consistency benefit it offers."
+  - "question": "What distinguishes few-shot from one-shot, beyond simply 'more examples'?"
+    "options":
+    - "Few-shot examples must always contradict each other to teach robustness."
+    - "Few-shot typically supplies 2-4 examples specifically to demonstrate the range of the pattern across varied inputs, which a single one-shot example cannot show by itself."
+    - "Few-shot removes the instruction from the prompt entirely, relying only on examples."
+    - "Few-shot and one-shot are identical; the naming difference is purely stylistic."
+    "answer": 1
+    "explanation": "The functional difference is coverage: several examples can show variation across cases (e.g. different urgency levels or different product types) that one single example structurally cannot represent."
+    "written_prompt": "Explain what additional teaching value a third example adds to a few-shot prompt that a single one-shot example could not provide on its own."
+  - "question": "A learner assumes that using 10 examples instead of 3 will always improve a few-shot prompt further. What's the more accurate view?"
+    "options":
+    - "More examples always linearly improve reliability with no downside, so 10 is strictly better than 3."
+    - "Few-shot's benefit comes from covering the real range of variation efficiently; beyond covering that range, additional examples mainly add prep time and prompt length without a guaranteed further consistency gain."
+    - "Only exactly 3 examples work; any other count breaks the technique."
+    - "10 examples would automatically convert the prompt into a fine-tuning run instead of a prompt."
+    "answer": 1
+    "explanation": "Few-shot is described as 'usually 2-4' precisely because the goal is covering the real range of variation, not maximizing example count — past that point, extra examples mostly cost prep time and prompt length rather than guaranteeing further gains."
+    "written_prompt": "Push back on the claim that 'more few-shot examples is always better.' What's a more accurate way to think about how many examples to include?"
+- "id": "rgc"
+  "koa": "K"
+  "assessment_mode": "auto_marked"
+  "questions":
+  - "question": "Why does RGC's tagline describe it as 'minimal setup, still noticeably better than zero-shot'?"
+    "options":
+    - "Because RGC requires writing several full examples, just like few-shot, but frames them differently."
+    - "Because naming just three slots — Role, Goal, Context — gives the model meaningfully more grounding than a bare instruction, without the time cost of a 6-part framework like CO-STAR."
+    - "Because RGC secretly includes hidden Steps and Format fields that zero-shot lacks."
+    - "Because RGC is only usable for customer support tasks, which are inherently easier than other domains."
+    "answer": 1
+    "explanation": "RGC's value proposition is a small amount of explicit structure (who/what/why) for very little added effort — enough to beat a bare zero-shot instruction without the overhead of a fuller framework."
+    "written_prompt": "Explain why adding just three labeled fields (Role, Goal, Context) tends to improve a prompt's reliability compared to zero-shot, without requiring anywhere near CO-STAR's full setup."
+  - "question": "Why does RGC's own guidance say to avoid it for multi-step or strictly formatted tasks?"
+    "options":
+    - "Because RGC has no component for describing an ordered process (like RISEN's Steps) or an exact output shape (like CO-STAR's Response format or RTF's Format), so those needs go unaddressed."
+    - "Because RGC prompts are limited to exactly 50 words by design."
+    - "Because the Role component cannot be combined with any Goal component."
+    - "Because RGC is only compatible with creative writing tasks, never technical ones."
+    "answer": 0
+    "explanation": "RGC's three components (Role, Goal, Context) simply don't include a process or format slot — the gap isn't a length limit or domain restriction, it's a structural absence of those specific components."
+    "written_prompt": "Explain specifically what kind of task requirement RGC has no component for, and why that gap matters for multi-step tasks."
+  - "question": "What is the Context component of RGC meant to supply, as distinct from Role and Goal?"
+    "options":
+    - "The background information the model needs to know to act on the Goal correctly — distinct from who it should act as (Role) or what it should achieve (Goal)."
+    - "A restatement of the Goal in different words, to reinforce the instruction."
+    - "The exact format the output must take, functioning the same as CO-STAR's Response format."
+    - "A list of banned words or actions, functioning the same as RISEN's Narrowing."
+    "answer": 0
+    "explanation": "Context is specifically the situational background the model needs (e.g. facts about the customer or scenario) — it is neither a restated goal, a format spec, nor a constraints list; those belong to other frameworks' components."
+    "written_prompt": "In your own words, describe what belongs in RGC's Context field, and give an example of information that would NOT belong there because it actually belongs in Role or Goal instead."
+  - "question": "A learner uses RGC for a task requiring a strict 4-field JSON output. What's the most accurate assessment?"
+    "options":
+    - "RGC handles this perfectly since Context can double as a format specification."
+    - "RGC has no dedicated format component, so the strict structure isn't guaranteed by the framework itself — a framework with an explicit format slot (RTF, CO-STAR, or ICIO) would better guarantee it."
+    - "This is impossible to prompt for with any framework other than few-shot."
+    - "RGC's Goal field is specifically designed to enforce JSON schemas."
+    "answer": 1
+    "explanation": "None of Role, Goal, or Context is a dedicated format slot — while a prompt writer could stuff format instructions into Goal or Context as a workaround, RGC's own design doesn't guarantee structure the way a framework with an explicit Format/Response format/Output component does."
+    "written_prompt": "Explain why RGC is a weaker choice than RTF or CO-STAR specifically for a task that needs a strict, exact output format."
+- "id": "co-star"
+  "koa": "K"
+  "assessment_mode": "auto_marked"
+  "questions":
+  - "question": "Why is CO-STAR particularly well-suited to marketing and content-writing tasks specifically?"
+    "options":
+    - "Because it includes dedicated Style, Tone, and Audience components that let the writer control exactly how the output should feel and to whom, which matters for writing tasks but not for purely factual ones."
+    - "Because CO-STAR is the only framework that supports the word 'Context'."
+    - "Because CO-STAR automatically generates marketing copy without any input from the user."
+    - "Because CO-STAR requires fewer components than RTF, making it faster for quick content tasks."
+    "answer": 0
+    "explanation": "CO-STAR's distinguishing components (Style, Tone, Audience) are exactly the levers that matter for writing/content tasks where how something is said changes the outcome — that's the actual reason for its fit, not component count or automation."
+    "written_prompt": "Explain which of CO-STAR's six components are the ones that specifically make it a good fit for marketing and content writing, and why those particular components matter less for a technical task."
+  - "question": "Why does CO-STAR's own guidance call it overkill for a quick factual or technical task?"
+    "options":
+    - "Because filling in Style, Tone, and Audience adds real effort for a task whose correct answer doesn't actually depend on tone or audience."
+    - "Because CO-STAR cannot technically process factual questions at all."
+    - "Because technical tasks require a seventh component that CO-STAR is missing."
+    - "Because CO-STAR always produces incorrect answers for math or logic questions."
+    "answer": 0
+    "explanation": "The 'overkill' framing is about effort vs. payoff: three of CO-STAR's six components (Style, Tone, Audience) exist to shape how content is expressed, which is wasted setup when the task's correctness doesn't hinge on any of that."
+    "written_prompt": "Explain why spending time filling in Style, Tone, and Audience is often wasted effort for a quick factual or technical question, using a concrete example."
+  - "question": "What is the distinction between CO-STAR's Style and Tone components?"
+    "options":
+    - "Style and Tone are two names for the exact same thing and either can be left blank."
+    - "Style refers to the writing approach (e.g. concise, persuasive, technical) while Tone refers to the emotional quality (e.g. warm, formal, playful) — related but distinct dimensions of how the output reads."
+    - "Style refers to font and formatting choices, while Tone refers only to word count."
+    - "Style is about the audience, and Tone is about the objective."
+    "answer": 1
+    "explanation": "Style is about the writing approach/technique, Tone is about the emotional register — a piece can be, for example, both 'concise' (style) and 'warm' (tone) at once, which is why CO-STAR keeps them as separate slots."
+    "written_prompt": "Explain the difference between Style and Tone in CO-STAR, and give an example of a prompt where they'd need to be different values."
+  - "question": "Why does CO-STAR include a separate Audience component distinct from Objective?"
+    "options":
+    - "Because Objective states what the output should achieve, while Audience states who it's for — the same objective can require very different phrasing depending on who's reading it, which Objective alone doesn't capture."
+    - "Because Audience is just a duplicate safety check on the Objective field."
+    - "Because CO-STAR requires exactly six fields for the acronym to work, regardless of whether Audience adds anything."
+    - "Because Objective and Audience must always contain the same value."
+    "answer": 0
+    "explanation": "Objective (what to achieve) and Audience (who it's for) are genuinely separate levers — the same objective, like 'explain a concept,' produces very different acceptable outputs depending on whether the audience is an expert or a beginner, which is exactly why they're split."
+    "written_prompt": "Explain why CO-STAR needs Audience as a component separate from Objective, using an example where the same objective would need two different outputs for two different audiences."
+- "id": "risen"
+  "koa": "K"
+  "assessment_mode": "auto_marked"
+  "questions":
+  - "question": "Why does RISEN include both Steps and Narrowing as separate components?"
+    "options":
+    - "Steps enforces the order of a process while Narrowing enforces boundaries/limits on the output — a task can have a clear process but no important boundary risk, or vice versa, so they're kept as distinct concerns."
+    - "Steps and Narrowing are two names for the same requirement, included twice for emphasis."
+    - "Steps is only used for creative tasks, and Narrowing only for technical tasks."
+    - "Narrowing exists purely to shorten the Steps field when it gets too long."
+    "answer": 0
+    "explanation": "Ordering a process (Steps) and bounding what the output must avoid or stay within (Narrowing) are genuinely separate concerns — a task might need one without the other, which is exactly why RISEN keeps them as distinct components rather than merging them."
+    "written_prompt": "Explain the difference between what RISEN's Steps component controls versus what its Narrowing component controls, with an example of each."
+  - "question": "Why is RISEN described as overkill for a simple, single-step request?"
+    "options":
+    - "Because a single-step request has no real process to order (Steps) and often no meaningful boundary risk to guard against (Narrowing), so those two fields add setup effort without adding value."
+    - "Because RISEN cannot technically be used for anything simple, only complex system prompts."
+    - "Because the Role and Instructions fields are incompatible with simple requests."
+    - "Because RISEN always produces longer output than the task requires, regardless of the prompt's own Narrowing field."
+    "answer": 0
+    "explanation": "The 'overkill' judgment is specifically about Steps and Narrowing having nothing real to do on a single-step, low-risk task — Role and Instructions aren't the issue; it's the two process/guardrail-specific fields that go to waste."
+    "written_prompt": "Explain, using a concrete example of a simple one-step task, why filling in RISEN's Steps and Narrowing fields would add effort without adding value."
+  - "question": "What does RISEN's 'End goal' component add that 'Instructions' does not already cover?"
+    "options":
+    - "End goal restates Instructions in a shorter form for the model to double-check."
+    - "End goal describes what success looks like when the task is done well — a criterion for judging the output — whereas Instructions states the task to perform, which is a different kind of information."
+    - "End goal is a synonym for Narrowing and can be merged with it."
+    - "End goal exists only to specify the required word count."
+    "answer": 1
+    "explanation": "Instructions says what to do; End goal says what a good outcome looks like — a success criterion the model (or a reviewer) can use to judge whether the output actually achieved the intended effect, which 'do this task' alone doesn't specify."
+    "written_prompt": "Explain what kind of information belongs in RISEN's End goal field that wouldn't already be captured by the Instructions field, using an example."
+  - "question": "A learner treats RISEN's Role component the same as RGC's Role component. Is this accurate?"
+    "options":
+    - "Yes, both serve the same purpose (who the model should act as); RISEN simply adds Instructions, Steps, End goal, and Narrowing on top of that same Role concept."
+    - "No, RISEN's Role must always be a fictional character, while RGC's Role must always be a real job title."
+    - "No, RISEN's Role field secretly means something entirely different (an output format specifier)."
+    - "No, RISEN has no Role component at all."
+    "answer": 0
+    "explanation": "Both frameworks' Role component means the same thing — who the model should act as — RISEN just extends the idea with four additional process/guardrail components that RGC doesn't have."
+    "written_prompt": "Explain what RISEN's Role component has in common with RGC's Role component, and what RISEN adds on top of it."
+- "id": "cot"
+  "koa": "K"
+  "assessment_mode": "auto_marked"
+  "questions":
+  - "question": "Why does explicitly asking a model to 'think step by step' tend to improve accuracy on math and logic problems?"
+    "options":
+    - "Because it forces the model to work through intermediate reasoning explicitly rather than jumping straight to a fast, confident (and potentially wrong) final guess."
+    - "Because step-by-step instructions make the model access a separate, more accurate database of facts."
+    - "Because Chain-of-Thought prompts are always shorter, and shorter prompts are inherently more accurate."
+    - "Because 'step by step' is a required magic phrase without which the model cannot perform any reasoning at all."
+    "answer": 0
+    "explanation": "CoT's mechanism is surfacing intermediate reasoning instead of letting the model jump directly to a final answer — that reduces the fast-guess failure mode common on multi-step problems, rather than accessing new facts or relying on prompt brevity."
+    "written_prompt": "Explain, in your own words, why making a model 'show its work' tends to catch errors that a direct, jump-to-the-answer response would miss."
+  - "question": "Why is Chain-of-Thought described as unnecessary for simple factual lookups or creative writing?"
+    "options":
+    - "Because CoT cannot technically process factual or creative prompts at all."
+    - "Because those tasks don't benefit from an intermediate reasoning process — showing the work adds tokens and time without any accuracy gain when there's no multi-step reasoning to expose in the first place."
+    - "Because CoT is exclusively reserved for legal and financial domains."
+    - "Because factual and creative tasks always produce the exact same output whether or not CoT is used, making the comparison meaningless."
+    "answer": 1
+    "explanation": "The 'no benefit' judgment is about there being no real multi-step reasoning to surface on a simple lookup or creative task — CoT's cost (extra tokens/time) buys nothing in that situation, rather than the technique being technically incompatible."
+    "written_prompt": "Explain why asking a model to reason step by step before answering a simple factual question like 'What is the capital of France?' would add cost without adding value."
+  - "question": "Why does CoT prompting typically separate the 'reasoning instruction' from the 'final answer format'?"
+    "options":
+    - "So the model's exploratory reasoning stays visibly distinct from its concluding answer, letting a reader (or downstream system) reliably locate and use just the final answer without parsing through the reasoning."
+    - "Because models cannot generate both reasoning and a final answer within the same response under any circumstances."
+    - "Because the reasoning instruction and the final answer format must always contain contradictory content."
+    - "Because separating them makes the total response shorter."
+    "answer": 0
+    "explanation": "The practical reason for a distinct final-answer format (e.g. 'End with Decision: ...') is so the concluding answer can be reliably extracted from the surrounding reasoning text, not because of some technical incompatibility or because it shortens the response."
+    "written_prompt": "Explain why a CoT prompt typically asks for a clearly marked final answer (e.g. starting with 'Decision:') separate from the reasoning that leads up to it."
+  - "question": "What is a common misconception about what Chain-of-Thought actually changes in the model's process?"
+    "options":
+    - "That CoT causes the model to consult external tools or databases it wouldn't otherwise have access to."
+    - "That CoT prompting changes the training data the model was built on, retroactively."
+    - "That CoT guarantees a 100% correct answer on every reasoning task, when in reality it only reduces (not eliminates) the fast-guess failure mode."
+    - "That CoT and few-shot are mutually exclusive and can never be combined in the same prompt."
+    "answer": 2
+    "explanation": "A common overreach is assuming CoT guarantees correctness — it improves accuracy by making the model work through steps explicitly, but it's a mitigation of a failure mode, not a guarantee; the other options misdescribe the mechanism as touching external tools or training data, which it doesn't."
+    "written_prompt": "Explain why 'Chain-of-Thought guarantees the model gets the right answer' is an overstatement, and describe what CoT actually does and doesn't guarantee."
+- "id": "rtf"
+  "koa": "K"
+  "assessment_mode": "auto_marked"
+  "questions":
+  - "question": "Why is RTF described as the 'absolute minimum viable structure'?"
+    "options":
+    - "Because it names only the three most load-bearing slots (Role, Task, Format) needed to beat zero-shot, without CO-STAR's tone/audience overhead or RISEN's process/guardrail overhead."
+    - "Because RTF prompts must be exactly three words long."
+    - "Because RTF is the only framework that supports a Role component at all."
+    - "Because RTF was the very first framework invented, before zero-shot existed."
+    "answer": 0
+    "explanation": "RTF's minimalism is about component count, not word count or invention order — it keeps just Role, Task, and Format, which is the smallest set the guidance considers meaningfully more structured than zero-shot."
+    "written_prompt": "Explain what makes RTF 'minimal' in a structural sense, as opposed to it simply meaning a shorter prompt."
+  - "question": "Why does RTF's own guidance warn against using it when tone and audience genuinely matter?"
+    "options":
+    - "Because RTF has no slot for tone or audience at all, so a mismatched tone can slip through completely undetected by the framework itself."
+    - "Because RTF's Format component always overrides tone automatically, guaranteeing a mismatch."
+    - "Because RTF prompts are technically incapable of producing any emotional register whatsoever."
+    - "Because RTF can only be used for coding tasks, never for any writing with an intended tone."
+    "answer": 0
+    "explanation": "The warning is structural: without a dedicated Tone or Audience field, there is nothing in the framework itself checking that the output's emotional register or audience-fit is correct — CO-STAR's Tone/Audience slots exist precisely to close that gap."
+    "written_prompt": "Explain, using a concrete example, a task where getting the tone right is critical, and why RTF alone wouldn't catch a tone mismatch."
+  - "question": "How does RTF's Format component differ from CO-STAR's Response format component?"
+    "options":
+    - "They serve the same underlying purpose (specifying output shape); RTF's Format is simply the equivalent slot in a smaller framework that omits Style/Tone/Audience."
+    - "RTF's Format only accepts numeric values, while CO-STAR's Response format only accepts text."
+    - "RTF's Format controls the model's reasoning process, while Response format controls word choice."
+    - "They are unrelated components that happen to share overlapping names by coincidence."
+    "answer": 0
+    "explanation": "Both fields specify the output's shape/length/structure — RTF's Format is functionally the same idea as CO-STAR's Response format, just inside a leaner 3-component framework rather than a 6-component one."
+    "written_prompt": "Explain what RTF's Format component and CO-STAR's Response format component have in common, and what CO-STAR adds around that shared idea."
+  - "question": "Why might a prompt writer choose RTF over CO-STAR even when both would technically work?"
+    "options":
+    - "Because RTF takes less time to fill in (3 slots instead of 6), which is worth it specifically when tone and audience aren't decision-relevant to the task's outcome."
+    - "Because RTF always produces more accurate answers than CO-STAR on every task."
+    - "Because CO-STAR cannot include a Role component, unlike RTF."
+    - "Because RTF is required by policy for any task under 50 words."
+    "answer": 0
+    "explanation": "The trade-off is speed of setup vs. coverage — RTF wins specifically when the extra components CO-STAR offers (Style, Tone, Audience) wouldn't change the correct output anyway, making the extra effort pointless."
+    "written_prompt": "Describe a task where you'd deliberately choose RTF over CO-STAR, and explain what you'd be giving up by doing so."
+- "id": "icio"
+  "koa": "K"
+  "assessment_mode": "auto_marked"
+  "questions":
+  - "question": "Why does ICIO separate Input from Context, when both could be seen as 'information given to the model'?"
+    "options":
+    - "Because Input is the raw material being transformed, while Context is background that changes how that raw material should be interpreted — conflating them can make the model transform the wrong thing or ignore situational nuance."
+    - "Because Input and Context are simply two different names for identical information, kept for stylistic variety only."
+    - "Because Context must always be longer than Input in every ICIO prompt."
+    - "Because Input is only used for numeric data, while Context is only used for text."
+    "answer": 0
+    "explanation": "Input is what gets transformed; Context is the situational lens for interpreting it (e.g. audience, history, prior interactions) — keeping them distinct prevents the model from either transforming background information by mistake or missing nuance that should shape the transformation."
+    "written_prompt": "Explain the difference between ICIO's Input and Context fields using an example where the same Input would need different handling under two different Contexts."
+  - "question": "Why is ICIO described as a good fit for data-transformation and pipeline-style tasks specifically?"
+    "options":
+    - "Because those tasks have one clean, nameable 'thing being transformed' and one clean 'result produced' — which maps directly onto ICIO's Input/Output split — unlike open-ended creative or advisory tasks that don't have a single clean input or output to name."
+    - "Because ICIO is the only framework compatible with JSON output."
+    - "Because pipeline tasks never require any Context or Instruction, so ICIO's extra fields are simply ignored."
+    - "Because ICIO automatically parses structured data formats without any instruction needed."
+    "answer": 0
+    "explanation": "ICIO's fit comes from its explicit given-vs-produced structure matching how transformation/pipeline tasks are naturally framed — an open-ended advisory task (like 'give me travel advice') doesn't have one clean input or output the way a data transformation does, which is exactly why ICIO fights that kind of task."
+    "written_prompt": "Explain why a data-transformation task naturally fits ICIO's Input/Output split, while an open-ended advisory task ('give me some career advice') does not."
+  - "question": "What's the difference between ICIO's Instruction and Output components?"
+    "options":
+    - "Instruction specifies the transformation/task to perform, while Output specifies the exact shape the result should take — one describes the action, the other describes the resulting artifact's form."
+    - "Instruction and Output are identical and either can be omitted safely."
+    - "Instruction only applies to text tasks, and Output only applies to numeric tasks."
+    - "Output always overrides whatever Instruction says, making Instruction redundant."
+    "answer": 0
+    "explanation": "Instruction is the verb (what transformation to do), Output is the noun's shape (what the result should look like) — they answer different questions and both are needed to fully specify a transformation task."
+    "written_prompt": "Explain, using an example, the difference between what belongs in ICIO's Instruction field versus its Output field."
+  - "question": "Why does ICIO's own guidance say it 'fights the task' for open-ended creative or advisory prompts?"
+    "options":
+    - "Because those tasks often don't have a single, clean 'raw material' to label as Input or a single clean 'result' to label as Output, so forcing the ICIO structure onto them creates artificial, awkward splits."
+    - "Because ICIO cannot technically accept any text longer than one sentence in the Input field."
+    - "Because creative tasks require a fifth ICIO component that doesn't exist."
+    - "Because open-ended tasks are incompatible with having a Context field specifically."
+    "answer": 0
+    "explanation": "The friction is structural: creative/advisory tasks ('write me something inspiring') often lack one obvious 'thing being transformed,' so trying to force them into Input/Context/Instruction/Output creates an unnatural split rather than reflecting how the task actually works."
+    "written_prompt": "Give an example of an open-ended creative task and explain specifically why it resists being split cleanly into ICIO's four components."
+
+- id: zero-shot
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        Task A: "Translate this common English sentence into French."
+        Task B: "Output this data as our proprietary internal serialization format: a custom 5-symbol delimiter scheme unique to our company's legacy system."
+        Both are prompted zero-shot. Which is more likely to produce a wrong or invented format?
+      options:
+        - "Task A, since translation is inherently unpredictable."
+        - "Task B — with a highly unusual, proprietary format and zero-shot's total reliance on the model's own prior understanding, there's nothing to anchor a correct guess, unlike Task A's common, well-understood task."
+        - "Both are equally likely to fail."
+        - "Neither is likely to fail, since zero-shot always works."
+      answer: 1
+      explanation: "Zero-shot relies entirely on the model's own understanding of the task and format. A common task like translation is well anchored by prior training; an obscure proprietary format has nothing to anchor a correct guess."
+      written_prompt: "Explain why Task B is a worse fit for zero-shot prompting than Task A."
+    - question: |
+        A developer needs the model to output a JSON object with fields named exactly `cust_id`, `ord_dt`, and `stat_cd` (unusual, company-specific abbreviations), and prompts it zero-shot with just a plain-English instruction.
+        What's the most likely outcome, and why?
+      options:
+        - "The model will very likely use more standard field names (like customer_id, order_date, status) instead of the exact unusual abbreviations, since zero-shot gives it nothing concrete to anchor those specific names to."
+        - "The model will always get the exact field names right regardless of how unusual they are."
+        - "The model will refuse to produce any JSON at all."
+        - "This has nothing to do with zero-shot and depends only on the model's size."
+      answer: 0
+      explanation: "Zero-shot provides no worked example to anchor an unusual, company-specific naming convention — the model will likely default to more standard, commonly-seen field names instead."
+      written_prompt: "Explain why zero-shot prompting is a risky choice for enforcing unusual, company-specific field names."
+    - question: |
+        A team needs a prompt to summarize an article in 2-3 sentences — a very common task format the model has seen countless times in training.
+        Is zero-shot prompting a reasonable choice here?
+      options:
+        - "Yes — this is exactly the kind of common, well-understood task zero-shot handles well, since there's no unusual format for the model to guess wrong on."
+        - "No — every task requires at least one worked example to succeed."
+        - "No — zero-shot can never be used for summarization tasks."
+        - "Yes, but only if the article is under 100 words."
+      answer: 0
+      explanation: "Zero-shot is well suited to quick, common tasks the model already knows well — a standard 2-3 sentence summary has no unusual format requirement, so there's little for the model to get wrong without an example."
+      written_prompt: "Explain why zero-shot prompting is a reasonable choice for this summarization task."
+    - question: |
+        A team zero-shot prompts a model to "format the output as valid YAML" (a well-known, standardized format) versus a separate team that zero-shot prompts for "format the output using our internal XYZ-markup dialect" (an obscure, undocumented-outside-the-company format).
+        Which team is taking on more risk, and why?
+      options:
+        - "The YAML team, since YAML is more complex than XYZ-markup."
+        - "The XYZ-markup team — zero-shot depends on the model already knowing the target format from its training; a well-known standard like YAML is far more likely to be understood correctly than an obscure, internal-only format the model has likely never seen."
+        - "Both teams face identical risk regardless of format familiarity."
+        - "Neither team faces any risk, since zero-shot always succeeds for formatting tasks."
+      answer: 1
+      explanation: "Zero-shot's success hinges on the model already having internalized the target format from training — a widely-documented public standard like YAML is far safer than an obscure, company-internal format with no public documentation to draw on."
+      written_prompt: "Explain why prompting zero-shot for an obscure internal format carries more risk than prompting for a well-known public standard like YAML."
+
+- id: one-shot
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A one-shot prompt for classifying emails as "urgent" or "not urgent" is given a single example: an email about a server outage, labeled "urgent."
+        The prompt is then used on an email about a minor typo in a internal wiki page, and the model labels it "urgent" as well.
+        What's the most likely explanation?
+      options:
+        - "The model is fundamentally incapable of distinguishing urgency levels."
+        - "The single example anchored the model too closely to that one case's characteristics, rather than teaching it a generalizable notion of what makes something urgent — a risk one-shot carries when the real task varies."
+        - "This is unrelated to the number of examples and is a random error."
+        - "This proves email classification can never be automated."
+      answer: 1
+      explanation: "This is one-shot's overfitting risk in action: a single example doesn't teach a generalizable pattern, so the model can latch onto surface features of that one case rather than the actual underlying concept of urgency."
+      written_prompt: "Explain why giving only one example risked the model overgeneralizing from that specific case."
+    - question: |
+        A team needs a model to always format a response as a single JSON object with exactly the keys `title` and `summary`, and nothing else. The task itself (summarizing an article) doesn't vary much in structure across different inputs.
+        Is one-shot likely to be sufficient here?
+      options:
+        - "Yes — since the task structure barely varies and the goal is mainly locking in one specific, consistent format, a single clear example is likely enough."
+        - "No — one-shot can never lock in a specific output format under any circumstances."
+        - "No — this task always requires at least 4 examples regardless of how consistent the structure is."
+        - "Yes, but only because JSON is involved, unrelated to task variability."
+      answer: 0
+      explanation: "One-shot is well suited exactly to this case: you need one specific output format, and the task doesn't vary enough to risk overfitting to the example's specifics."
+      written_prompt: "Explain why one-shot prompting is likely sufficient for this consistent, low-variability task."
+    - question: |
+        A one-shot prompt is used to extract key facts from news articles, using a politics article as the single example. When run on a completely different domain — a sports article — the model tries to force in political-sounding categories that don't apply.
+        What does this illustrate, and what would help?
+      options:
+        - "This illustrates one-shot's overfitting risk on a genuinely varied task; adding a few more examples spanning different domains (few-shot) would help the model generalize the extraction pattern rather than the one example's specific domain."
+        - "This proves the model can never process sports articles."
+        - "This is unrelated to example count and is caused by the model's training data cutoff."
+        - "The fix is to remove all examples and use zero-shot instead."
+      answer: 0
+      explanation: "This is a direct instance of one-shot overfitting to its single example's domain — since the real task varies across domains, additional varied examples (few-shot) would generalize the pattern better than one narrow example."
+      written_prompt: "Explain why the sports-article failure happened, and why adding more varied examples would help more than removing examples entirely."
+    - question: |
+        Compare: Task A always produces the exact same kind of output structure regardless of input (e.g. always extracting a name and a date). Task B's correct output structure varies significantly depending on what kind of document is given.
+        Which task is a better fit for one-shot prompting, and why?
+      options:
+        - "Task A — a single example is enough to lock in a format that barely varies, unlike Task B, where one example risks anchoring the model to a structure that doesn't fit every case."
+        - "Task B — one-shot is specifically designed for highly variable tasks."
+        - "Both tasks are equally good fits for one-shot prompting."
+        - "Neither task is suitable for one-shot; only zero-shot applies to extraction tasks."
+      answer: 0
+      explanation: "One-shot works best when a single example is enough to capture the pattern — that's Task A's low-variability case. Task B's high variability is exactly where one-shot's overfitting risk shows up, and few-shot would generalize better."
+      written_prompt: "Explain why Task A's consistency makes it a better one-shot candidate than Task B's variability."
+
+- id: few-shot
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A team needs a model to categorize customer feedback into one of 8 possible categories, with output formatting that needs to stay perfectly consistent across a very wide range of feedback types and phrasing styles.
+        Is few-shot (with 3-4 varied examples) or one-shot (with a single example) the better fit, and why?
+      options:
+        - "One-shot, since fewer examples are always faster to write and just as reliable."
+        - "Few-shot — with 8 possible categories and a wide range of input variety, several varied examples reduce the formatting drift a single example can't fully capture, at the cost of more prep time."
+        - "Neither approach works for tasks with more than 2 categories."
+        - "Both are equally reliable regardless of category count or input variety."
+      answer: 1
+      explanation: "This matches the lesson directly: few-shot is suited to consistent, structured output across varied inputs, since extra examples reduce formatting drift that one-shot can't catch on a genuinely diverse task like this one."
+      written_prompt: "Explain why few-shot is the better choice for this high-variety, multi-category classification task."
+    - question: |
+        A prototyping team is exploring a rough idea for a new feature and wants to test several different prompt approaches quickly today, without spending much time preparing examples.
+        Is few-shot the right choice for this stage, and why?
+      options:
+        - "Yes — few-shot is always the fastest option regardless of preparation time needed."
+        - "No — few-shot requires writing 3-4 good examples, which takes real prep time; for quick prototyping, a faster approach (like zero-shot) may be more appropriate at this early stage."
+        - "Yes, because few-shot never requires any additional preparation time over zero-shot."
+        - "No, because few-shot can never be used during a prototyping phase for any reason."
+      answer: 1
+      explanation: "The lesson notes exactly this trade-off: few-shot's extra examples take real prep time, which may not be worth spending yet during quick prototyping — a case where its 'avoid when' condition applies."
+      written_prompt: "Explain why few-shot's example-writing overhead makes it a less ideal fit for this early prototyping stage."
+    - question: |
+        A one-shot prompt for extracting structured data from invoices works well for invoices from Vendor A's fixed template, but produces inconsistent field names once used on invoices from Vendors B, C, and D, each with a different layout.
+        What change would most directly address this?
+      options:
+        - "Switching to few-shot with one example each from Vendors A, B, and C, so the extraction pattern is demonstrated across the range of formats actually being processed, not just Vendor A's."
+        - "Switching to zero-shot, removing the one example entirely."
+        - "Keeping one-shot but writing a longer example for Vendor A."
+        - "This inconsistency is unrelated to example count and requires a different model."
+      answer: 0
+      explanation: "This is precisely what few-shot addresses: demonstrating the pattern across the actual range of variation (multiple vendor formats) instead of anchoring to just one vendor's specific layout."
+      written_prompt: "Explain why adding examples from multiple vendors, rather than writing a longer single example, is the right fix here."
+    - question: |
+        A team is deciding between one-shot and few-shot for a task that has exactly one fixed input/output shape that never varies across any real use case.
+        Which approach makes more sense, and why?
+      options:
+        - "Few-shot, since more examples are always strictly better regardless of task variability."
+        - "One-shot — since the task genuinely never varies, a single example is enough to lock in the format, and the extra prep time few-shot requires (writing 3-4 examples) wouldn't add real benefit here."
+        - "Neither — a task with no variability should use zero-shot only."
+        - "Both approaches are equally wasteful for a task like this."
+      answer: 1
+      explanation: "Few-shot's benefit comes from covering variation across examples — when a task genuinely has no variation, the additional examples add prep time without addressing any real formatting-drift risk, making one-shot the more efficient, sufficient choice."
+      written_prompt: "Explain why one-shot is a more efficient choice than few-shot for a task with a single, unvarying input/output shape."
+
+- id: rgc
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A team uses RGC to prompt: "You are a helpful assistant. Goal: answer the customer's billing question. Context: they were charged twice for one order." This works well and gets a clear, helpful answer.
+        Is RGC a reasonable choice here?
+      options:
+        - "Yes — this is a fast, everyday prompt where setting who/what/why is sufficient, with no multi-step process or strict format required."
+        - "No — RGC can never be used for customer support tasks."
+        - "No — every customer support prompt requires the full RISEN framework."
+        - "Yes, but only because the customer was charged twice specifically."
+      answer: 0
+      explanation: "This is exactly RGC's sweet spot: a fast, everyday prompt needing only role/goal/context, with no multi-step process or strict formatting requirement to worry about."
+      written_prompt: "Explain why RGC is a reasonable, sufficient choice for this billing-question scenario."
+    - question: |
+        A team uses RGC to prompt a model to generate a monthly report that must follow an exact 12-section template with specific headers in a specific order, and the output comes back with sections in a different order and missing two required headers.
+        What's the most likely cause?
+      options:
+        - "RGC has no component dedicated to enforcing a strict format or section order — Role/Goal/Context alone doesn't specify or reinforce a fixed structural template, unlike a framework with an explicit Format or Response format component."
+        - "The model doesn't understand what a 'report' is."
+        - "This is unrelated to which framework was used and is a random generation error."
+        - "RGC always enforces exact formatting regardless of task."
+      answer: 0
+      explanation: "RGC has no explicit format-enforcing component — the lesson notes it's best for who/what/why, not strict formatting requirements, which is exactly the gap that shows up here with a rigid, structured template."
+      written_prompt: "Explain why RGC's structure doesn't naturally enforce a strict, multi-section template format."
+    - question: |
+        Comparing two tasks: Task A needs the model to simply adopt a persona and answer a single question with relevant background. Task B needs the model to follow an exact 6-step audit procedure without skipping any step.
+        Which framework better fits each, and why?
+      options:
+        - "RGC fits Task A well (a fast who/what/why prompt); RISEN fits Task B better (its explicit Steps and Narrowing components enforce an ordered process RGC has no equivalent for)."
+        - "RGC fits both tasks equally well, regardless of process complexity."
+        - "RISEN fits Task A better and RGC fits Task B better."
+        - "Neither framework is suited to either of these tasks."
+      answer: 0
+      explanation: "This tracks each framework's actual design: RGC's simplicity suits a fast persona+question task, while RISEN's explicit Steps/Narrowing components exist specifically for enforcing a multi-step procedure like Task B's audit."
+      written_prompt: "Explain why Task B calls for RISEN's structure rather than RGC's simpler Role/Goal/Context shape."
+    - question: |
+        A prompt using RGC asks the model to "act as a project manager, and help plan a product launch, given that we have a 6-week deadline and limited budget." The output covers general planning advice well but doesn't produce an ordered, step-by-step launch plan with dependencies.
+        What would need to change to get a genuinely ordered plan?
+      options:
+        - "Adding an explicit Steps (or equivalent process) component — something RGC's Role/Goal/Context doesn't have — such as switching to RISEN, which was designed to structure an ordered process with explicit steps."
+        - "Nothing — RGC always produces fully ordered plans by default."
+        - "Simply repeating the word 'plan' more times in the Goal field."
+        - "Removing the Context field entirely."
+      answer: 0
+      explanation: "RGC's three components don't include anything for structuring an ordered, dependency-aware process — a framework like RISEN, with an explicit Steps component, is built for exactly this kind of structural need."
+      written_prompt: "Explain why RGC's structure doesn't naturally produce a genuinely ordered, step-by-step plan, and what framework change would address it."
+
+- id: co-star
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A team uses CO-STAR to write a company's tone-of-voice guide for a new youth-focused product launch, filling in Context, Objective, Style, Tone, Audience, and Response format. The output is well-tailored and on-brand.
+        Is CO-STAR a good fit here?
+      options:
+        - "Yes — tone, style, and audience are all genuinely central to getting a youth-focused brand voice right, which is exactly what CO-STAR's six components are designed to capture."
+        - "No — CO-STAR should only ever be used for factual or technical writing."
+        - "No — six components are always excessive for any single task."
+        - "Yes, but only because the word 'style' appears in the request."
+      answer: 0
+      explanation: "This is CO-STAR's intended use case: content and writing tasks where tone, audience, and style genuinely change the output, like a brand voice guide for a specific audience."
+      written_prompt: "Explain why CO-STAR's full six-component structure fits this brand-voice task well."
+    - question: |
+        A developer uses the full CO-STAR framework — filling in Context, Objective, Style, Tone, Audience, and Response format — just to ask a model to "convert this timestamp from UTC to Pacific time."
+        Is this a good use of CO-STAR?
+      options:
+        - "Yes — every prompt benefits equally from all six CO-STAR components regardless of the task."
+        - "No — a mechanical timezone conversion doesn't depend on tone, style, or audience at all, so filling in all six components is unnecessary overhead for a task this straightforward and factual."
+        - "Yes, because timestamps are inherently ambiguous and need extensive framing."
+        - "No, because CO-STAR cannot process any request involving numbers."
+      answer: 1
+      explanation: "This matches the lesson's 'avoid when' guidance directly: a quick factual or technical task doesn't depend on tone or audience, so filling in all six CO-STAR components is overkill with no real benefit."
+      written_prompt: "Explain why using full CO-STAR for a timezone conversion is overkill, referencing what the task actually depends on."
+    - question: |
+        Two prompts are being designed: Prompt A needs to write a press release in a specific, carefully calibrated corporate tone for a specific journalist audience. Prompt B needs to extract the total dollar amount from a receipt image.
+        Which prompt benefits more from CO-STAR's full structure, and why?
+      options:
+        - "Prompt A — tone and audience are central to a well-written press release, exactly what CO-STAR's Style, Tone, and Audience components are built to capture; Prompt B is a factual extraction task with no tone or audience dimension."
+        - "Prompt B — extraction tasks always benefit more from tone and audience framing than writing tasks do."
+        - "Both prompts benefit identically from CO-STAR's full structure."
+        - "Neither prompt benefits from CO-STAR under any circumstances."
+      answer: 0
+      explanation: "This tracks CO-STAR's core strength directly: tasks where tone, audience, and style meaningfully shape the output (like Prompt A) benefit from its full structure, while a factual extraction task (Prompt B) has no such dimension to capture."
+      written_prompt: "Explain why Prompt A benefits from CO-STAR's structure in a way Prompt B does not."
+    - question: |
+        A team drops the Audience and Tone components from their CO-STAR prompt when writing a customer apology email after a major service outage, keeping only Context, Objective, Style, and Response format.
+        What risk does this shortcut introduce?
+      options:
+        - "None — Audience and Tone are the least important of the six components for any writing task."
+        - "The risk that the apology's tone and framing won't be properly calibrated to the specific, upset audience receiving it — exactly the components CO-STAR includes because tone and audience genuinely shape whether an apology lands well or falls flat."
+        - "The risk that the email will be too short."
+        - "The risk that the Style component alone makes Tone and Audience redundant."
+      answer: 1
+      explanation: "For a task like a customer apology, tone and audience are precisely the load-bearing components — dropping them risks an apology that reads as tone-deaf or mismatched to the audience's actual emotional state after an outage."
+      written_prompt: "Explain why dropping the Audience and Tone components is risky specifically for a customer apology email, given what those components are meant to capture."
+
+- id: risen
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A team uses RISEN to prompt a model to "conduct a security audit: (1) scan for exposed credentials, (2) check access logs for anomalies, (3) verify encryption settings, (4) generate a report — and never disclose any findings outside the security team's channel." This works well and the model follows every step and constraint correctly.
+        Is RISEN a good fit here?
+      options:
+        - "Yes — this is a multi-step process with a firm guardrail (the disclosure constraint), exactly what RISEN's Steps and Narrowing components are designed to structure."
+        - "No — RISEN should never be used for security-related tasks."
+        - "No — a 4-step process is too simple to need RISEN."
+        - "Yes, but only because the word 'audit' was used."
+      answer: 0
+      explanation: "This is RISEN's intended use case: a multi-step process with a firm guardrail, where skipping a step or violating the constraint would be a real problem — precisely what Steps and Narrowing exist to enforce."
+      written_prompt: "Explain why RISEN's Steps and Narrowing components fit this security-audit task well."
+    - question: |
+        A team uses the full RISEN framework — Role, Instructions, Steps, End goal, Narrowing — just to ask a model to "tell me a fun fact about octopuses."
+        Is this a reasonable use of RISEN?
+      options:
+        - "Yes — every prompt benefits from Steps and Narrowing regardless of complexity."
+        - "No — a simple, single-step request like this has no real process to structure and no risk to guard against, so the Steps and Narrowing fields add setup for no benefit — a lighter framework or zero-shot would be more appropriate."
+        - "Yes, because octopus facts are inherently complex."
+        - "No, because RISEN cannot be used for any lighthearted or casual request."
+      answer: 1
+      explanation: "This matches the lesson's 'avoid when' guidance directly: a simple, single-step request doesn't need Steps or Narrowing, since there's no real process or risk to guard against — using full RISEN here is unnecessary overhead."
+      written_prompt: "Explain why using the full RISEN framework is overkill for a simple, single-step request like this."
+    - question: |
+        A prompt for processing expense reports uses RISEN's Narrowing component to specify: "Never approve any single expense line item over $1,000 without a second reviewer's sign-off." Without this Narrowing field, an earlier version of the prompt (using only Role, Instructions, and a vague End goal) let the model approve a $5,000 item on its own.
+        What does this comparison illustrate about RISEN's Narrowing component?
+      options:
+        - "That Narrowing exists specifically to enforce firm constraints/guardrails that other components (Role, Instructions, End goal alone) don't reliably capture, which is exactly why RISEN suits tasks where going out of bounds would be a real problem."
+        - "That Narrowing is a purely cosmetic component with no functional effect."
+        - "That Role and Instructions alone are always sufficient for enforcing constraints."
+        - "That this has nothing to do with which components were included in the prompt."
+      answer: 0
+      explanation: "This is a direct illustration of Narrowing's purpose: without an explicit constraint field, a firm guardrail (the sign-off requirement) got missed — exactly the gap Narrowing exists to close for tasks where a boundary violation is a real risk."
+      written_prompt: "Explain what this before/after comparison shows about the purpose of RISEN's Narrowing component."
+    - question: |
+        A team needs a prompt for a single, low-stakes task: "rewrite this one sentence to be more concise." They're deciding between RISEN and a simpler framework like RTF (Role, Task, Format).
+        Which is the more appropriate choice, and why?
+      options:
+        - "RTF — a single, low-stakes rewrite has no multi-step process or firm guardrail to enforce, so RISEN's additional Steps and Narrowing components would add unnecessary setup for no real benefit."
+        - "RISEN — every task, regardless of stakes or complexity, benefits equally from Steps and Narrowing."
+        - "Neither framework can handle a single-sentence rewrite task."
+        - "RISEN, because more components always produce better output regardless of task complexity."
+      answer: 0
+      explanation: "This matches RISEN's own 'avoid when' guidance: a simple, single-step request doesn't need Steps or Narrowing — a lighter framework like RTF fits a low-stakes, single-action task better without the unnecessary overhead."
+      written_prompt: "Explain why RTF is a more appropriate choice than RISEN for this simple, single-step rewrite task."
+
+- id: cot
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        Task A: "Rewrite this sentence to sound more formal."
+        Task B: "A tank is being filled by a first pipe in 6 hours and drained by a second pipe in 10 hours. If both pipes are open at once, how long does it take to fill the tank?"
+        A team is deciding whether to add "think step by step before answering" to each.
+      options:
+        - "Task A, since formality changes are inherently more complex than math."
+        - "Task B — this is a multi-step rate problem where skipping the combined-rate calculation risks a wrong guess; Task A is a single-step rewording task where showing the work adds no accuracy benefit."
+        - "Both tasks benefit equally from chain-of-thought."
+        - "Neither task benefits, since chain-of-thought only applies to word problems about tanks."
+      answer: 1
+      explanation: "Task B requires combining two rates correctly (a classic multi-step calculation prone to shortcut errors), exactly where chain-of-thought helps; Task A is a single-step stylistic rewrite with no calculation to get wrong."
+      written_prompt: "Explain why the tank-filling problem benefits from chain-of-thought prompting while the sentence rewrite does not."
+    - question: |
+        A team adds "think step by step" to every single prompt in their production system, including simple lookups like "what is the CEO's name" and "what's today's date."
+        Is this a good default policy?
+      options:
+        - "Yes — chain-of-thought should always be applied to every prompt regardless of task type."
+        - "No — simple factual lookups don't benefit from chain-of-thought and adding it there costs extra tokens and latency with no accuracy improvement, exactly the case CoT should be skipped for."
+        - "Yes, because it costs nothing extra to add reasoning instructions."
+        - "No, because chain-of-thought actively lowers accuracy on every task."
+      answer: 1
+      explanation: "This matches the lesson's guidance directly: simple factual lookups or creative writing don't benefit from chain-of-thought, and applying it universally adds unnecessary token cost and latency without any accuracy gain on those tasks."
+      written_prompt: "Explain why applying chain-of-thought to every prompt, including simple lookups, is not a good default policy."
+    - question: |
+        A model is asked to solve a logic puzzle with several interdependent clues, and without any reasoning instruction, jumps straight to a guess that turns out to be wrong. When re-prompted with an explicit chain-of-thought instruction, it correctly works through each clue in turn and lands on the right answer.
+        What does this comparison illustrate?
+      options:
+        - "That chain-of-thought has no measurable effect on multi-step logic problems."
+        - "That explicitly asking the model to reason step by step, rather than jump to a final answer, can catch and avoid the kind of shortcut error that produced the wrong guess on this multi-clue logic puzzle."
+        - "That the model is fundamentally incapable of solving logic puzzles under any circumstances."
+        - "That this has nothing to do with reasoning instructions and is purely random."
+      answer: 1
+      explanation: "This is a clean before/after demonstration of chain-of-thought's core benefit: working through interdependent clues explicitly, instead of jumping to a guess, catches errors that a shortcut answer would miss."
+      written_prompt: "Explain what this before/after comparison demonstrates about the value of an explicit reasoning instruction for this logic puzzle."
+    - question: |
+        A creative writing prompt asks a model to "write a whimsical two-sentence story about a cat astronaut." A team adds "think step by step before answering" to this prompt, expecting better output.
+        Is this addition likely to help?
+      options:
+        - "Yes — chain-of-thought universally improves the quality of any generated text."
+        - "Probably not — this is a creative, non-reasoning task with no multi-step calculation or logical dependency to work through, so an explicit reasoning instruction is unlikely to improve it and mainly adds unnecessary tokens and time."
+        - "Yes, because whimsical writing always requires more explicit reasoning than serious writing."
+        - "No, because chain-of-thought only works on prompts under 10 words."
+      answer: 1
+      explanation: "Chain-of-thought's benefit comes from catching mistakes in multi-step reasoning — a short creative story has no such steps to get wrong, so the instruction mainly adds cost without a meaningful quality benefit."
+      written_prompt: "Explain why adding a chain-of-thought instruction is unlikely to meaningfully improve this creative writing task."
+
+- id: rtf
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A team uses RTF (Role, Task, Format) to prompt: "You are a data analyst. Task: extract the total revenue figure from this report. Format: a single number." This works perfectly for an internal analytics dashboard where tone is irrelevant.
+        Is RTF a good fit here?
+      options:
+        - "Yes — this is a fast, structured prompt where tone and audience genuinely don't matter, exactly where RTF's minimal structure is the right, efficient trade-off over a heavier framework like CO-STAR."
+        - "No — RTF should never be used for any data-related task."
+        - "No — every task needs CO-STAR's full six components to succeed."
+        - "Yes, but only because the output format is a single number."
+      answer: 0
+      explanation: "This is RTF's sweet spot: a fast, structured prompt where tone and audience don't matter, making RTF's minimal overhead the efficient choice over a heavier framework like CO-STAR."
+      written_prompt: "Explain why RTF is a reasonable, efficient choice for this internal data-extraction task."
+    - question: |
+        A team uses RTF, unchanged, to generate both an internal engineering status update and a public-facing customer apology for a data breach. The engineering update reads fine; the customer apology reads cold and clinical, missing the empathetic tone the situation calls for.
+        What does this reveal about RTF?
+      options:
+        - "That RTF has no slot for tone or audience at all, so a mismatched tone (like a cold, clinical apology) can slip through undetected — exactly the risk the lesson flags for a task where tone genuinely matters."
+        - "That RTF is fundamentally broken and should never be used for anything."
+        - "That the Format component should have specified 'be more empathetic.'"
+        - "That this has nothing to do with which framework was used."
+      answer: 0
+      explanation: "RTF strips things down to Role, Task, and Format specifically — there's no tone/audience slot at all, so when tone genuinely matters (like a breach apology), a mismatch can slip through exactly as it did here."
+      written_prompt: "Explain why RTF's lack of a tone component caused the apology to fall flat, and what kind of framework would address it."
+    - question: |
+        A team needs the fastest possible structured prompt for a task where tone and audience genuinely don't matter — a step up from zero-shot, but without the setup time of a 6-component framework.
+        Which framework fits this need, and why?
+      options:
+        - "RTF — its minimal Role/Task/Format structure is specifically the fastest possible structured option when tone and audience are irrelevant to the task."
+        - "CO-STAR — its 6 components are always faster to fill in than RTF's 3."
+        - "RISEN — its Steps and Narrowing components are the fastest way to add structure to any task."
+        - "None of these frameworks are ever faster than zero-shot."
+      answer: 0
+      explanation: "RTF is explicitly designed as the fastest possible structured prompt — a step up from zero-shot without CO-STAR's overhead — which is exactly right when tone and audience aren't relevant to the outcome."
+      written_prompt: "Explain why RTF, rather than CO-STAR or RISEN, is the right choice for this speed-focused, tone-irrelevant task."
+    - question: |
+        A marketing team accidentally uses an RTF template (meant for quick internal notes) to generate a customer-facing product announcement, and the announcement comes out reading flat and generic compared to their usual on-brand voice.
+        What's the most likely explanation, and what should change?
+      options:
+        - "RTF has no component for Style, Tone, or Audience, so a customer-facing announcement where brand voice matters is a poor fit — switching to a framework like CO-STAR (which includes those components) would better preserve the brand voice."
+        - "The announcement failed because the Task field was too short."
+        - "RTF always produces flat, generic output regardless of the task."
+        - "This is unrelated to which framework was used, and is a wording issue unrelated to structure."
+      answer: 0
+      explanation: "This is the exact trade-off RTF makes: speed and simplicity at the cost of having no tone/audience/style slot — for a brand-voice-dependent announcement, a framework like CO-STAR that includes those components is the better fit."
+      written_prompt: "Explain why RTF was a poor fit for the customer-facing announcement, and what framework change would address the flat tone."
+
+- id: icio
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        Scenario A: "Given this raw log file (Input) and our field-mapping spec (Context), extract and reformat the entries into normalized JSON records (Instruction/Output)."
+        Scenario B: "Should I take this job offer or stay at my current company?"
+        Which scenario is a natural fit for ICIO, and why?
+      options:
+        - "Scenario A — there's a clean, nameable Input, Context, Instruction, and Output for this data-transformation task, unlike Scenario B's open-ended advisory question with no single clean input or output."
+        - "Scenario B — ICIO is specifically designed for open-ended personal advice questions."
+        - "Both scenarios fit ICIO equally naturally."
+        - "Neither scenario fits ICIO, since it only applies to numeric data."
+      answer: 0
+      explanation: "Scenario A has a clean, nameable input (the log file), context (the mapping spec), instruction (reformat), and output (normalized JSON) — exactly ICIO's strength. Scenario B has no such clean split to name."
+      written_prompt: "Explain why Scenario A fits ICIO naturally while Scenario B does not."
+    - question: |
+        A team tries to force ICIO onto the task "write an inspiring speech for a graduation ceremony," awkwardly labeling the graduation theme as 'Input,' vague notes as 'Context,' and struggling to name a clean 'Output' beyond just 'the speech.'
+        What does this awkward fit suggest?
+      options:
+        - "That ICIO is being misapplied — an open-ended creative writing task doesn't have a genuinely clean, separable input/output the way a data-transformation task does, so the framework fights the task rather than fitting it."
+        - "That the team simply chose bad labels and any task can be forced into ICIO with enough effort."
+        - "That ICIO is the best possible framework for any writing task."
+        - "That this has nothing to do with the nature of the task."
+      answer: 0
+      explanation: "This is exactly ICIO's 'avoid when' case: open-ended creative or advisory tasks don't have a single clean input or output to name, so forcing the framework's structure onto them feels awkward rather than natural."
+      written_prompt: "Explain why the graduation-speech task doesn't fit ICIO's structure naturally, unlike a data-transformation task."
+    - question: |
+        A data pipeline task needs to: take a batch of raw customer records (given), apply a company's specific de-duplication rules (given as reference), and produce a cleaned, de-duplicated record set (the result).
+        Is ICIO a good structural fit here, and why?
+      options:
+        - "Yes — there's a clean Input (raw records), Context (de-duplication rules), Instruction (apply the rules), and Output (cleaned record set) — exactly the kind of data-transformation task ICIO is designed to structure."
+        - "No — ICIO can only be used for tasks involving text translation."
+        - "No — this task has no place for a Context component."
+        - "Yes, but only because the word 'clean' appears in the description."
+      answer: 0
+      explanation: "This maps cleanly onto all four ICIO components — a textbook data-transformation/pipeline task, which is exactly where the framework's explicit input/output separation shines."
+      written_prompt: "Explain how this de-duplication task maps onto each of ICIO's four components."
+    - question: |
+        A prompt designer is deciding between ICIO and RGC (Role, Goal, Context) for a task that transforms a spreadsheet of raw survey responses into a formatted summary table, with clearly given source data and a clearly defined output shape.
+        Which framework is the more natural fit, and why?
+      options:
+        - "ICIO — the task has a clean, nameable Input (raw responses) and Output (summary table), which ICIO is specifically built to separate, unlike RGC, which has no explicit Input/Output structure at all."
+        - "RGC — Role, Goal, and Context are always a better fit for any transformation task."
+        - "Neither framework fits; this task requires RISEN specifically."
+        - "Both are equally natural fits with no meaningful difference."
+      answer: 0
+      explanation: "This is a data-transformation task with a clean, nameable input and output — exactly ICIO's structural strength, which RGC's Role/Goal/Context shape has no direct equivalent for."
+      written_prompt: "Explain why ICIO's structure is a more natural fit than RGC's for this spreadsheet-to-summary-table task."

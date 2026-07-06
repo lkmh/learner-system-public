@@ -1,0 +1,20 @@
+# ============================================================
+# CLASS ACCESS CODES
+# Gates the Self-Quiz page on the cover screen. Add one entry
+# per class/cohort you teach. Everyone who enters a valid code
+# gets the SAME quiz (data/quiz.yaml) — this is just a
+# lightweight way to stop randoms stumbling into the quiz link
+# and to see which class is using it. It is NOT secure (this is
+# a static site with no backend) — don't use it to gate anything
+# sensitive.
+#
+# code  - what learners type on the cover page (not case-sensitive)
+# label - shown once they're in, e.g. "Self-Quiz — Tuesday AM"
+# ============================================================
+
+- code: "TUEAM"
+  label: "Tuesday AM cohort"
+- code: "TUEPM"
+  label: "Tuesday PM cohort"
+- code: "DEMO"
+  label: "Demo / walkthrough"

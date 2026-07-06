@@ -1,0 +1,1889 @@
+# ============================================================
+# Per-topic post-lesson recap test bank for skills-concepts.yaml
+# Sidecar file — see KOA_README.md for the full schema reference.
+# One block per {id, koa} pair, exactly 4 questions per block.
+# ============================================================
+
+- id: skills-1
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "Why does it matter that SKILL.md is written in Markdown rather than some AI-specific format?"
+      options:
+        - "Markdown was invented specifically for describing AI instructions, so it has hidden fields no other text format supports."
+        - "It means a SKILL.md file is just plain text with a handful of common formatting symbols, readable and editable with any plain text editor and no special software."
+        - "Markdown files must be compiled into machine code before Claude can read them."
+        - "Only Claude Code (not the Desktop app) can parse Markdown files, so Skills only work in the terminal."
+      answer: 1
+      explanation: "Markdown is plain text plus a small set of formatting symbols (#, -, etc.) — the same everyday format used in READMEs and chat messages, requiring no special software or compilation."
+      written_prompt: "Explain why the fact that SKILL.md uses plain Markdown (rather than a special AI format) is actually a useful, deliberate design choice."
+    - question: "Which of these correctly describes what a `-` at the start of a Markdown line does?"
+      options:
+        - "It creates a numbered list item automatically incrementing from 1."
+        - "It creates a bullet point."
+        - "It creates a heading equivalent to `#`."
+        - "It comments the line out so it is ignored by any parser."
+      answer: 1
+      explanation: "A leading `-` marks a bullet list item in Markdown; headings use `#`, not `-`."
+      written_prompt: "Describe what a `-` and a `#` each do at the start of a line in Markdown."
+    - question: "A new team member says \"I can't open SKILL.md, I don't have the right software.\" What's the accurate response?"
+      options:
+        - "They're right — SKILL.md requires a dedicated Skill-authoring application to open."
+        - "They're mistaken — SKILL.md is plain text, so any plain text editor (or even a basic viewer) can open and display it."
+        - "They're right, but only Claude Desktop can open it, not Claude Code."
+        - "They're right — it requires a Markdown-to-PDF converter first."
+      answer: 1
+      explanation: "Since SKILL.md is just plain text with Markdown symbols, no special software is required — any text editor works."
+      written_prompt: "How would you correct a colleague who believes SKILL.md needs special software to open?"
+    - question: "Why is it useful that SKILL.md uses the same Markdown format as everyday READMEs and chat messages?"
+      options:
+        - "Because Markdown enforces strict machine-checked syntax rules that prevent all typos."
+        - "Because it lowers the barrier to writing/reading a Skill — no new syntax to learn beyond what's already used elsewhere."
+        - "Because Markdown files execute faster than other text formats."
+        - "Because Markdown is the only format Claude's model was trained to understand at all."
+      answer: 1
+      explanation: "Reusing a format people already know (from READMEs, chat, etc.) means no new syntax needs to be learned to write or read a Skill."
+      written_prompt: "What's the practical benefit of SKILL.md reusing a format (Markdown) people already know from elsewhere?"
+
+- id: skills-2
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What does an LLM do by default, without any tools, when asked to do arithmetic?"
+      options:
+        - "It always delegates silently to an internal calculator no matter what."
+        - "It predicts likely-sounding text, which can produce wrong answers as the numbers get larger."
+        - "It refuses to answer any arithmetic question outright."
+        - "It queries a live math verification database before answering."
+      answer: 1
+      explanation: "Left alone, a model answers by predicting plausible text, including arithmetic — which is where it can go wrong on larger numbers, since it isn't actually calculating."
+      written_prompt: "Explain why an LLM can get simple arithmetic wrong even though it 'knows' math facts from training."
+    - question: "What is a 'tool' in the sense used when describing what a Skill organizes?"
+      options:
+        - "A synonym for the Skill itself — 'tool' and 'Skill' mean the same thing."
+        - "A specific external action the model can invoke instead of guessing, such as a calculator or file reader."
+        - "Any sentence the model generates during a conversation."
+        - "A hardware requirement for running Claude Code."
+      answer: 1
+      explanation: "A tool is a distinct external action (calculator, file reader, search function) — separate from the Skill, which is instructions about when/how to use tools."
+      written_prompt: "In your own words, define what a 'tool' is in this context, and give an example."
+    - question: "A learner says: \"A Skill invents brand-new abilities the model didn't have before.\" What's wrong with this claim?"
+      options:
+        - "Nothing — that's exactly what a Skill does."
+        - "A Skill doesn't invent new abilities; it tells the model when and how to reach for tools it already has access to."
+        - "Skills only work if no tools are available at all."
+        - "Skills replace tools entirely, making tools obsolete."
+      answer: 1
+      explanation: "A Skill organizes existing tool access — it tells the model when/how to use tools it can already reach, rather than creating new abilities from scratch."
+      written_prompt: "Correct the misconception that a Skill gives a model abilities it didn't already have."
+    - question: "Why is 'a calculator on the desk, not doing math in your head' a useful analogy for tool use?"
+      options:
+        - "Because it implies tools are optional decorations with no real function."
+        - "Because it captures that the model can reach for an external, reliable mechanism instead of relying on its own internal (and fallible) prediction for that task."
+        - "Because it means the model must physically stop and wait for a human to hand it a calculator."
+        - "Because it implies tools always produce creative rather than precise answers."
+      answer: 1
+      explanation: "The analogy highlights that reaching for an external, deterministic mechanism (a tool) avoids relying on the model's own less-reliable internal prediction for tasks like arithmetic."
+      written_prompt: "Explain the 'calculator on the desk' analogy in your own words and why it fits tool use."
+
+- id: skills-3
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What is the core difference between an API and a connector as described here?"
+      options:
+        - "There is no difference — they are exactly the same thing under different names."
+        - "An API is the general mechanism for software to ask other software to do something; a connector is a ready-made API hookup someone already built."
+        - "An API only works for email; a connector only works for chat apps."
+        - "A connector is a physical cable, while an API is purely conceptual and never implemented."
+      answer: 1
+      explanation: "An API is the general mechanism for cross-software requests; a connector is a pre-built implementation of that mechanism for a specific app, so you don't have to wire it yourself."
+      written_prompt: "Explain the difference between an API in general and a connector, using your own example."
+    - question: "Without a Gmail connector, what can Claude do regarding sending an email?"
+      options:
+        - "Nothing at all — it cannot even discuss what it would send."
+        - "It can only describe what it would send — it cannot actually send it."
+        - "It can send the email but not read the inbox."
+        - "It can send the email only if the user is logged into Gmail in the same browser tab."
+      answer: 1
+      explanation: "Without the plumbing (a connector), Claude can only describe the action; the connector is what makes actually performing it possible."
+      written_prompt: "Without any connector installed, what is the actual limit on what Claude can do with an app like Gmail or Slack?"
+    - question: "A teammate says: \"An API and a connector are just two words for the exact same product.\" How would you correct this?"
+      options:
+        - "Agree — there's no meaningful distinction worth making."
+        - "Clarify that an API is the underlying mechanism for cross-software requests, while a connector is a specific, ready-made implementation of that mechanism for one particular app."
+        - "Say a connector is hardware and an API is software."
+        - "Say APIs are only used by Claude, and connectors are only used by humans."
+      answer: 1
+      explanation: "API is the general concept/mechanism; a connector is a concrete, pre-built implementation of it for a specific app — related but not identical."
+      written_prompt: "How would you explain to a non-technical teammate the difference between 'an API' and 'a connector'?"
+    - question: "Why does 'the plumbing that lets Claude actually do something' describe a connector well?"
+      options:
+        - "Because connectors are literally physical pipes installed in a building."
+        - "Because, like plumbing carries water where it's needed, a connector carries a described action through to an actual effect in another piece of software."
+        - "Because connectors have nothing to do with actions — they only describe intent."
+        - "Because plumbing implies the connector is optional and rarely used."
+      answer: 1
+      explanation: "The plumbing metaphor captures that a connector is the mechanism that carries an intended action through to a real effect, rather than the action just staying descriptive."
+      written_prompt: "Explain why 'plumbing' is an apt metaphor for what a connector does."
+
+- id: skills-4
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What problem did MCP (Model Context Protocol) solve that existed before it?"
+      options:
+        - "The need for AI models to have larger context windows."
+        - "Every app that wanted to offer its tools to an AI needed its own custom, one-off integration; MCP replaced this with one shared standard."
+        - "The lack of any way for humans to type commands to an AI."
+        - "The absence of any file format for storing Skills."
+      answer: 1
+      explanation: "Before MCP, each app needed a bespoke integration; MCP is a shared standard connection shape that replaces those one-off builds, like USB versus proprietary cables."
+      written_prompt: "Explain the problem MCP was designed to solve, in your own words."
+    - question: "In the Slack MCP server example, what can an AI assistant do once connected?"
+      options:
+        - "Only read messages, with no ability to send or search."
+        - "Search Slack messages/files/channels, read and send messages, and read or create Slack canvases — all through one standard connection."
+        - "Only create new Slack workspaces."
+        - "Nothing — Slack has no MCP server."
+      answer: 1
+      explanation: "The Slack MCP server example shows search, read/send messaging, and canvas read/create — all via the one standard MCP connection, not a custom Slack-specific build."
+      written_prompt: "List what the Slack MCP server example lets an AI assistant do, and note that it's all through one standard connection."
+    - question: "A colleague claims: \"MCP means every app still needs its own unique wiring to talk to an AI.\" What's the correction?"
+      options:
+        - "Agree — MCP hasn't changed anything about custom wiring."
+        - "Correct them: MCP replaces custom, per-app wiring with one shared standard, the way USB replaced proprietary cables."
+        - "Say MCP only applies to Slack and no other app."
+        - "Say MCP is a marketing term with no real technical meaning."
+      answer: 1
+      explanation: "MCP's entire point is standardizing the connection shape so apps don't each need bespoke one-off integrations."
+      written_prompt: "Correct the claim that MCP still requires unique, per-app wiring."
+    - question: "Why is 'USB instead of a different proprietary cable for every device' an apt analogy for MCP?"
+      options:
+        - "Because MCP is literally a physical cable standard for computer hardware."
+        - "Because it captures MCP's role as one common connection shape usable across many different apps, instead of a custom connection per app."
+        - "Because USB and MCP have nothing meaningfully in common."
+        - "Because it implies MCP only supports one app at a time, like a single USB port."
+      answer: 1
+      explanation: "The USB analogy illustrates a single common standard replacing many incompatible bespoke ones — exactly MCP's role for AI-tool integrations."
+      written_prompt: "Explain why comparing MCP to USB (versus proprietary cables) is a fitting analogy."
+
+- id: skills-5
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What fundamentally distinguishes a CLI from a GUI, per this lesson?"
+      options:
+        - "A CLI can only be used by programmers, while a GUI can be used by anyone."
+        - "A CLI controls software by typing text commands instead of clicking through menus, though the underlying actions performed can be identical."
+        - "A CLI has no underlying logic at all, unlike a GUI."
+        - "A CLI is always slower than a GUI for every possible task."
+      answer: 1
+      explanation: "A CLI/terminal is a way of controlling software via typed commands rather than menu clicks — the same action ('open this file') can be done either way."
+      written_prompt: "Explain the core difference between a CLI and a GUI, using the example of 'opening a file'."
+    - question: "Why does it matter, in this deck, that Claude Code is a CLI?"
+      options:
+        - "Because it means Claude Code cannot read files from disk at all."
+        - "Because it explains why Claude Code runs from a terminal and reads Skills from disk, rather than being a website."
+        - "Because CLIs cannot support Markdown files like SKILL.md."
+        - "Because it means Skills only exist in the Desktop app, not Claude Code."
+      answer: 1
+      explanation: "Understanding Claude Code as a CLI (terminal-based tool) explains why it operates by reading files like SKILL.md from disk rather than through a web interface."
+      written_prompt: "Why does knowing Claude Code is a CLI help explain how it interacts with Skills stored on disk?"
+    - question: "A learner insists: \"Typing a command and clicking a menu button can never accomplish the same result.\" How would you respond?"
+      options:
+        - "Agree completely — they are fundamentally different outcomes."
+        - "Disagree: the example given (\"open this file\") shows the exact same action can be a menu click in one app and a typed command in another."
+        - "Say typed commands are always slower and thus functionally different."
+        - "Say menu clicks are only available on mobile devices."
+      answer: 1
+      explanation: "The lesson explicitly notes the same action can be achieved either way — the interface differs, not necessarily the outcome."
+      written_prompt: "Push back on the claim that a CLI command and a GUI menu click can never achieve the same outcome."
+    - question: "What is the plain-English term the lesson uses interchangeably with 'CLI'?"
+      options:
+        - "Browser"
+        - "Terminal"
+        - "Compiler"
+        - "Kernel"
+      answer: 1
+      explanation: "The lesson explicitly notes 'CLI (command-line interface) — also called a \"terminal\"'."
+      written_prompt: "What everyday term is used interchangeably with 'CLI' in this lesson?"
+
+- id: skills-6
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What is the actual content format of a .env file?"
+      options:
+        - "A binary compiled configuration file."
+        - "Plain text KEY=value lines, e.g. SLACK_TOKEN=xoxb-12345."
+        - "A JSON document with nested objects only."
+        - "An encrypted file that only Claude can decrypt."
+      answer: 1
+      explanation: ".env files are plain text, containing simple KEY=value lines that code reads at run time."
+      written_prompt: "Describe the format of a typical line inside a .env file."
+    - question: "Where should an API key never be typed, according to this lesson?"
+      options:
+        - "In a .env file."
+        - "Directly inside a SKILL.md file."
+        - "In an operating system's own settings."
+        - "In a secret manager."
+      answer: 1
+      explanation: "The lesson is explicit: secrets go in a .env file (or OS settings/secret manager), never typed directly into SKILL.md."
+      written_prompt: "Where should an API key never be placed, and why does that specific location matter?"
+    - question: "A new contributor pastes `API_KEY=sk-abc123` directly into the body of SKILL.md, reasoning \"it's easier to find it there.\" What's the issue?"
+      options:
+        - "No issue — SKILL.md is the standard place for secrets."
+        - "SKILL.md is meant to describe Skill behavior and is read by anyone with folder access (and by Claude); secrets belong in a separate .env file read at run time instead."
+        - "The issue is only that the variable name is too short."
+        - "The issue is that .env files cannot store API keys at all."
+      answer: 1
+      explanation: "SKILL.md is not the appropriate place for secrets — a .env file (read at run time, not hardcoded into instructions) is the standard convention."
+      written_prompt: "Explain what's wrong with hardcoding an API key inside a SKILL.md file, and what to do instead."
+    - question: "What is the relationship between a .env file and the code/Skill that uses it?"
+      options:
+        - "The code has the values typed directly into it, and the .env file is unused."
+        - "The code reads the values out of the .env file at run time, rather than having them typed directly into the code or Skill."
+        - "The .env file replaces the need for any code at all."
+        - "The .env file is only used during installation, never afterward."
+      answer: 1
+      explanation: "The .env file holds the values; code reads them out at run time instead of having them hardcoded."
+      written_prompt: "Describe how code (or a Skill) actually obtains a value stored in a .env file."
+
+- id: skills-7
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What is the minimum physical requirement for something to be a valid Claude Skill?"
+      options:
+        - "A compiled binary plus a manifest.json file."
+        - "A folder containing a file literally named SKILL.md."
+        - "A registered account with Anthropic and an API key."
+        - "A minimum of three separate Markdown files."
+      answer: 1
+      explanation: "A Skill is simply a folder with a file named SKILL.md inside it — nothing more is structurally required."
+      written_prompt: "What is the bare minimum structural requirement for something to count as a Skill?"
+    - question: "What single field must the frontmatter of SKILL.md contain to be useful?"
+      options:
+        - "A version number."
+        - "A description."
+        - "An author name."
+        - "A license identifier."
+      answer: 1
+      explanation: "The frontmatter needs only a description to be useful — everything else below it is Markdown instructions."
+      written_prompt: "Which single frontmatter field is required for a SKILL.md to function, and what does everything else in the file consist of?"
+    - question: "A learner claims: \"Anthropic's getting-started example Skill is an API integration that connects directly to a bug tracker.\" What's inaccurate about this?"
+      options:
+        - "Nothing — that's exactly what it does."
+        - "The example Skill reads files you've recently edited in a project and flags risky changes (like a hardcoded password) — it is not described as an API integration to an external bug tracker."
+        - "The example Skill only works with committed changes, never uncommitted ones."
+        - "The example Skill requires a paid Anthropic API integration."
+      answer: 1
+      explanation: "The real example flags risky uncommitted changes/diffs within a project — not an external bug-tracker API integration."
+      written_prompt: "Correct the claim that Anthropic's getting-started example Skill is a bug-tracker API integration."
+    - question: "What do 'uncommitted changes' and a 'diff' mean in plain English, as explained in this lesson?"
+      options:
+        - "Uncommitted changes are permanent database records; a diff is a compiled binary."
+        - "Uncommitted changes are edits made that haven't been saved into the project's official history yet; a diff is a before/after, line-by-line comparison."
+        - "Uncommitted changes only apply to deleted files; a diff is a security certificate."
+        - "Both terms refer exclusively to changes made by Claude, never a human."
+      answer: 1
+      explanation: "The lesson defines uncommitted changes as unsaved edits not yet in official history, and a diff as a simple before/after line comparison."
+      written_prompt: "Define 'uncommitted changes' and 'diff' in plain English, as this lesson explains them."
+
+- id: skills-8
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What decides whether Claude applies a given Skill to a request, per the official docs quoted in this lesson?"
+      options:
+        - "The Skill's file size on disk."
+        - "The description field — Claude uses it to decide when to apply the Skill."
+        - "The alphabetical order of the Skill's folder name."
+        - "Whether the Skill was installed most recently."
+      answer: 1
+      explanation: "The docs state plainly that description is what Claude uses to decide when to apply a Skill."
+      written_prompt: "According to the official docs quoted here, what field determines whether Claude decides to use a Skill?"
+    - question: "What does 'progressive disclosure' mean in the context of Skills?"
+      options:
+        - "Every Skill's full body loads into context at all times, regardless of relevance."
+        - "Only the short description from every available Skill sits in context up front; the full instructions load only once a description matches the request."
+        - "Skills are disclosed to the user gradually over several conversation turns."
+        - "Descriptions are hidden from Claude and only shown to the human user."
+      answer: 1
+      explanation: "Progressive disclosure means only descriptions are loaded upfront; full instructions load lazily once a match occurs."
+      written_prompt: "Explain what 'progressive disclosure' means for how Skills are loaded into context."
+    - question: "In the Claude.ai/Desktop app specifically, what are the character limits mentioned for name and description?"
+      options:
+        - "Unlimited for both."
+        - "name: 64 characters, description: 200 characters."
+        - "name: 200 characters, description: 64 characters."
+        - "name: 500 characters, description: 500 characters."
+      answer: 1
+      explanation: "The lesson states name tops out at 64 characters and description at 200 in the Claude.ai/Desktop app."
+      written_prompt: "What are the character limits for a Skill's name and description in the Claude.ai/Desktop app?"
+    - question: "A learner says: \"If a Skill doesn't trigger, the fix is almost always to rewrite the entire body of instructions.\" What does the docs' troubleshooting advice actually say?"
+      options:
+        - "That's correct — the body is always the problem."
+        - "The docs say to check whether the description includes keywords users would naturally say — rewording the description is almost always the fix, not the instructions."
+        - "The docs say non-triggering Skills should simply be deleted."
+        - "The docs say the fix is always to shorten the name field."
+      answer: 1
+      explanation: "The lesson explicitly states rewording the description (not the instructions) is almost always the fix for a non-triggering Skill."
+      written_prompt: "What does the official troubleshooting advice say to check first when a Skill isn't triggering?"
+
+- id: skills-9
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "When does the body of SKILL.md actually load into context, versus the description?"
+      options:
+        - "The body and description load simultaneously at all times for every available Skill."
+        - "Only the description sits in context by default; the body loads once the description has matched the request."
+        - "The body loads first, and the description loads only afterward as a summary."
+        - "Neither loads unless the user explicitly opens the file."
+      answer: 1
+      explanation: "This follows progressive disclosure: the description is available upfront, and the full body (the 'how') only loads once matched."
+      written_prompt: "When, specifically, does the body of SKILL.md get loaded, relative to the description?"
+    - question: "According to Anthropic's own docs example layout, what can a Skill's folder contain beyond SKILL.md?"
+      options:
+        - "Nothing else is ever permitted in a Skill folder besides SKILL.md."
+        - "A template file for Claude to fill in, a folder of examples, and a folder of small helper scripts."
+        - "Only compiled executables, never plain text files."
+        - "Only image files for illustrating the Skill's purpose."
+      answer: 1
+      explanation: "The docs' example layout includes SKILL.md plus a template file, an examples folder, and helper scripts — all bundled in the same folder."
+      written_prompt: "List the kinds of additional files, beyond SKILL.md itself, that a Skill's folder can hold."
+    - question: "What does the `dependencies` field in SKILL.md's frontmatter declare?"
+      options:
+        - "The names of other Skills that must be disabled for this one to run."
+        - "Software packages the Skill's bundled scripts need already installed to run (e.g. a specific Python version)."
+        - "A list of API keys the Skill requires."
+        - "The minimum number of tokens required to trigger the Skill."
+      answer: 1
+      explanation: "dependencies declares required software packages for any bundled scripts, so it's clear what must be installed before they can run."
+      written_prompt: "What does the dependencies field in SKILL.md's frontmatter describe, and why is it useful to declare?"
+    - question: "What is the rule of thumb given for the size of SKILL.md itself?"
+      options:
+        - "Keep it under 500 lines, moving detailed reference material into separate files loaded only when needed."
+        - "Keep it under 50 lines total, with no exceptions ever."
+        - "There is no recommended limit — longer is always better."
+        - "It must exactly match the length of the description field, scaled up by 10x."
+      answer: 0
+      explanation: "The docs' rule of thumb is to keep SKILL.md itself under 500 lines and move detail into separate files that load only when needed."
+      written_prompt: "What size guideline is given for SKILL.md, and what's the recommended alternative for detailed reference material?"
+
+- id: skills-10
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What does the 'human-only trigger' invocation switch prevent?"
+      options:
+        - "It prevents Claude from ever reading the Skill's description."
+        - "It prevents Claude from deciding on its own that a Skill (like deploy) is relevant and using it without being explicitly asked."
+        - "It prevents the Skill from being installed in the Desktop app."
+        - "It prevents the Skill from having a description field at all."
+      answer: 1
+      explanation: "The human-only switch stops Claude from autonomously invoking a Skill (e.g. deploy) — only a human typing it can start it."
+      written_prompt: "What does restricting a Skill to human-only triggering actually prevent Claude from doing?"
+    - question: "What is the official docs' own example use case for restricting a Skill to human-triggered only?"
+      options:
+        - "A weekly-status-report Skill, because it's too simple to need restriction."
+        - "A deploy Skill, because you don't want Claude deciding on its own that code 'looks ready' and running a deployment."
+        - "A Markdown-formatting Skill, because formatting is irreversible."
+        - "Any Skill that has no description field."
+      answer: 1
+      explanation: "The docs explicitly use a deploy Skill as the example: deployment shouldn't happen just because Claude decides code looks ready."
+      written_prompt: "What example does the lesson give for a Skill that should be restricted to human-only triggering, and why?"
+    - question: "What does the 'Claude-only trigger' switch mean in practice?"
+      options:
+        - "It disables the Skill entirely for everyone."
+        - "It means the Skill is used only by Claude's own judgment — not something a human would type themselves — appropriate for background knowledge Skills."
+        - "It means only paid Anthropic accounts can trigger the Skill."
+        - "It means the Skill can only run once per day."
+      answer: 1
+      explanation: "The Claude-only switch is for background-knowledge Skills — things Claude reaches for on its own rather than a human typing directly."
+      written_prompt: "What does the Claude-only invocation switch mean, and what kind of Skill is it suited for?"
+    - question: "What happens if neither invocation switch is set on a Skill?"
+      options:
+        - "The Skill becomes permanently disabled."
+        - "It behaves the normal default way — either the human or Claude can trigger it."
+        - "It requires both switches to be explicitly set to 'off' in writing before it can run."
+        - "It automatically becomes a Plugin."
+      answer: 1
+      explanation: "Both switches are optional; leaving them off gives the normal default behavior where either side can trigger the Skill."
+      written_prompt: "What is the default invocation behavior of a Skill if neither switch is configured?"
+
+- id: skills-11
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "How does a Skill relate to tools, APIs/connectors, and MCP, per this lesson?"
+      options:
+        - "A Skill is just another name for an MCP connector."
+        - "A Skill sits above all three — it's instructions for when and how to use them for a specific recurring job, not one of them itself."
+        - "A Skill replaces the need for tools, APIs, and MCP entirely."
+        - "A Skill is a subtype of API that only works with Anthropic's own connectors."
+      answer: 1
+      explanation: "A Skill sits above tools/APIs/MCP as orchestrating instructions — it references them but is a distinct layer, not equivalent to any one of them."
+      written_prompt: "Describe the relationship between a Skill and tools, APIs/connectors, and MCP as this lesson frames it."
+    - question: "Can a Skill be valid with no tools, no API, and no MCP connector at all?"
+      options:
+        - "No — every Skill must reference at least one tool or connector to function."
+        - "Yes — a Skill that's pure instructions with nothing to 'connect' to is still completely valid."
+        - "Only if it's converted into a Plugin first."
+        - "Only in the Desktop app, never in Claude Code."
+      answer: 1
+      explanation: "The lesson states plainly that a Skill with none of tools/API/MCP is still completely valid — plenty of good Skills are pure instructions."
+      written_prompt: "Is a Skill with no tools, API, or MCP connector still valid? Explain why or why not."
+    - question: "A learner claims: \"Every Skill must be built on top of an MCP connector, otherwise it can't exist.\" What's wrong with this?"
+      options:
+        - "Nothing — this is accurate."
+        - "It's inaccurate: a Skill can be pure instructions with no MCP connector, tool, or API at all and still be valid."
+        - "It's wrong only in the sense that Skills need APIs, not MCP specifically."
+        - "It's wrong because Skills can only use tools, never MCP connectors."
+      answer: 1
+      explanation: "The lesson explicitly rejects this: a Skill needs none of these to be valid."
+      written_prompt: "Correct the claim that every Skill must be built on an MCP connector."
+    - question: "What is a tool, in relation to a Skill, per this summary lesson?"
+      options:
+        - "A tool is a single action Claude can take; it's a distinct concept from the Skill, which is the instructions about using it."
+        - "A tool and a Skill are identical concepts with interchangeable names."
+        - "A tool is a type of Plugin."
+        - "A tool only exists inside MCP, never independently."
+      answer: 0
+      explanation: "The lesson restates: a tool is a single action; a Skill sits above it as instructions for when/how to use it."
+      written_prompt: "How does this lesson define a 'tool' in relation to a Skill?"
+
+- id: skills-12
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What is the one required frontmatter field shared by both a tiny Skill (weekly-status-report) and a large Skill (refund-request-handler)?"
+      options:
+        - "A `dependencies` field listing every required package."
+        - "A `description` telling Claude when to use it."
+        - "A `steps` field listing every stage numerically."
+        - "An `approval` field naming who must sign off on each run."
+      answer: 1
+      explanation: "Both examples need exactly the same single required piece: a description field — nothing more is strictly required by the format."
+      written_prompt: "What single frontmatter requirement is shared by both a tiny Skill and a large, multi-stage Skill?"
+    - question: "What actually differs between weekly-status-report and refund-request-handler?"
+      options:
+        - "Nothing meaningful — they are functionally identical in every respect."
+        - "The body — refund-request-handler is several stages long because the job itself has more steps and more places something could go wrong."
+        - "Only the frontmatter differs; the bodies are identical."
+        - "weekly-status-report requires an MCP connector while refund-request-handler does not."
+      answer: 1
+      explanation: "The bodies differ in length/complexity because the underlying jobs differ in complexity — the format itself doesn't constrain that."
+      written_prompt: "What is different between the two example Skills, and what stays the same?"
+    - question: "A learner claims: \"The SKILL.md file format itself caps how complex a Skill's job can be.\" Is this accurate?"
+      options:
+        - "Yes — the format enforces a hard complexity ceiling."
+        - "No — the format doesn't limit ambition; the job's own complexity is what determines how long/staged the body becomes."
+        - "Yes, but only for Plugins, not standalone Skills."
+        - "No, but only because the description field can be made arbitrarily long."
+      answer: 1
+      explanation: "The lesson concludes explicitly: 'the file format doesn't limit how ambitious a Skill can be — the job does.'"
+      written_prompt: "Is the SKILL.md format itself a limiting factor on a Skill's complexity? Explain using the two contrasting examples."
+    - question: "Which of these two example Skills involves a built-in pause for human approval, per this lesson's own naming?"
+      options:
+        - "weekly-status-report"
+        - "refund-request-handler"
+        - "Both equally"
+        - "Neither — approval pauses are described in a later lesson, not this one"
+      answer: 1
+      explanation: "refund-request-handler is introduced as the more elaborate example, including an approval pause covered in the following lesson — weekly-status-report is the short, linear one."
+      written_prompt: "Which of the two named example Skills is the more elaborate, multi-stage one, and which is short and linear?"
+
+- id: skills-13
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "How many distinct fixed sections does weekly-status-report sort items into?"
+      options:
+        - "Two: Done and Not Done."
+        - "Three: Shipped, In progress, Blocked."
+        - "Five, one per day of the work week."
+        - "It's dynamic — however many the input data suggests."
+      answer: 1
+      explanation: "The lesson specifies three fixed sections: Shipped, In progress, Blocked."
+      written_prompt: "What are the three fixed sections weekly-status-report sorts items into?"
+    - question: "Does weekly-status-report involve any approval checkpoint or external tool/person?"
+      options:
+        - "Yes, it always requires manager sign-off before output."
+        - "No — it's explicitly described as having no extra checks, no second opinions, no other people or tools involved."
+        - "Yes, it calls an external MCP connector to verify each item."
+        - "It depends on which app it's installed in."
+      answer: 1
+      explanation: "The lesson explicitly states no extra checks, no second opinions, and no other people/tools are involved — it's a short, linear recipe."
+      written_prompt: "Does weekly-status-report involve any approval step or outside tool? What does the lesson say explicitly?"
+    - question: "What best characterizes the overall shape of weekly-status-report as a Skill?"
+      options:
+        - "A branching, multi-path decision tree with conditional logic."
+        - "A short, linear recipe from start to finish: read, sort, output, stop."
+        - "An open-ended creative writing exercise with no fixed structure."
+        - "A recursive Skill that calls itself repeatedly until convergence."
+      answer: 1
+      explanation: "The lesson literally frames it as 'read, sort, done' — a short linear recipe with no branching."
+      written_prompt: "Characterize the overall structure of weekly-status-report as described in this lesson."
+    - question: "A learner assumes weekly-status-report must analyze sentiment or tone before sorting items. Is that accurate?"
+      options:
+        - "Yes, tone analysis is a required step before sorting."
+        - "No — the described steps are only: read notes exactly as pasted, sort into three sections, output, stop. No tone analysis is mentioned."
+        - "Yes, but only for items marked 'Blocked'."
+        - "It depends on the length of the notes."
+      answer: 1
+      explanation: "The lesson lists exactly four simple steps with no tone-analysis step described."
+      written_prompt: "Does weekly-status-report, as described, involve any tone or sentiment analysis step? Justify your answer from the lesson's own steps."
+
+- id: skills-14
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "At what dollar threshold does refund-request-handler pause for human approval, per this lesson?"
+      options:
+        - "$50"
+        - "$100"
+        - "$500"
+        - "There is no threshold — it always pauses."
+      answer: 1
+      explanation: "The lesson specifies: if the refund amount is over $100, stop and ask a person to approve it."
+      written_prompt: "At what dollar amount does refund-request-handler require human approval before proceeding?"
+    - question: "Where does the refund policy itself live, per this lesson's design?"
+      options:
+        - "Typed directly into the SKILL.md instructions in full."
+        - "In a separate Resource file sitting in the same folder as SKILL.md, referenced by name."
+        - "Hardcoded into the model's training data."
+        - "In the Skill's description field."
+      answer: 1
+      explanation: "The lesson is explicit: the policy is a separate Resource file, referenced by name, not pasted into the instructions."
+      written_prompt: "Where does the refund policy document live in this Skill's design, and how does the Skill access it?"
+    - question: "What happens after a refund is approved (or didn't need approval)?"
+      options:
+        - "Nothing further happens — the process ends at approval."
+        - "The reply is actually sent and what happened is recorded."
+        - "The Skill deletes the customer's original request."
+        - "A second, independent Skill must be manually triggered to send the reply."
+      answer: 1
+      explanation: "The final stage is: only after approval (or if under threshold), send the reply and record what happened."
+      written_prompt: "What are the final steps of refund-request-handler after approval is obtained or not required?"
+    - question: "A learner assumes the Skill's instructions must contain the full text of the refund policy so Claude 'has it memorized.' Is this accurate per the lesson?"
+      options:
+        - "Yes, the full policy text must be embedded directly in SKILL.md."
+        - "No — the lesson explicitly notes the policy is deliberately NOT typed out in the instructions; it's a referenced Resource file Claude opens only when needed."
+        - "Yes, but only a summarized version needs to be embedded."
+        - "It depends on whether the Skill is a Plugin or standalone."
+      answer: 1
+      explanation: "The lesson calls out explicitly what's missing from the list: the instructions never type out the policy itself, deliberately relying on a referenced Resource instead."
+      written_prompt: "Does refund-request-handler embed the full refund policy text in its instructions? What does the lesson explicitly say about this?"
+
+- id: skills-15
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What kind of description does this lesson recommend writing, versus what to avoid?"
+      options:
+        - "A description that summarizes the Skill's internal architecture in technical detail."
+        - "A description written like a search query for the situation (e.g. \"Use when a customer asks for a refund\"), not a summary of the Skill (e.g. \"Handles refunds\")."
+        - "A description that lists every possible edge case the Skill might encounter."
+        - "A description that omits any mention of when to use the Skill."
+      answer: 1
+      explanation: "The lesson's first takeaway is to write descriptions like a situational search query, not a capability summary."
+      written_prompt: "What kind of description does this lesson recommend, using its own contrasting example?"
+    - question: "What does the second portable lesson say about checking information before acting?"
+      options:
+        - "Skills should assume information is correct rather than checking it, to save time."
+        - "The Skill should actually check real, current information (the policy document, this week's real notes) before deciding what to do, rather than assuming."
+        - "Skills should never reference outside documents under any circumstance."
+        - "Only large Skills need to check real information; small Skills can assume."
+      answer: 1
+      explanation: "The lesson's second takeaway is to have the Skill check real, current information before deciding, rather than assuming."
+      written_prompt: "What does this lesson say about checking real information before a Skill decides what to do?"
+    - question: "According to the third takeaway, when should a Skill add multiple stages or an approval pause?"
+      options:
+        - "Every Skill should include multiple stages and an approval pause by default, for safety."
+        - "Only once the job genuinely needs them — most Skills should look like the small, linear weekly-status-report, not the multi-stage refund-request-handler."
+        - "Only if the Skill will be published to a marketplace."
+        - "Never — approval pauses should be avoided entirely regardless of the job."
+      answer: 1
+      explanation: "The lesson states these features 'only earn their place once the job genuinely needs them' and that most Skills should be simple."
+      written_prompt: "When does this lesson say a Skill should add an approval pause or multiple stages?"
+    - question: "A learner claims: \"These three lessons only apply to large, complex Skills like refund-request-handler.\" Is that accurate?"
+      options:
+        - "Yes, small Skills are exempt from these lessons entirely."
+        - "No — the lesson frames these as small lessons that apply no matter the size of Skill you write."
+        - "Yes, but only the description-writing lesson applies to small Skills."
+        - "No, these lessons apply only to Plugins, not standalone Skills."
+      answer: 1
+      explanation: "The lesson's heading and framing state these are portable lessons applying regardless of Skill size."
+      written_prompt: "Do these three takeaways apply only to large Skills, or to Skills of any size? Explain using the lesson's own framing."
+
+- id: skills-16
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What two Capabilities switches must be turned on before a Skill will run in the Claude Desktop app?"
+      options:
+        - "Web search and Voice mode."
+        - "Code execution and File creation."
+        - "Dark mode and Auto-update."
+        - "Two-factor authentication and Data export."
+      answer: 1
+      explanation: "The lesson names Code execution and File creation as the one-time prerequisite switches in Settings → Capabilities."
+      written_prompt: "What two prerequisite switches must be enabled in Settings → Capabilities before a Skill will run in Claude Desktop?"
+    - question: "What file format must a Skill be uploaded as in the Claude Desktop UI, and what internal shape must it have?"
+      options:
+        - "A .pdf file, with the SKILL.md converted to PDF first."
+        - "A .zip file, with the Skill's folder sitting at the very top level of the zip (not buried inside another folder)."
+        - "A .docx file matching a specific Word template."
+        - "No file upload is needed — Skills are typed directly into a text box."
+      answer: 1
+      explanation: "The lesson specifies uploading a .zip with the Skill folder at the top level, plus a resources folder alongside it if needed."
+      written_prompt: "What file format does the Desktop UI require for uploading a Skill, and what shape must its contents follow?"
+    - question: "Are custom Skills you upload to Claude Desktop shared with others by default?"
+      options:
+        - "Yes, they are immediately visible to your entire organization."
+        - "No — they are private to your own account by default; sharing must be turned on by an owner on Team/Enterprise plans."
+        - "Yes, but only to people in the same Slack workspace."
+        - "No, and there is no way to ever share them, even on Team/Enterprise plans."
+      answer: 1
+      explanation: "The lesson states custom skills are private by default, with an owner able to turn on sharing on Team/Enterprise plans."
+      written_prompt: "Are uploaded custom Skills shared by default in the Desktop app? What changes this on Team/Enterprise plans?"
+    - question: "What does the official guidance say about enabling a Skill someone else shared with you?"
+      options:
+        - "Enable it immediately, since shared Skills are automatically vetted by Anthropic."
+        - "Only install skills from trusted sources, and review the files inside before enabling one someone else shared."
+        - "Sharing is disabled entirely, so this scenario cannot occur."
+        - "Only enable Skills from accounts with a verified checkmark."
+      answer: 1
+      explanation: "The lesson quotes the guidance directly: only install from trusted sources, and review the files before enabling a shared Skill."
+      written_prompt: "What does the official guidance recommend before enabling a Skill someone else shared with you?"
+
+- id: skills-17
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What distinguishes the 'personal' Skill location from the 'project' location in Claude Code?"
+      options:
+        - "Personal skills only work with paid accounts; project skills are free."
+        - "Personal skills are visible across every project you work on; project skills are visible only within that one specific project."
+        - "There is no difference — they are the same folder under different names."
+        - "Personal skills require a restart to take effect; project skills never do."
+      answer: 1
+      explanation: "Personal is a fixed location visible to every project; project is scoped to just that one project's shared files."
+      written_prompt: "What's the difference between the personal and project Skill locations in Claude Code?"
+    - question: "How does a plugin-based Skill get installed and made available, per this lesson?"
+      options:
+        - "By dragging a .zip file into a folder manually, the same as the Desktop app."
+        - "You install the plugin bundle with a typed command, then run a second typed command to make it available in your current session."
+        - "Plugins install automatically the first time Claude Code starts."
+        - "Plugins cannot be installed in Claude Code, only in the Desktop app."
+      answer: 1
+      explanation: "The lesson describes a two-command flow: install the plugin bundle, then enable/make it available in the current session."
+      written_prompt: "Describe the two-step process for installing and enabling a plugin-bundled Skill in Claude Code."
+    - question: "When does Claude Code require a restart to pick up Skill changes?"
+      options:
+        - "Every time any SKILL.md file is edited."
+        - "Only when adding a brand-new top-level skills folder — editing an existing SKILL.md takes effect immediately, no restart needed."
+        - "Restarts are never required for any Skill change."
+        - "Only when switching between personal and project scope."
+      answer: 1
+      explanation: "The lesson states Claude Code watches these folders live; only adding a brand-new top-level skills folder needs a restart."
+      written_prompt: "Under what specific circumstance does Claude Code require a restart to recognize a Skill change?"
+    - question: "What is a 'plugin' described as, in relation to Skills, in this lesson?"
+      options:
+        - "A synonym for an individual Skill folder."
+        - "A bundle of Skills (and other add-ons) someone else built and published to a shared listing called a marketplace."
+        - "A type of .env file used only for plugin secrets."
+        - "A restriction that prevents a Skill from being shared."
+      answer: 1
+      explanation: "The lesson defines a plugin as a bundle of Skills and other add-ons published to a marketplace — distinct from a single Skill folder."
+      written_prompt: "How does this lesson define a 'plugin' in relation to an individual Skill?"
+
+- id: skills-18
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What can a Plugin bundle beyond just Skills?"
+      options:
+        - "Nothing else — a Plugin is strictly limited to exactly one Skill."
+        - "Custom agents, hooks (actions that run automatically on an event), and ready-made MCP server connections, all packaged together."
+        - "Only .env files and secret managers."
+        - "Only marketing copy describing the Skill."
+      answer: 1
+      explanation: "The lesson describes a Plugin as bundling several Skills plus agents, hooks, and MCP server connections under one manifest."
+      written_prompt: "Beyond Skills, what else can a Plugin bundle, per this lesson?"
+    - question: "How is a plugin-bundled Skill invoked differently from a standalone personal/project Skill?"
+      options:
+        - "Identically — there is no difference in invocation syntax."
+        - "With the plugin's name in front of it, like /my-plugin:hello, versus a short name like /hello for a standalone Skill."
+        - "Plugin-bundled Skills cannot be invoked by typing at all, only by Claude's own judgment."
+        - "Plugin-bundled Skills require a different frontmatter format entirely."
+      answer: 1
+      explanation: "The docs draw this exact line: standalone Skills use a short name (/hello); plugin-bundled Skills are prefixed with the plugin name (/my-plugin:hello) to avoid collisions."
+      written_prompt: "How does invoking a plugin-bundled Skill differ syntactically from invoking a standalone Skill?"
+    - question: "What problem does the plugin-name-prefix invocation convention solve?"
+      options:
+        - "It makes Skill names shorter to type."
+        - "It lets two different plugins each ship a Skill called \"hello\" without colliding."
+        - "It prevents any Skill from ever being renamed."
+        - "It removes the need for a description field."
+      answer: 1
+      explanation: "The lesson explicitly states the prefix convention exists so two plugins' same-named Skills don't collide."
+      written_prompt: "What naming collision problem does prefixing a plugin-bundled Skill's invocation with the plugin name solve?"
+    - question: "What is the rule of thumb given for when to convert a standalone Skill into a Plugin?"
+      options:
+        - "Convert immediately, before ever testing the Skill standalone."
+        - "Build a standalone Skill first for a personal/single-project workflow you're still experimenting with, and convert to a Plugin once you want to share it more widely or bundle it with related pieces."
+        - "Never convert — Plugins and Skills are entirely separate categories that can't be converted between."
+        - "Convert only if the Skill exceeds 500 lines."
+      answer: 1
+      explanation: "The lesson's rule of thumb: start standalone while experimenting, convert to a Plugin once broader sharing/bundling is needed."
+      written_prompt: "What does this lesson recommend as the right time to convert a standalone Skill into a Plugin?"
+
+- id: skills-19
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What is a 'marketplace' in this context, and what does adding one actually do?"
+      options:
+        - "Adding a marketplace immediately installs every plugin it lists onto your machine."
+        - "A marketplace is a listing/catalog of Plugins someone else built and published — adding it only makes that catalog browsable, it doesn't install anything by itself."
+        - "A marketplace is a single specific plugin, not a catalog."
+        - "A marketplace only exists within the Claude Desktop app, not Claude Code."
+      answer: 1
+      explanation: "The lesson is explicit: adding a marketplace registers the catalog as browsable — it does not install anything on its own."
+      written_prompt: "What does adding a marketplace actually do, and what does it NOT do by itself?"
+    - question: "What are the two official Anthropic marketplaces named in this lesson?"
+      options:
+        - "claude-tools and claude-hub"
+        - "claude-plugins-official and claude-community"
+        - "anthropic-store and claude-market"
+        - "official-plugins and third-party-plugins"
+      answer: 1
+      explanation: "The lesson names claude-plugins-official (curated, available automatically) and claude-community (third-party, added manually, screened)."
+      written_prompt: "Name the two official Anthropic marketplaces mentioned in this lesson and how they differ."
+    - question: "What is the exact security warning quoted in this lesson about plugins and marketplaces?"
+      options:
+        - "Plugins are sandboxed and cannot access anything outside the Skill folder."
+        - "\"Plugins and marketplaces are highly trusted components that can execute arbitrary code on your machine with your user privileges. Only install plugins and add marketplaces from sources you trust.\""
+        - "All plugins are automatically reviewed by Anthropic before being listed anywhere."
+        - "Marketplaces cannot contain any plugin that accesses the file system."
+      answer: 1
+      explanation: "This is the docs' warning quoted verbatim in the lesson — plugins/marketplaces can run arbitrary code with your privileges, so only trusted sources should be used."
+      written_prompt: "Quote or paraphrase the security warning this lesson gives about plugins and marketplaces."
+    - question: "What are the two separate steps involved in getting a specific plugin installed from a marketplace?"
+      options:
+        - "Only one step is needed: installing the plugin automatically registers its marketplace too."
+        - "First add/register the marketplace (the catalog), then separately install the specific plugin(s) you want from it."
+        - "First install the plugin, then retroactively create a marketplace for it."
+        - "Both steps happen simultaneously and cannot be separated."
+      answer: 1
+      explanation: "The lesson describes two distinct steps: registering the marketplace catalog, then installing a specific plugin from it — like adding an app store, then downloading an app."
+      written_prompt: "What are the two separate steps involved in getting a plugin from a marketplace onto your machine?"
+
+- id: skills-20
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What does the 'Code intelligence' category of plugins require to actually work?"
+      options:
+        - "Nothing — it works out of the box with no other software installed."
+        - "A matching tool already installed on your machine, for a deeper, more precise understanding of your code in a specific language."
+        - "A paid Anthropic Enterprise subscription."
+        - "A separate MCP server built entirely from scratch by the user."
+      answer: 1
+      explanation: "The lesson specifies Code intelligence plugins need a matching tool already installed locally to function."
+      written_prompt: "What extra requirement does the Code intelligence plugin category have, per this lesson?"
+    - question: "What does the 'Automatic security review' plugin category do?"
+      options:
+        - "It only generates a static PDF report with no further action."
+        - "It checks every change Claude makes for common security mistakes, and has Claude fix what it finds in the same session."
+        - "It blocks all code changes until a human security team approves them."
+        - "It only runs once per month on a schedule."
+      answer: 1
+      explanation: "The lesson describes this category as checking changes for security mistakes and having Claude fix them within the same session."
+      written_prompt: "What does the Automatic security review plugin category do, according to this lesson?"
+    - question: "Which category covers ready-made connections to apps like GitHub, Slack, Notion, and Figma?"
+      options:
+        - "Output styles"
+        - "External integrations"
+        - "Development workflows"
+        - "Code intelligence"
+      answer: 1
+      explanation: "The lesson names External integrations as the category for ready-made connections to apps like GitHub, Slack, Notion, Figma, and Linear."
+      written_prompt: "Which plugin category covers ready-made connections to external apps like GitHub and Slack?"
+    - question: "What does the 'Output styles' category change?"
+      options:
+        - "The programming languages Claude can write code in."
+        - "How Claude responds overall — e.g. switching to a more explanatory, teaching-style mode instead of terser answers."
+        - "The marketplace a plugin is listed under."
+        - "The invocation prefix used for plugin-bundled Skills."
+      answer: 1
+      explanation: "The lesson describes Output styles as changing Claude's overall response style, e.g. more explanatory/teaching versus terser."
+      written_prompt: "What aspect of Claude's behavior does the Output styles plugin category change?"
+
+- id: skills-21
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What are the four tabs in Claude Code's plugin menu?"
+      options:
+        - "Home, Search, Settings, Help."
+        - "Discover, Installed, Marketplaces, Errors."
+        - "Browse, Cart, Checkout, Orders."
+        - "Personal, Project, Plugin, Local."
+      answer: 1
+      explanation: "The lesson names the four tabs: Discover (browse), Installed (manage), Marketplaces (add/update/remove catalogs), and Errors (see failures)."
+      written_prompt: "List the four tabs available in Claude Code's plugin menu and what each is for."
+    - question: "What does 'Local' scope mean when installing a plugin?"
+      options:
+        - "Shared with every teammate on the project automatically."
+        - "Just for you, and only in this one project — not shared with teammates."
+        - "Just for you, but shared across every project you work on."
+        - "Installed only on a locally-hosted server, never in the cloud."
+      answer: 1
+      explanation: "Local scope means the install applies only to you, and only within that one project — not shared with teammates and not carried to other projects."
+      written_prompt: "What does 'Local' scope mean for a plugin install, as distinct from 'User' and 'Project'?"
+    - question: "What is the practical consequence of installing a plugin at Project scope rather than User scope?"
+      options:
+        - "There is no practical difference between the two."
+        - "Project scope means teammates working on that project get prompted to install it too, while User scope follows only you across every project."
+        - "Project scope disables the plugin for everyone including the installer."
+        - "Project scope only works with plugins from claude-community, never claude-plugins-official."
+      answer: 1
+      explanation: "The lesson notes Project scope means teammates get prompted to install the plugin too, unlike User scope which is personal and cross-project."
+      written_prompt: "What's the practical difference in outcome between installing a plugin at Project scope versus User scope?"
+    - question: "Which plugin menu tab would you check to see something that failed to load?"
+      options:
+        - "Discover"
+        - "Installed"
+        - "Marketplaces"
+        - "Errors"
+      answer: 3
+      explanation: "The Errors tab is specifically for seeing anything that failed to load, per the lesson."
+      written_prompt: "Which tab in the plugin menu shows you things that failed to load?"
+
+- id: skills-22
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "Why does a vague ask like \"help me with my weekly report\" fail to produce a good Skill?"
+      options:
+        - "Because Claude cannot process requests phrased as questions."
+        - "Because it gives Claude almost nothing to build a trigger or instructions from — no concrete example or structure to work with."
+        - "Because \"weekly\" is a reserved word that breaks Skill parsing."
+        - "Because reports can only be handled by plugins, not Skills."
+      answer: 1
+      explanation: "A vague ask lacks the concrete detail (example, structure) Claude needs to build a working trigger and instruction set."
+      written_prompt: "Why does a vague request like 'help me with my weekly report' fail to give Claude enough to build a good Skill?"
+    - question: "What does a 'good ask' include, per this lesson?"
+      options:
+        - "A list of every Skill ever published in the official marketplace."
+        - "One real example of the task done manually, start to finish — the actual messy input and the actual output wanted."
+        - "A formal legal disclaimer about data usage."
+        - "A guarantee that the task will never change in the future."
+      answer: 1
+      explanation: "The lesson specifies including one real, complete example (actual input, actual desired output) as what makes an ask good."
+      written_prompt: "What should a good workflow-description ask include, according to this lesson?"
+    - question: "What split does the lesson say is 'most of what makes a good Skill'?"
+      options:
+        - "The split between Skills and Plugins."
+        - "Separating what changes every time (e.g. this week's numbers) from what always stays the same (sections, tone, format)."
+        - "The split between personal and project scope."
+        - "The split between K and A statements."
+      answer: 1
+      explanation: "The lesson states separating variable content from fixed structure is most of what makes a good Skill."
+      written_prompt: "What split between 'variable' and 'fixed' elements does this lesson say matters most for a good Skill?"
+    - question: "What is the practical effect of providing a real, concrete example versus a vague description when asking for a Skill?"
+      options:
+        - "There is no practical effect — Claude treats both identically."
+        - "A real example gives Claude the actual messy input/output pairing to build a working trigger and instructions from, rather than guessing at structure."
+        - "A concrete example only affects the description field, never the body."
+        - "Concrete examples are only useful for Plugins, not standalone Skills."
+      answer: 1
+      explanation: "Providing a real example supplies the structure and content Claude needs to build the Skill accurately, rather than leaving it to guess."
+      written_prompt: "What's the practical difference in outcome between asking with a vague description versus a real, concrete example?"
+
+- id: skills-23
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What is the recommended first move after drafting a new Skill?"
+      options:
+        - "Immediately publish it to a marketplace before any testing."
+        - "Actually try the exact kind of request it's supposed to catch, in a fresh conversation."
+        - "Delete the description field to force Claude to guess."
+        - "Wait at least a week before testing it, to let the draft settle."
+      answer: 1
+      explanation: "The lesson recommends testing the draft immediately with the exact kind of request it's meant to catch, in a fresh conversation."
+      written_prompt: "What should you do right after drafting a new Skill, before assuming it's finished?"
+    - question: "If a drafted Skill doesn't trigger at all, what is usually the problem?"
+      options:
+        - "The frontmatter's version number is outdated."
+        - "The description — the docs' own troubleshooting advice is to check it includes keywords users would naturally say."
+        - "The Skill folder needs to be renamed to match the plugin marketplace name."
+        - "The body is too short and needs padding with filler text."
+      answer: 1
+      explanation: "Per the docs (already referenced in earlier lessons), a non-triggering Skill's description is usually the fix, not the instructions body."
+      written_prompt: "When a Skill doesn't trigger at all, what does this lesson say is usually the problem?"
+    - question: "What does Anthropic's skill-creator tool actually do?"
+      options:
+        - "It writes an entirely new Skill from scratch with no human input."
+        - "It runs test prompts with and without your Skill enabled and compares the results, rather than you guessing by feel."
+        - "It automatically publishes your Skill to every marketplace."
+        - "It deletes Skills that haven't been used in 30 days."
+      answer: 1
+      explanation: "The lesson describes skill-creator as running comparative test prompts (with/without the Skill) rather than relying on guesswork."
+      written_prompt: "What does the skill-creator tool do, as described in this lesson?"
+    - question: "In the Claude Desktop app, what lets you tweak a Skill without re-uploading a new .zip each time?"
+      options:
+        - "There is no such option; every tweak requires a fresh .zip upload."
+        - "An \"Edit with Claude\" option that lets you edit a Skill's files directly and re-test right away."
+        - "A command-line flag only available in Claude Code, not Desktop."
+        - "Deleting and recreating the Skill from scratch each time."
+      answer: 1
+      explanation: "The lesson names the 'Edit with Claude' option in the Desktop app for in-place editing and immediate re-testing."
+      written_prompt: "What Desktop app feature lets you tweak a Skill's files without re-uploading a new .zip?"
+
+- id: skills-24
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What does a Skill do when no ready-made MCP connector exists for a needed tool, per this lesson's example?"
+      options:
+        - "It's simply impossible to build such a Skill at all."
+        - "It bundles a small helper script that Claude executes directly, illustrated by Anthropic's own codebase-visualizer example."
+        - "It waits until Anthropic builds an official MCP connector before doing anything."
+        - "It falls back to pure text prediction with no execution at all."
+      answer: 1
+      explanation: "The lesson's example (codebase visualizer) shows a Skill bundling and running its own helper script when no MCP connector exists."
+      written_prompt: "What alternative does a Skill have when no ready-made MCP connector exists, per the codebase-visualizer example?"
+    - question: "Does Claude write the bundled helper script from scratch each time it's needed?"
+      options:
+        - "Yes, Claude regenerates the entire script fresh on every single run."
+        - "No — the instructions just tell Claude to run that already-written script; Claude executes it rather than authoring it anew each time."
+        - "Yes, but only the first time the Skill is triggered."
+        - "No, because bundled scripts cannot be executed by Claude at all."
+      answer: 1
+      explanation: "The lesson is explicit: Claude runs the pre-written script rather than writing it from scratch each invocation."
+      written_prompt: "Does Claude write the bundled helper script anew each time, or does it just run an existing one? Explain per this lesson."
+    - question: "How does this lesson frame a bundled script's relationship to the general 'Resources' concept?"
+      options:
+        - "A bundled script is a completely unrelated concept to Resources."
+        - "It's the same Resources idea as linking to an MCP connector — the difference is you (or your team) wrote the resource yourselves instead of using someone else's."
+        - "Resources only apply to policy documents, never to scripts."
+        - "Bundled scripts replace the need for any Resources folder entirely."
+      answer: 1
+      explanation: "The lesson frames a bundled script as the same Resources pattern, just self-authored rather than sourced from an existing connector."
+      written_prompt: "How does this lesson relate a bundled custom script to the general concept of a Skill 'Resource'?"
+    - question: "What kind of task does the codebase visualizer example use a bundled script for?"
+      options:
+        - "Sending Slack messages on the team's behalf."
+        - "A visualization task where no ready-made MCP connector exists, so a small helper script is bundled and run directly instead."
+        - "Storing API keys securely in an encrypted vault."
+        - "Reviewing pull requests for security vulnerabilities."
+      answer: 1
+      explanation: "The lesson's named example is a codebase visualizer — a task without an existing MCP connector, solved by bundling a helper script."
+      written_prompt: "What specific task does the codebase-visualizer example solve by bundling its own script?"
+
+- id: skills-25
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "What does installing someone else's Skill actually mean, in terms of trust, per this lesson?"
+      options:
+        - "It has no trust implications at all, since Skills are purely descriptive text."
+        - "It means trusting its instructions to run with whatever access Claude already has — a real trust decision, not just adding a note."
+        - "It means the Skill's author automatically gains access to your files remotely."
+        - "It means the Skill can never be uninstalled once enabled."
+      answer: 1
+      explanation: "The lesson frames installing a Skill as a genuine trust decision, since its instructions run with Claude's existing access."
+      written_prompt: "What real trust implication does installing someone else's Skill carry, per this lesson?"
+    - question: "What does the official documentation warn a Skill checked into a shared project can do?"
+      options:
+        - "It can only ever read files, never write or execute anything."
+        - "It \"can grant itself broad tool access,\" and shared skills in the desktop app should be reviewed before being enabled."
+        - "It can only affect the specific file it's named after."
+        - "It automatically gets sandboxed with zero access to any tools."
+      answer: 1
+      explanation: "The lesson quotes the docs' direct warning that a shared Skill can grant itself broad tool access, hence the review recommendation."
+      written_prompt: "What does the official documentation warn about a Skill checked into a shared project, per this lesson?"
+    - question: "Why is a friendly-sounding description insufficient grounds to trust a Skill?"
+      options:
+        - "Because descriptions are always randomly generated and meaningless."
+        - "Because a description says nothing about what the body actually tells Claude to do — the body must be read before trusting it."
+        - "Because descriptions are hidden from the person installing the Skill."
+        - "Because descriptions are only used for search indexing, never displayed to users."
+      answer: 1
+      explanation: "The lesson stresses that description and actual body instructions are separate — a nice-sounding description doesn't verify the real behavior."
+      written_prompt: "Why isn't a friendly-sounding description enough reason to trust a Skill, per this lesson?"
+    - question: "What comparison does this lesson draw for the kind of trust decision installing a Skill represents?"
+      options:
+        - "Installing a Skill has no real-world analog worth comparing to."
+        - "The same instinct as a browser extension — read before you install."
+        - "The same as choosing a font for a document."
+        - "The same as picking a wallpaper for your desktop."
+      answer: 1
+      explanation: "The lesson's own heading draws the browser-extension analogy: read before you install, the same trust instinct applies."
+      written_prompt: "What everyday analogy does this lesson use for the trust decision involved in installing a Skill?"
+
+- id: skills-26
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "Why is it risky to hardcode an API key directly inside SKILL.md, per this lesson?"
+      options:
+        - "It isn't risky at all, since SKILL.md files are encrypted by default."
+        - "SKILL.md is plain text readable by anyone with folder/project access, so hardcoding a credential exposes it to anyone who sees the file, including Claude echoing it back in output."
+        - "It's risky only because SKILL.md files cannot be version-controlled."
+        - "It's risky only if the Skill is shared publicly, never in a private project."
+      answer: 1
+      explanation: "The core risk is that SKILL.md is plain text, visible to anyone with access — hardcoding a secret there exposes it broadly, including via Claude's own output."
+      written_prompt: "Why does hardcoding an API key in SKILL.md pose a real risk, per this lesson?"
+    - question: "What is the recommended fix for keeping a credential out of SKILL.md?"
+      options:
+        - "Encrypt the credential using a simple substitution cipher inside the file."
+        - "Put the value in a .env file (or the OS's own settings) and have the Skill's instructions or bundled script read it from there — never type the key into SKILL.md."
+        - "Split the key across multiple files so no single file contains the whole string."
+        - "Store the key in the Skill's description field instead of the body."
+      answer: 1
+      explanation: "The lesson's fix: store the value in .env (or OS settings) and read it at run time, never typing it directly into SKILL.md."
+      written_prompt: "What is the recommended fix for keeping an API key out of SKILL.md, per this lesson?"
+    - question: "Who could potentially see a hardcoded credential inside a shared SKILL.md, per this lesson?"
+      options:
+        - "Only the original author, no one else ever."
+        - "Anyone with access to the folder or shared project, including anyone reviewing the file, and Claude itself potentially echoing it back in output."
+        - "Only people with root/admin access to the entire operating system."
+        - "No one — SKILL.md files are automatically redacted of anything resembling a key."
+      answer: 1
+      explanation: "The lesson lists a broad set of viewers: anyone with folder/project access, reviewers, and potentially Claude echoing it back."
+      written_prompt: "Who could see a hardcoded credential in a shared SKILL.md, according to this lesson?"
+    - question: "Is a .env file itself declared fully secure in this lesson?"
+      options:
+        - "Yes, .env files are described as completely secure with no caveats."
+        - "The lesson frames .env as the standard place for secrets relative to hardcoding in SKILL.md, while flagging (per the next lesson) that .env alone isn't the final security answer."
+        - "No, this lesson says .env files should never be used under any circumstance."
+        - "Yes, but only when the file extension is renamed to .secrets."
+      answer: 1
+      explanation: "This lesson positions .env as the standard fix versus hardcoding in SKILL.md, while the very next lesson explicitly notes .env isn't the security finish line."
+      written_prompt: "Does this lesson claim a .env file is a fully secure solution on its own? What's the relationship to the following lesson?"
+
+- id: skills-27
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "Why isn't a .env file considered fully secure on its own, per this lesson?"
+      options:
+        - "Because .env files cannot store more than one key at a time."
+        - "Because it's still a plain text file sitting on disk — it can be accidentally shared, copied off a laptop, or read by anything else running on the same machine."
+        - "Because .env files require an internet connection to function at all."
+        - "Because .env files are automatically deleted after 24 hours."
+      answer: 1
+      explanation: "The lesson's core point: .env is still plain text on disk, vulnerable to accidental sharing/copying/reading by other local processes."
+      written_prompt: "Why isn't a .env file considered a fully secure solution on its own, per this lesson?"
+    - question: "What are the three named alternatives to a .env file for anything beyond a personal experiment?"
+      options:
+        - "Slack, Notion, and Figma."
+        - "AWS Secrets Manager, Google Secret Manager, and HashiCorp Vault (or similar)."
+        - "claude-plugins-official, claude-community, and a custom marketplace."
+        - "MCP, API, and CLI."
+      answer: 1
+      explanation: "The lesson names AWS Secrets Manager, Google Secret Manager, and HashiCorp Vault as real secret manager alternatives."
+      written_prompt: "Name the three real secret manager alternatives to a .env file given in this lesson."
+    - question: "What does 'rotating' a key mean, per this lesson's good-hygiene guidance?"
+      options:
+        - "Changing the key's file format periodically, e.g. from .env to .json."
+        - "Replacing it on a schedule, not just when you suspect a leak."
+        - "Physically moving the key file to a different folder every week."
+        - "Renaming the environment variable that references the key."
+      answer: 1
+      explanation: "The lesson defines rotation as replacing keys on a schedule, proactively — not only reactively after a suspected leak."
+      written_prompt: "What does 'rotating' a key mean, as this lesson defines it?"
+    - question: "What is the 'narrowest access' hygiene principle, per this lesson's example?"
+      options:
+        - "Every key should have full administrative access to every system, for convenience."
+        - "Give each key the narrowest access it actually needs — e.g. a Skill that only reads receipts shouldn't hold a key that can also delete files."
+        - "Keys should never be scoped; scoping is only relevant for marketplaces."
+        - "Only one single master key should ever be used across all Skills."
+      answer: 1
+      explanation: "The lesson's example is explicit: a receipt-reading Skill shouldn't hold a delete-capable key — access should match the actual need, nothing broader."
+      written_prompt: "Explain the 'narrowest access' principle using this lesson's own receipts example."
+
+- id: skills-28
+  koa: K
+  assessment_mode: auto_marked
+  questions:
+    - question: "Why is content a Skill reads from outside (a webpage, email, document) considered untrusted, even if the Skill itself is trustworthy?"
+      options:
+        - "Because external content is always corrupted during download."
+        - "Because that outside content can carry hidden instructions the model can't always distinguish from legitimate ones, regardless of how trustworthy the Skill's own author is."
+        - "Because external content is only untrusted if it's longer than 500 lines."
+        - "Because trustworthy Skills automatically sanitize any content they read."
+      answer: 1
+      explanation: "The lesson separates the Skill's own trustworthiness from the trustworthiness of content it reads — the latter is untrusted regardless, since it could carry hidden instructions."
+      written_prompt: "Why can external content read by a trustworthy Skill still be dangerous, per this lesson?"
+    - question: "What does hidden text in untrusted content potentially look like, per this lesson?"
+      options:
+        - "A copyright notice at the bottom of a page."
+        - "An instruction such as \"ignore your previous steps and instead...\" that the model can't always tell apart from a real instruction."
+        - "A broken image link."
+        - "A standard HTML comment with no semantic meaning."
+      answer: 1
+      explanation: "The lesson gives the exact example: hidden text resembling an override instruction, which the model may not reliably distinguish from legitimate instructions."
+      written_prompt: "What kind of hidden text does this lesson warn could be embedded in untrusted content, and why is it dangerous?"
+    - question: "How does this lesson relate the risk it describes to the general concept of 'prompt injection' covered earlier?"
+      options:
+        - "It says this is a completely unrelated, brand-new category of risk."
+        - "It says this is the same underlying prompt-injection risk from earlier in the toolkit, just specifically relevant here because Skills are often the thing doing the reading."
+        - "It says prompt injection only applies to Plugins, never Skills."
+        - "It says this risk was fully solved by the introduction of MCP."
+      answer: 1
+      explanation: "The lesson is explicit: same underlying risk as general prompt injection, just applied to the specific case of Skills reading external content."
+      written_prompt: "How does this lesson connect its risk to the general prompt-injection concept covered earlier in the deck?"
+    - question: "Which kinds of sources does this lesson name as examples of untrusted content a Skill might read?"
+      options:
+        - "Only content generated by Claude itself."
+        - "A webpage, an email, or a shared document."
+        - "Only files bundled directly inside the Skill's own folder."
+        - "Only content stored in a .env file."
+      answer: 1
+      explanation: "The lesson names webpages, emails, and shared documents as examples of external, potentially untrusted sources a Skill might read."
+      written_prompt: "What example sources does this lesson give for untrusted content a Skill might read from outside?"
+
+- id: skills-8
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A Skill's description reads: "Manages weekly recurring internal documentation for stakeholders." A user types: "Can you write up this week's status report?" and the Skill doesn't trigger.
+        What's the most likely fix?
+      options:
+        - "Rewrite the description to include a natural phrase like \"weekly status report,\" since it's currently written as an internal summary rather than something matching what a user would actually type."
+        - "Rewrite the Skill's entire instructions body from scratch."
+        - "Nothing can be done; Skills can't match paraphrased requests."
+        - "Shorten the description further, since shorter descriptions always trigger more reliably."
+      answer: 0
+      explanation: "Since only the description sits in context to decide triggering, a mismatch between its wording and what users naturally say is almost always the fix — not the instructions body."
+      written_prompt: "Explain why rewording the description, not the instructions, is the right fix for this non-triggering Skill."
+    - question: |
+        Two Skill descriptions are being compared for a Skill meant to help draft performance reviews:
+        Description A: "Performance review assistant module v2."
+        Description B: "Use when writing an employee's performance review."
+        Which is more likely to trigger reliably from a natural user request, and why?
+      options:
+        - "Description A, since version numbers signal more advanced capability to the matching system."
+        - "Description B — it reads like a search query for the actual situation (\"writing an employee's performance review\"), matching how a user would naturally phrase the request, unlike Description A's internal-sounding label."
+        - "Both are equally likely to trigger, since length and wording don't affect matching."
+        - "Neither will trigger, since only exact Skill names can be typed to invoke a Skill."
+      answer: 1
+      explanation: "Descriptions that read like a search query for the situation match natural user phrasing far more reliably than internal-sounding labels or version strings."
+      written_prompt: "Explain why Description B is more likely to trigger reliably than Description A."
+    - question: |
+        In the Claude.ai/Desktop app specifically, a team writes a Skill description that is 240 characters long, with the actual trigger phrase ("use when drafting a vendor contract") placed at the very end, after several sentences of background explanation.
+        What risk does this description's structure introduce?
+      options:
+        - "None — description length has no practical limit in the Desktop app."
+        - "The description exceeds the app's 200-character limit, so the actual trigger phrase at the end risks being cut off entirely — the fix is to lead with the trigger phrase, not background explanation."
+        - "The risk is that the Skill will trigger too often instead of too rarely."
+        - "The risk only applies to the Skill's name field, not its description."
+      answer: 1
+      explanation: "The Desktop/Claude.ai app enforces a hard 200-character limit on description — a trigger phrase placed at the end of an over-length description risks being truncated away entirely, which is why the actual trigger phrase should come first."
+      written_prompt: "Explain the risk in placing the trigger phrase at the end of a 240-character description in the Desktop app."
+    - question: |
+        A Skill's instructions (body) are excellent and thoroughly tested, but the Skill almost never triggers on real user requests, even ones clearly within its intended scope.
+        Where should troubleshooting start, according to the documented advice?
+      options:
+        - "With the description — checking whether it includes keywords users would naturally say is the documented first troubleshooting step for a non-triggering Skill, regardless of how good the body is."
+        - "With the instructions body, since that's ultimately what produces the output."
+        - "With the dependencies field, since missing dependencies block triggering."
+        - "With the model version being used, since triggering is a model-specific behavior."
+      answer: 0
+      explanation: "The documented troubleshooting advice is specific: if a Skill won't trigger, check that the description includes keywords users would naturally say — rewording the description is almost always the fix, not the instructions, regardless of how good the body already is."
+      written_prompt: "Explain why troubleshooting a non-triggering Skill should start with the description rather than the instructions body."
+
+- id: skills-9
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A SKILL.md file's frontmatter includes a dependencies field listing "pandas>=2.0" and "requests>=2.28". What does this tell Claude (or a person) before attempting to run the Skill's bundled script?
+      options:
+        - "That these are optional suggestions with no functional effect."
+        - "That these specific software packages must already be installed for the Skill's bundled script to run correctly — the dependencies field exists so this is known before attempting to run it."
+        - "That the Skill itself will automatically install these packages the first time it runs."
+        - "That the Skill cannot function without an internet connection."
+      answer: 1
+      explanation: "The dependencies field declares what needs to already be installed for the Skill's bundled scripts to run — it's informational, letting Claude or a person know the requirement upfront rather than discovering it via a runtime failure."
+      written_prompt: "Explain the purpose of a dependencies field in a Skill's frontmatter."
+    - question: |
+        A Skill's folder contains: SKILL.md, a template.docx file for Claude to fill in, an examples/ folder with 3 sample outputs, and a scripts/ folder with two small Python helper scripts.
+        Why would a Skill be organized this way instead of putting everything into one SKILL.md file?
+      options:
+        - "Because SKILL.md files technically cannot contain more than 50 lines under any circumstances."
+        - "Because a Skill's folder can hold more than just SKILL.md — separating templates, examples, and helper scripts into their own files/folders keeps SKILL.md itself focused on instructions, loading the rest only when actually needed."
+        - "Because templates and scripts are not permitted to be referenced from SKILL.md."
+        - "Because this structure is purely cosmetic and has no functional benefit."
+      answer: 1
+      explanation: "This mirrors Anthropic's own documented layout: a Skill's folder can hold more than one file, and separating out templates/examples/scripts keeps SKILL.md itself lean, loading detail only when it's actually needed."
+      written_prompt: "Explain the benefit of organizing a Skill's folder with separate template, examples, and scripts subfolders instead of one large SKILL.md."
+    - question: |
+        A team's SKILL.md has grown to 800 lines because it inlines a large glossary of internal acronyms that's only relevant to about 10% of the requests the Skill handles.
+        What does the ~500-line rule of thumb suggest here?
+      options:
+        - "The glossary should move into its own reference file, since keeping SKILL.md itself under roughly 500 lines and moving detailed, situational reference material into separate files (loaded only when needed) is the documented rule of thumb."
+        - "The Skill should be deleted and rebuilt from scratch."
+        - "800 lines is fine as long as the file is well-formatted with headers."
+        - "The rule of thumb only applies to files under 100 lines, so this doesn't apply."
+      answer: 0
+      explanation: "The rule of thumb is to keep SKILL.md itself under roughly 500 lines, moving detailed reference material (like a glossary only occasionally needed) into separate files that load only when actually needed."
+      written_prompt: "Explain how the ~500-line rule of thumb applies to this bloated glossary situation."
+    - question: |
+        A Skill's SKILL.md references a file called policy-2026.pdf that's supposed to sit in the same folder, but the file was never actually included when the Skill was packaged.
+        What's the most likely consequence?
+      options:
+        - "Claude will silently invent a plausible-sounding policy from general knowledge instead."
+        - "Nothing — SKILL.md doesn't actually need referenced files to exist."
+        - "When the Skill needs that resource, it won't be there to open — referencing a file by name only works if the file is actually present in the Skill's packaged folder alongside SKILL.md."
+        - "The Skill will fail to trigger at all as a result."
+      answer: 2
+      explanation: "Resource files are meant to sit alongside SKILL.md and be opened when needed — if a referenced file is missing from the package, there's nothing there for Claude to open when the instructions call for it."
+      written_prompt: "Explain the consequence of a SKILL.md referencing a resource file that was never actually included in the Skill's package."
+
+- id: skills-10
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A Skill can permanently delete records from a production database once invoked. A team is deciding on its invocation settings.
+        Which setting best matches the documented guidance, and why?
+      options:
+        - "Restrict it to human-only triggering — this mirrors the docs' own deploy-Skill example: an irreversible, high-stakes action shouldn't be something Claude decides on its own to run."
+        - "Restrict it to Claude-only triggering, since deletions are a background task."
+        - "Leave it at the default so either side can trigger it, since flexibility is always preferable."
+        - "There is no invocation setting that applies to destructive Skills."
+      answer: 0
+      explanation: "This mirrors the docs' own deploy-Skill example directly: an irreversible, high-stakes action like permanent deletion should require a human to explicitly say go, not something Claude decides is appropriate on its own."
+      written_prompt: "Explain why human-only triggering is the appropriate setting for a Skill that can permanently delete production records."
+    - question: |
+        A Skill exists purely to explain the quirks of a legacy internal API that almost no one remembers the details of — it's reference material, not an action a person would typically think to invoke directly.
+        Which invocation setting fits, and why?
+      options:
+        - "Claude-only triggering — this is exactly the kind of background knowledge use case the docs describe, where Claude pulling it in when relevant makes more sense than a person needing to think to type its name."
+        - "Human-only triggering, since reference material should never be triggered automatically."
+        - "The default setting is never appropriate for reference-only Skills."
+        - "This kind of Skill cannot have any invocation setting applied to it."
+      answer: 0
+      explanation: "The docs describe exactly this case for Claude-only triggering: background knowledge that's more useful when Claude decides to pull it in, rather than requiring a person to remember and type its name."
+      written_prompt: "Explain why Claude-only triggering fits this reference-material Skill better than the other options."
+    - question: |
+        A team leaves both invocation switches off for a Skill that formats meeting notes into a summary.
+        What does this mean for how the Skill can be used?
+      options:
+        - "The Skill behaves the normal, default way — either the person can type its name directly, or Claude can decide on its own that it's relevant and use it without being asked."
+        - "The Skill becomes permanently disabled until a switch is turned on."
+        - "The Skill can only ever be triggered by Claude, never by a person."
+        - "The Skill can only ever be triggered by a person, never by Claude."
+      answer: 0
+      explanation: "Both switches are optional — leaving them off keeps a Skill at its normal default behavior, where either side (the person or Claude) can trigger it."
+      written_prompt: "Explain what leaving both invocation switches off means for how this meeting-notes Skill can be triggered."
+    - question: |
+        A Skill sends a company-wide email announcement once triggered. A team debates whether to leave it at the default invocation setting.
+        What risk does leaving it at the default introduce, and what would fix it?
+      options:
+        - "The risk that Claude could decide on its own that an announcement is warranted and send it without a person explicitly approving that decision first — restricting it to human-only triggering (like the docs' own deploy-Skill example) would fix this."
+        - "No risk at all; company-wide announcements are always low-stakes."
+        - "The risk that the Skill would never trigger under any circumstances."
+        - "The fix is to restrict it to Claude-only triggering instead."
+      answer: 0
+      explanation: "A company-wide announcement is exactly the kind of consequential, hard-to-undo action where you don't want Claude deciding on its own that it's warranted — restricting to human-only triggering (mirroring the deploy-Skill example) puts a person in control of that decision."
+      written_prompt: "Explain the risk of leaving this email-announcement Skill at the default setting, and which switch would address it."
+
+- id: skills-13
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A team designs a "sort-support-tickets-by-tag" Skill: read incoming tickets, assign one of 4 fixed tags, output the tagged list, stop.
+        Does this match the small-Skill pattern, and why?
+      options:
+        - "Yes — this is a short, linear recipe (read, categorize, output, stop) with no extra checks, approvals, or other tools/people involved, matching the weekly-status-report pattern exactly."
+        - "No — every Skill needs at least one approval step to be considered complete."
+        - "No — this task is too simple to be built as a Skill at all."
+        - "Yes, but only because it involves exactly 4 categories."
+      answer: 0
+      explanation: "This matches the small-Skill pattern directly: a short, linear recipe with no extra checks, second opinions, or other tools/people involved — the same shape as weekly-status-report."
+      written_prompt: "Explain why this ticket-sorting design matches the small-Skill pattern."
+    - question: |
+        A team adds a "notify a manager and wait for sign-off" step to a Skill that just reformats internal meeting notes into three fixed sections, with no risk or ambiguity involved in the task.
+        Does this addition fit the small-Skill pattern?
+      options:
+        - "Yes — every Skill benefits from a sign-off step regardless of the task's actual risk level."
+        - "No — this adds an approval step to a low-stakes, unambiguous task that doesn't need one; a pause-and-ask-a-person step only earns its place once the job genuinely needs it, which reformatting notes doesn't."
+        - "Yes, because meeting notes are always high-stakes."
+        - "It's impossible to tell without knowing who the manager is."
+      answer: 1
+      explanation: "This is exactly what the small-Skill lesson warns against: an approval gate only earns its place once the job genuinely needs it — a low-stakes, unambiguous reformatting task doesn't call for one."
+      written_prompt: "Explain why adding a manager sign-off step to this note-reformatting Skill doesn't fit the small-Skill pattern."
+    - question: |
+        Compare: Skill A reads a list, sorts it into fixed categories, and outputs it (no other tools or people involved). Skill B reads a list, checks it against three other systems, asks a second AI model to double-check it, and requires human sign-off before finishing.
+        Which matches the small-Skill pattern described in the lesson?
+      options:
+        - "Skill A — a short, linear recipe with no extra checks or other tools/people involved is exactly the small-Skill shape; Skill B's multiple checks and sign-off match the bigger, multi-stage pattern instead."
+        - "Skill B — more verification steps always makes a better-designed Skill."
+        - "Both are equally good examples of the small-Skill pattern."
+        - "Neither matches the small-Skill pattern, since both involve sorting."
+      answer: 0
+      explanation: "Skill A's linear, no-frills structure is the small-Skill shape; Skill B's multiple checks and sign-off requirement matches the bigger, multi-stage pattern (like refund-request-handler) instead."
+      written_prompt: "Explain why Skill A, not Skill B, matches the small-Skill pattern."
+    - question: |
+        A junior engineer is told "most Skills should look like weekly-status-report, not refund-request-handler." They're designing a Skill for renaming files according to a fixed convention, with no risk or exceptions involved.
+        What does this guidance suggest about their design?
+      options:
+        - "Default to a simple, linear design (read, apply the convention, output, stop) unless the task genuinely has risk or complexity that calls for more stages — file renaming with no exceptions doesn't need extra stages."
+        - "Add at least three verification stages regardless of the task's actual complexity, since more stages always improve reliability."
+        - "This guidance only applies to Skills that involve refunds specifically."
+        - "Randomly choose between the small and big pattern for variety."
+      answer: 0
+      explanation: "The guidance is explicit: most Skills should default to the simple, linear shape unless the job genuinely needs more stages — a no-exceptions file-renaming task is exactly the kind of case that doesn't."
+      written_prompt: "Explain how the guidance to default to weekly-status-report's shape applies to this file-renaming Skill."
+
+- id: skills-14
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A Skill processes expense reimbursements: check policy, draft approval message, send it and record the outcome — with no pause for any amount, however large.
+        What's missing compared to the documented refund-request-handler example?
+      options:
+        - "A human-approval gate above a dollar threshold — the refund-request-handler example specifically pauses and asks a person to approve anything over $100 before sending, which this design lacks entirely."
+        - "A second check against the policy document, since one check is never sufficient."
+        - "A tone-check on the outgoing message, since that's the only thing the example includes."
+        - "Nothing is missing, since checking the policy document is enough on its own."
+      answer: 0
+      explanation: "The documented refund-request-handler example specifically pauses for a human's approval above a dollar threshold before sending — a design with no such gate, regardless of amount, is missing that safeguard entirely."
+      written_prompt: "Explain what safeguard this expense-processing Skill is missing, based on the refund-request-handler example."
+    - question: |
+        A big, multi-stage Skill's instructions never mention the actual return-policy document at all — instead, they just tell Claude general assumptions about what a "typical" return policy usually looks like.
+        What's the problem with this design, based on the lesson's guidance about Resources?
+      options:
+        - "The Skill should reference the real, current policy document as a Resource, so Claude opens the actual, authoritative source rather than acting on generic assumptions that may not match the real policy."
+        - "There's no problem, since general assumptions are usually close enough for any company's policy."
+        - "The fix is to paste the entire real policy document directly into the instructions rather than referencing it separately."
+        - "This is unrelated to the concept of Resources described in the lesson."
+      answer: 0
+      explanation: "The lesson is specific about this: reference a resource file from SKILL.md so Claude can open the actual, current policy when it needs it — relying on generic assumptions instead of the real document risks acting on the wrong rules entirely."
+      written_prompt: "Explain why this Skill should reference the actual policy document as a Resource, rather than relying on general assumptions."
+    - question: |
+        A refund Skill's instructions do include a $100 approval threshold, but the threshold check happens after the reply has already been sent to the customer, rather than before.
+        What's wrong with this ordering?
+      options:
+        - "Nothing — order doesn't matter as long as the check happens somewhere in the process."
+        - "The check needs to happen before sending, not after — the whole point of the pause is to prevent an unapproved, potentially wrong reply from ever reaching the customer in the first place; checking afterward can't undo an already-sent message."
+        - "The fix is to remove the $100 threshold entirely and always ask for approval."
+        - "The fix is to lower the threshold to $50 instead of reordering anything."
+      answer: 1
+      explanation: "An approval gate only works as a safeguard if it happens before the risky, hard-to-undo action (sending) — checking afterward defeats the purpose, since a wrong or unapproved reply has already reached the customer by then."
+      written_prompt: "Explain why the approval check needs to happen before sending the reply, not after."
+    - question: |
+        A big Skill design includes: check policy → draft reply → tone-check → send and record. It does NOT include any pause for approval regardless of dollar amount, reasoning that "the tone-check step is thorough enough."
+        Does the tone-check substitute for a human-approval gate?
+      options:
+        - "No — a tone-check verifies how the reply reads (warm vs. robotic), which is a different concern from whether a human should approve a costly or high-stakes action before it's sent; the two serve different purposes and one doesn't substitute for the other."
+        - "Yes — a thorough tone-check is functionally equivalent to human approval."
+        - "Yes, but only for refund amounts under $50."
+        - "This question is unanswerable without knowing the exact wording of the tone-check."
+      answer: 0
+      explanation: "Tone-checking and approval-gating serve different purposes — one checks how something reads, the other checks whether a costly or risky action should proceed at all. A good tone-check doesn't substitute for the safeguard a human-approval gate provides."
+      written_prompt: "Explain why a tone-check step doesn't substitute for a human-approval gate on high-value actions."
+
+- id: skills-15
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A draft Skill's instructions never reference any real, current source of truth (a policy document, a live data feed, this week's actual notes) — they rely entirely on the model's general assumptions about the topic.
+        Which of the three portable lessons does this violate?
+      options:
+        - "\"Have the Skill actually check real, current information before deciding\" — relying on general assumptions instead of a real, current source is exactly what this lesson warns against."
+        - "\"Write the description like a search query for the situation\" — this is a description-wording issue."
+        - "\"Start simple\" — this is a design-complexity issue."
+        - "It doesn't violate any of the three lessons."
+      answer: 0
+      explanation: "This is a direct violation of 'check real current information before deciding' — the Skill assumes rather than actually consulting a real, current source of truth."
+      written_prompt: "Explain why relying on general assumptions instead of a real source violates this specific portable lesson."
+    - question: |
+        A draft Skill's description reads: "Automates the Q3 vendor onboarding compliance sub-checklist workflow module." Its actual instructions and behavior are otherwise well-designed and simple.
+        Which lesson does the description violate?
+      options:
+        - "\"Write the description like a search query for the situation, not a summary of the Skill\" — this description reads like an internal label/summary rather than something matching how a user would naturally describe their situation."
+        - "\"Check real current information\" — this is an information-checking issue."
+        - "\"Start simple\" — this is a design-complexity issue."
+        - "It doesn't violate any of the three lessons, since the instructions are well-designed."
+      answer: 0
+      explanation: "This description is written like an internal label/summary, not a natural situation a user would describe — exactly what the 'search query for the situation, not a summary' lesson warns against."
+      written_prompt: "Explain why this description violates the 'search query, not summary' lesson even though the Skill's actual behavior is well-designed."
+    - question: |
+        A draft Skill for a simple, single-step task (renaming a batch of files by a fixed rule) includes three separate approval stages and a secondary verification pass by a different AI call.
+        Which lesson does this violate?
+      options:
+        - "\"Start simple\" — extra stages like approval gates and secondary checks only earn their place once the job genuinely needs them, which this simple, fixed-rule renaming task doesn't."
+        - "\"Check real current information\" — this is an information-checking issue."
+        - "\"Write the description like a search query\" — this is a description-wording issue."
+        - "It doesn't violate any lesson, since more verification is always better."
+      answer: 0
+      explanation: "This is a direct violation of 'start simple' — a simple, low-stakes, fixed-rule task doesn't need multiple approval stages or a secondary AI verification pass; those only earn their place when the job genuinely calls for it."
+      written_prompt: "Explain why adding three approval stages to a simple file-renaming task violates the 'start simple' lesson."
+    - question: |
+        A team reviews their draft Skill against all three portable lessons and confirms: the description reads like a real user's situation, the Skill checks a live, current data source before acting, and its design is a simple, linear recipe matching the task's actual (low) complexity.
+        What should the team conclude?
+      options:
+        - "The draft follows all three portable lessons and doesn't need further revision on these specific points, since it satisfies the situation-based description, real-information-checking, and appropriately-simple design criteria."
+        - "The draft is definitely flawed, since every Skill has at least one violation of these lessons."
+        - "The draft needs additional approval stages regardless of what the review found."
+        - "The review is meaningless since these three lessons only apply to large Skills."
+      answer: 0
+      explanation: "This is the target state the three portable lessons describe — a situation-based description, real information-checking, and a design matched to the task's actual complexity — so a draft meeting all three doesn't need further revision on these specific dimensions."
+      written_prompt: "Explain why this draft satisfies all three portable lessons, based on what the review found."
+
+- id: skills-16
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A user has never opened Settings → Capabilities in the Claude Desktop app before trying to upload their first Skill. The Skill uploads without error but never actually does anything when triggered.
+        What's the most likely explanation?
+      options:
+        - "Code execution and File creation likely haven't been turned on — these are a one-time prerequisite in Settings → Capabilities, without which a Skill won't run even if the upload itself succeeded."
+        - "The Skill's description must be poorly worded."
+        - "The .zip file must have been corrupted during upload."
+        - "Skills in the Desktop app never actually run any code, by design."
+      answer: 0
+      explanation: "Code execution and File creation are a one-time prerequisite toggle — without them turned on, a Skill won't run even if it uploaded and triggered successfully, which matches this exact symptom."
+      written_prompt: "Explain why an uploaded Skill might do nothing when triggered, even without any error during upload."
+    - question: |
+        A user zips their Skill by selecting the parent folder that contains their Skill's folder (so the .zip has one extra layer: parent-folder/skill-folder/SKILL.md), instead of zipping the Skill's folder itself.
+        What problem does this cause?
+      options:
+        - "None — the app automatically detects and unwraps any extra folder layer."
+        - "The .zip needs the Skill's folder to sit at the very top level, not nested inside another wrapper folder — this extra layer means the app won't recognize the Skill's structure correctly."
+        - "This only matters for Skills that include a resources folder."
+        - "This causes the Skill to run with excessive permissions instead of failing."
+      answer: 1
+      explanation: "The required .zip shape has the Skill's folder at the very top level — an extra wrapping folder breaks that expected structure, which is exactly the documented shape requirement."
+      written_prompt: "Explain why zipping the parent folder instead of the Skill's own folder causes a problem."
+    - question: |
+        A user on a Team plan enables sharing for a custom Skill they built, and a coworker asks to enable the same shared Skill. Before doing so, what does Anthropic's own guidance recommend the coworker do?
+      options:
+        - "Enable it immediately, since anything shared within the same company account is automatically trusted."
+        - "Review the files inside the Skill before enabling it — Anthropic's own guidance is to 'only install skills from trusted sources' and review the contents, even for something shared internally."
+        - "Ignore the guidance, since it only applies to Skills shared outside the company."
+        - "Ask IT to automatically approve all internally shared Skills without review."
+      answer: 1
+      explanation: "Anthropic's guidance is explicit and doesn't carve out an exception for internal sharing: review the files inside a shared Skill before enabling it, and only install from trusted sources."
+      written_prompt: "Explain what Anthropic's own guidance recommends before enabling a Skill shared by a coworker."
+    - question: |
+        A user successfully uploads a Skill .zip with the correct top-level folder structure, and Code execution/File creation are already turned on — but the Skill still doesn't appear in their Skills list afterward.
+        Given what's already ruled out, what's a reasonable next thing to check?
+      options:
+        - "Whether the .zip actually contains a valid SKILL.md file with the required frontmatter fields, since the two most common blockers (Capabilities toggles, folder structure) are already ruled out."
+        - "Whether the user's internet connection was active during the upload, since that's the only remaining possible cause."
+        - "Whether the Skill's description is under 200 characters, since that determines whether it appears in the list."
+        - "There's nothing else to check; this scenario is impossible given what's already been ruled out."
+      answer: 0
+      explanation: "With the Capabilities toggle and folder-structure issues both ruled out, checking whether SKILL.md itself is valid (has the required frontmatter) is the next reasonable troubleshooting step, rather than assuming an unrelated cause like a character limit that governs a different symptom (truncation, not disappearance)."
+      written_prompt: "Given that the two most common causes are ruled out, explain what a reasonable next troubleshooting step would be."
+
+- id: skills-17
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A developer wants a Skill to be usable in every project they personally work on, without needing to set it up again in each new project folder.
+        Which Claude Code Skill location fits this need?
+      options:
+        - "The personal skills location — it's created once at a fixed location every project can see, exactly matching a need for cross-project availability tied to one individual."
+        - "The project location, since it's the only one that persists across sessions."
+        - "The plugin location, since plugins are the only shareable option."
+        - "None of the three locations support this use case."
+      answer: 0
+      explanation: "The personal skills location is specifically designed for this: created once at a fixed location that every project the individual works on can see, without needing per-project setup."
+      written_prompt: "Explain why the personal skills location fits this developer's cross-project need."
+    - question: |
+        A team wants a Skill available only to people working on one specific shared codebase, not to any team member's other, unrelated projects.
+        Which location fits, and why?
+      options:
+        - "The project location — it's created inside one specific project and only that project sees it, unlike the personal location which follows an individual across every project they work on."
+        - "The personal location, since it's the only one that can be scoped to a specific codebase."
+        - "The plugin location, since plugins can never be scoped to a single project."
+        - "This scenario is impossible to support with Claude Code's Skill locations."
+      answer: 0
+      explanation: "The project location is scoped to exactly this: available only within that one specific project, unlike the personal location which follows an individual across all of their projects."
+      written_prompt: "Explain why the project location, not the personal location, fits this single-codebase scenario."
+    - question: |
+        A developer edits an existing SKILL.md file in their project's skills folder and immediately tests it in a fresh conversation — the change takes effect right away, no restart needed.
+        Separately, they add a brand-new, previously-nonexistent top-level skills folder to their setup, and the new Skill inside it doesn't show up until they restart.
+        What does this pair of behaviors illustrate?
+      options:
+        - "Claude Code watches existing skills folders live, so edits to a file already inside one take effect immediately — but adding an entirely new top-level skills folder is the one case that needs a restart to be picked up."
+        - "Both changes always require a restart; the first case was a fluke."
+        - "Neither change should ever require a restart under any circumstances."
+        - "This has nothing to do with how Claude Code watches skills folders and is unrelated behavior."
+      answer: 0
+      explanation: "This matches the documented behavior exactly: Claude Code watches skills folders live, so editing a file already inside one takes effect immediately, while adding a brand-new top-level skills folder is the one case that needs a restart."
+      written_prompt: "Explain why editing an existing SKILL.md takes effect immediately, while adding a new top-level skills folder needs a restart."
+    - question: |
+        A developer installs a plugin containing a Skill via a typed command, but then reports that the Skill isn't usable yet in their current session.
+        What's the most likely missing step?
+      options:
+        - "Running the second typed command that makes the installed plugin available in the current session — installing a plugin and activating it for the current session are two separate steps."
+        - "Restarting their entire computer, since plugins always require a full system restart."
+        - "Nothing is missing; plugin Skills are never usable in the same session they're installed."
+        - "Re-uploading the plugin as a .zip file through the Desktop app instead."
+      answer: 0
+      explanation: "Installing a plugin and making it available in the current session are two separate typed commands — skipping the second step is exactly why an installed plugin's Skill wouldn't be usable yet."
+      written_prompt: "Explain the missing step that would make the newly installed plugin's Skill usable in the current session."
+
+- id: skills-18
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A developer builds a single Skill for their own personal workflow, still actively experimenting with and changing it week to week. No one else needs it yet.
+        Should they build it as a standalone Skill or a Plugin?
+      options:
+        - "A standalone Skill — the rule of thumb is to build standalone first for a personal, still-experimental workflow, converting to a Plugin only once sharing/distribution is actually needed."
+        - "A Plugin, since Plugins are always the more capable option regardless of stage."
+        - "Neither — personal, experimental workflows shouldn't be built as Skills at all."
+        - "Both simultaneously, to cover every possible future need upfront."
+      answer: 0
+      explanation: "This matches the documented rule of thumb directly: build a standalone Skill first for a personal or still-experimental workflow, and only convert to a Plugin once you actually want to share or distribute it more widely."
+      written_prompt: "Explain why a standalone Skill, not a Plugin, is the right choice for this still-experimental personal workflow."
+    - question: |
+        Two teams each have a Skill called "review-checklist." Team A's is invoked directly as /review-checklist (created in their own personal/project folder). Team B's is bundled inside a Plugin called "compliance-toolkit" and invoked as /compliance-toolkit:review-checklist.
+        Why does Team B's invocation include the plugin name prefix?
+      options:
+        - "Because a Skill bundled inside a Plugin is invoked with the plugin's name in front of it, specifically so two different Plugins (or a Plugin and a standalone Skill) can each have a Skill with the same name without colliding."
+        - "Because Plugin-bundled Skills always require longer names for technical reasons unrelated to naming collisions."
+        - "Because Team B made an error and should remove the prefix."
+        - "Because only Plugin-bundled Skills can be triggered by Claude automatically."
+      answer: 0
+      explanation: "This is exactly the documented reason: prefixing a Plugin-bundled Skill with the Plugin's name lets two different Skills named identically (one bundled, one standalone, or two in different Plugins) coexist without colliding."
+      written_prompt: "Explain why Team B's Skill invocation includes the 'compliance-toolkit:' prefix while Team A's doesn't."
+    - question: |
+        A team's single Skill now needs to ship alongside two custom agents and an automatic "hook" that runs after every file edit — all as one coordinated package for other teams to install.
+        Can this be done with a standalone Skill alone?
+      options:
+        - "No — a standalone Skill folder holds just a Skill; a Plugin is the bundle type that can package multiple Skills plus agents, hooks, and MCP servers together as one distributable unit, which is what this scenario needs."
+        - "Yes — standalone Skills can bundle agents and hooks directly within the same folder."
+        - "No — this combination of pieces is not something Claude Code supports bundling at all."
+        - "Yes, as long as the Skill's description mentions the agents and hooks."
+      answer: 0
+      explanation: "A standalone Skill is just a Skill — bundling multiple pieces (agents, hooks, MCP servers) together as one distributable package is specifically what a Plugin is designed for."
+      written_prompt: "Explain why this bundling need requires converting to a Plugin rather than staying a standalone Skill."
+    - question: |
+        A solo developer builds one Skill purely for their own daily use, has no plans to share it with anyone, and doesn't need it bundled with any agents, hooks, or MCP servers.
+        Is converting it to a Plugin necessary here?
+      options:
+        - "No — with no need to share, distribute, or bundle with other pieces, a standalone Skill is the appropriate, simpler choice; converting to a Plugin is meant for exactly the opposite situation."
+        - "Yes — every Skill should eventually be converted into a Plugin regardless of whether it's ever shared."
+        - "Yes, because standalone Skills expire after a fixed period of use."
+        - "It's impossible to tell without knowing how often the Skill is used."
+      answer: 0
+      explanation: "The rule of thumb points the other way for this case: without any need to share, distribute, or bundle, a standalone Skill remains the appropriate, simpler choice — converting to a Plugin solves a problem this developer doesn't have."
+      written_prompt: "Explain why converting this solo, unshared Skill into a Plugin isn't necessary."
+
+- id: skills-21
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A developer wants to check whether a particular plugin failed to load correctly after an update, without digging through unrelated menus.
+        Which of the plugin menu's four tabs should they check?
+      options:
+        - "Errors — specifically for seeing anything that failed to load, which is exactly what this scenario calls for."
+        - "Discover, since that's where all plugin information lives."
+        - "Marketplaces, since that's where plugin versions are managed."
+        - "Installed, since that's the only tab that ever shows any status information."
+      answer: 0
+      explanation: "The Errors tab exists specifically to surface anything that failed to load — exactly the information this developer is looking for."
+      written_prompt: "Explain why the Errors tab, not Discover or Marketplaces, is the right place to check for a failed plugin load."
+    - question: |
+        A team lead installs a compliance plugin at Project scope for their team's shared repository.
+        What should the team lead expect to happen for their teammates?
+      options:
+        - "Teammates working on that same project will get prompted to install it too, since Project scope is shared with everyone working on that particular project."
+        - "Teammates will automatically have it installed with no prompt or action needed on their part."
+        - "Nothing happens for teammates; Project scope only affects the person who installed it."
+        - "Teammates on entirely unrelated projects will also get the plugin automatically."
+      answer: 0
+      explanation: "Project scope means everyone working on that particular shared project gets prompted to install it too — it's not silent, and it's not limited to just the installer, and it doesn't reach unrelated projects."
+      written_prompt: "Explain what happens for teammates when a plugin is installed at Project scope."
+    - question: |
+        A contractor installs a specialized plugin at Local scope while working on one client's project, planning to use it only for that engagement and only on their own machine.
+        Is Local scope the right choice here, and why?
+      options:
+        - "Yes — Local scope is just for one person, in just one project, without sharing it with teammates — exactly matching a contractor's one-off, single-project, personal-use need."
+        - "No — Local scope always shares the plugin with the entire team automatically."
+        - "No — Local scope follows the contractor into every other project they work on."
+        - "It doesn't matter, since all three scopes behave identically."
+      answer: 0
+      explanation: "Local scope is specifically just-for-you, just-for-this-project, with no sharing to teammates — a precise fit for a contractor's one-off, single-project, personal-use case."
+      written_prompt: "Explain why Local scope fits this contractor's use case better than User or Project scope."
+    - question: |
+        A developer installs a personal productivity plugin at User scope, planning to use it across every client project they work on individually.
+        What should they expect regarding their teammates on those projects?
+      options:
+        - "Their teammates won't automatically get the plugin — User scope follows the individual across every project they personally work on, but doesn't share it with other people on those projects."
+        - "All of their teammates on every project will automatically have the same plugin installed."
+        - "The plugin will stop working the moment they switch to a different project."
+        - "User scope behaves identically to Project scope in every respect."
+      answer: 0
+      explanation: "User scope is about following one individual across their own projects — it doesn't extend to other people working on those same projects, unlike Project scope which is specifically about team-wide sharing."
+      written_prompt: "Explain why installing at User scope doesn't share the plugin with the developer's teammates."
+
+- id: skills-22
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A person asks for help building a Skill by saying: "I do a monthly budget review — here's last month's actual spreadsheet input and the summary email I sent afterward, plus the same for the month before. The categories and the closing paragraph are always the same; only the numbers and any notable variances change."
+        Does this request include what's needed to build a good Skill?
+      options:
+        - "Yes — it includes real, worked examples (actual input and output) and a clear split between what stays fixed (categories, closing paragraph) and what varies (numbers, variances), exactly what a good ask needs."
+        - "No — a good request should never include real data, only a general description."
+        - "No — this request is missing an approval gate, which every request must specify."
+        - "Yes, but only because two months of examples were given instead of one."
+      answer: 0
+      explanation: "This request hits both key elements: real, worked examples of the task done manually, and an explicit split between what varies and what stays fixed — exactly what makes a request buildable into a good Skill."
+      written_prompt: "Explain what makes this budget-review request a good one to build a Skill from."
+    - question: |
+        A request says: "Automate my client-onboarding emails." No example of an actual onboarding email is given, and nothing is said about which parts of the email change per client versus which parts are always the same.
+        What's missing, and what would fix it?
+      options:
+        - "A real, worked example of an actual onboarding email (the messy input and the wanted output) and a clear split between what varies per client and what stays fixed — without these, there's little concrete for the Skill's trigger or instructions to be built from."
+        - "Nothing is missing; \"automate my client-onboarding emails\" is already specific enough."
+        - "The request needs to specify a deadline for when the Skill should be finished."
+        - "The request needs to be phrased as a question rather than a statement."
+      answer: 0
+      explanation: "This is exactly the vague-request problem: without a real example and a fixed/variable split, there's very little concrete detail for a Skill's trigger or instructions to be built from."
+      written_prompt: "Explain what's missing from this onboarding-email request and what would need to be added."
+    - question: |
+        Someone describing a workflow says: "Every week the data changes, but the report always needs an Executive Summary, a Metrics table, and a Risks section, in that order, in a formal tone."
+        What does this description correctly separate?
+      options:
+        - "What varies each time (the data) from what stays fixed (the sections, their order, and the tone) — exactly the split that's most of what makes a good Skill."
+        - "The description doesn't separate anything useful; it's just a list of requirements."
+        - "It separates the Skill's name from its description."
+        - "It separates the human-only and Claude-only invocation settings."
+      answer: 0
+      explanation: "This description explicitly separates what changes every time (the underlying data) from what always stays the same (sections, order, tone) — exactly the split the lesson identifies as most of what makes a good Skill."
+      written_prompt: "Explain what this description correctly separates, and why that split matters for building a good Skill."
+    - question: |
+        A manager tells an assistant: "Just handle the incident reports the way I always do." No example is given, and no distinction is made between what changes per incident and what stays the same in every report.
+        Why is this an especially weak request to build a Skill from?
+      options:
+        - "Because \"the way I always do\" assumes shared context Claude doesn't have — without an actual worked example or a fixed/variable split, there's nothing concrete to derive a trigger phrase or instructions from."
+        - "Because incident reports are inherently impossible to automate."
+        - "Because the request is too long and should be shortened."
+        - "Because this request would work fine as long as it's repeated exactly the same way twice."
+      answer: 0
+      explanation: "\"The way I always do\" relies on shared context that only exists in the manager's head — without a concrete example or an explicit fixed/variable split, there's nothing for Claude to build a reliable trigger or instructions from."
+      written_prompt: "Explain why \"handle it the way I always do\" is an especially weak basis for building a Skill."
+
+- id: skills-23
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A freshly drafted Skill is tested in a brand-new conversation with the exact kind of request it's meant to catch, and it doesn't trigger at all.
+        What's the documented first thing to check?
+      options:
+        - "The description — whether it includes keywords users would naturally say is the documented troubleshooting advice for a Skill that doesn't trigger."
+        - "The dependencies field, since that's always the cause of a non-triggering Skill."
+        - "Whether the conversation was long enough before testing the Skill."
+        - "Whether the Skill's folder contains a resources subfolder."
+      answer: 0
+      explanation: "The documented troubleshooting advice is specific: for a Skill that doesn't trigger, check whether the description includes keywords users would naturally say — that's almost always the fix."
+      written_prompt: "Explain what should be checked first when a freshly drafted Skill doesn't trigger during testing."
+    - question: |
+        A team wants to compare how their assistant behaves with a new Skill enabled versus disabled, running the same test prompts both ways, without relying on guessing by feel.
+        What tool does Anthropic publish for exactly this purpose?
+      options:
+        - "skill-creator — it runs test prompts with and without the Skill enabled and compares the results, rather than the team guessing by feel."
+        - "There's no such tool; this comparison must be done manually with no tooling support."
+        - "The Content Map, which is used for a completely different purpose (course assembly)."
+        - "A generic third-party A/B testing platform, since Anthropic doesn't publish anything for this."
+      answer: 0
+      explanation: "Anthropic publishes skill-creator specifically for this loop: it runs test prompts with and without the Skill enabled and compares the results, replacing guesswork with a structured comparison."
+      written_prompt: "Name and explain the purpose of the tool Anthropic publishes for testing a Skill with and without it enabled."
+    - question: |
+        In the Claude Desktop app, a developer wants to fix a small wording issue in a Skill they already uploaded, without going through the whole upload flow again.
+        What documented feature lets them do this?
+      options:
+        - "\"Edit with Claude\" — it lets a developer edit a Skill's files directly and re-test right away, without needing to re-upload a new .zip for every tweak."
+        - "There is no way to edit an uploaded Skill; it must be deleted and re-uploaded from scratch every time."
+        - "The Errors tab, which allows direct file editing."
+        - "Re-installing the entire Desktop app is required for any Skill edit."
+      answer: 0
+      explanation: "The documented \"Edit with Claude\" feature exists specifically for this: editing a Skill's files directly in place and re-testing right away, without a full re-upload for every small tweak."
+      written_prompt: "Explain what feature lets a developer make a small edit to an uploaded Skill without re-uploading a new .zip."
+    - question: |
+        A Skill triggers correctly on the intended test request, but produces output in the wrong structure (missing a required section).
+        Following the documented draft-test-refine loop, where should the fix focus?
+      options:
+        - "The instructions/body — since triggering worked correctly, the problem lies in what the Skill actually does once running, not in the description that got it triggered in the first place."
+        - "The description, since that's always the first thing to fix regardless of the symptom."
+        - "The Skill's name field, since that's what determines output structure."
+        - "Nothing needs fixing, since triggering worked."
+      answer: 0
+      explanation: "Since the description already did its job (the Skill triggered correctly), a structural problem in the actual output points to the instructions/body, not the description — matching the loop's own diagnostic logic."
+      written_prompt: "Explain why this output-structure problem should be fixed in the instructions rather than the description."
+
+- id: skills-25
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A Skill checked into a shared team project has a body that instructs Claude to request additional file-system permissions beyond what it was originally granted, framed as "needed for full functionality."
+        What does the official guidance say about this kind of scenario?
+      options:
+        - "That a Skill can grant itself broad tool access, which is exactly why the docs warn to review a shared Skill's contents before trusting it, rather than assuming its stated purpose covers everything it actually does."
+        - "That this is impossible; Skills can never request additional permissions beyond what they started with."
+        - "That this is always safe as long as the Skill is checked into a shared project."
+        - "That only Skills built by Anthropic itself can request additional permissions."
+      answer: 0
+      explanation: "This matches the documented warning directly: a Skill checked into a shared project can grant itself broad tool access, which is exactly why reviewing the body before trusting a shared Skill matters."
+      written_prompt: "Explain what the official guidance says about a Skill requesting expanded permissions, and why review matters here."
+    - question: |
+        A user reads a Skill's description ("Summarizes long documents for you") and enables it without reading the body. The body actually instructs Claude to upload the document's full contents to a third-party service before summarizing it.
+        What did the user's decision skip?
+      options:
+        - "Reading the actual body, which is where the real behavior — in this case, uploading the document to a third party — is specified; the friendly description gave no indication of this."
+        - "Nothing was skipped; the description was sufficient information to make this decision safely."
+        - "The user should have instead read the Skill's dependencies field, which would have caught this."
+        - "This risk only exists for Skills without any description at all."
+      answer: 0
+      explanation: "The real, potentially risky behavior (a third-party upload) lived in the body, not the description — trusting a friendly description alone means missing exactly this kind of behavior."
+      written_prompt: "Explain what the user's decision skipped, and why the description alone wasn't sufficient to catch the risk."
+    - question: |
+        A colleague shares a Skill they built for internal use, with a description that sounds harmless and a very short body that's quick to read in full.
+        Does its internal origin change what should happen before enabling it?
+      options:
+        - "No — the trust decision is about what the instructions actually do, regardless of who wrote them; reading the (quick, short) body before enabling it is still the appropriate step, even for a colleague's Skill."
+        - "Yes — Skills from colleagues are always automatically safe and don't need review."
+        - "Yes, but only if the colleague works in a different department."
+        - "No, but only because the body happens to be short in this case."
+      answer: 0
+      explanation: "The trust decision is about the actual instructions, not who wrote them — a colleague's Skill still deserves a quick read of the body before enabling it, and the fact that it's short here just makes that easy to do."
+      written_prompt: "Explain why a colleague's internal Skill still warrants reading the body before enabling it."
+    - question: |
+        A Skill's description promises it "only reads spreadsheet data," but its body includes an instruction to also send a copy of any spreadsheet it reads to an external email address "for backup purposes."
+        What should this discrepancy prompt a reviewer to do?
+      options:
+        - "Flag the mismatch between the stated description and the actual body instructions before enabling it — this is exactly the kind of gap that reading only the description would miss."
+        - "Trust the description, since it's the officially stated purpose of the Skill."
+        - "Ignore the body instructions, since only the description determines what a Skill actually does."
+        - "Assume the backup-email instruction is a harmless technical detail not worth reviewing."
+      answer: 0
+      explanation: "This is exactly the risk the lesson describes — a friendly or narrow-sounding description says nothing about what the body actually instructs; a real discrepancy like an undisclosed external email step should be flagged before enabling the Skill."
+      written_prompt: "Explain why this description-versus-body mismatch should be flagged rather than assumed to be harmless."
+
+- id: skills-26
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A SKILL.md's instructions include the line: "Use this password to log in: hunter2024!" directly in plain text, so Claude can access an internal tool.
+        What's the correct fix?
+      options:
+        - "Move the password into a .env file (or the OS's own secrets storage) and have the Skill read it from there at runtime, rather than typing the actual password into SKILL.md."
+        - "Leave it as-is, since only the Skill's author can ever see a SKILL.md file."
+        - "Replace the password with a slightly obfuscated version, like reversing the characters."
+        - "Move the password into the Skill's description field instead, since descriptions are more private."
+      answer: 0
+      explanation: "SKILL.md is plain text readable by anyone with folder/project access — the fix is keeping the actual credential out of the file entirely, in a .env file the Skill reads from at runtime."
+      written_prompt: "Explain the correct fix for this hardcoded password, and why obfuscating it wouldn't be sufficient."
+    - question: |
+        A team reviews a colleague's SKILL.md and finds a line reading: `AUTH_TOKEN = "abc123..."` They point out this is a problem even though the file is only used internally within their own company.
+        Are they right to flag it, and why?
+      options:
+        - "Yes — SKILL.md is plain text readable by anyone with access to the folder or shared project, and Claude could also echo the token back in its output, regardless of whether usage stays internal to the company."
+        - "No — internal-only usage means credential exposure inside a SKILL.md is never a real risk."
+        - "No, because AUTH_TOKEN is a less sensitive kind of credential than a password."
+        - "Yes, but only if the company has more than 100 employees."
+      answer: 0
+      explanation: "Internal-only usage doesn't remove the risk — anyone with folder/project access can read the plain-text file, and the token could even be echoed back in Claude's own output, regardless of company size or how the token is labeled."
+      written_prompt: "Explain why flagging this hardcoded AUTH_TOKEN is correct, even for an internal-only file."
+    - question: |
+        A Skill's bundled script needs an API key to function. The team's proposed design has the SKILL.md instructions tell Claude the actual key value directly, so Claude can pass it to the script each time.
+        What's the correct alternative design?
+      options:
+        - "Have the script read the key itself from a .env file at runtime, so the actual key value never needs to appear anywhere inside SKILL.md's instructions at all."
+        - "Have Claude memorize the key so it never needs to be written anywhere."
+        - "Split the key into two halves and store each half in a separate SKILL.md file."
+        - "This design is already correct and needs no change."
+      answer: 0
+      explanation: "The correct pattern keeps the actual key value out of SKILL.md entirely — the script itself reads it from a .env file at runtime, rather than the key ever needing to be typed into the instructions Claude reads."
+      written_prompt: "Explain the correct alternative design that keeps the API key out of SKILL.md's instructions."
+    - question: |
+        A reviewer notices a SKILL.md file has no hardcoded credentials, but its instructions do print out the contents of a .env file as a debugging step, right before the Skill's main task runs.
+        Is this a problem, even though no credential is hardcoded directly in SKILL.md?
+      options:
+        - "Yes — printing the .env file's contents exposes the same credentials just as much as hardcoding them would, since Claude's output (and anyone reading it) would now see the actual secret values."
+        - "No — since the credential was never typed directly into SKILL.md, this is safe by definition."
+        - "No, because debugging steps are always exempt from credential-handling concerns."
+        - "Yes, but only if the .env file contains more than one credential."
+      answer: 0
+      explanation: "Avoiding a hardcoded credential in SKILL.md doesn't help if the instructions then print out the .env file's contents — the secret ends up exposed in Claude's output just the same, defeating the purpose of moving it to .env in the first place."
+      written_prompt: "Explain why printing the .env file's contents as a debugging step defeats the purpose of moving the credential there."
+
+- id: skills-27
+  koa: A
+  assessment_mode: auto_marked
+  questions:
+    - question: |
+        A solo developer stores a personal API key for a side project's experimental prototype in a .env file on their own laptop, which only they use.
+        Is a .env file a reasonable choice here, or does this specific scenario call for a full secret manager?
+      options:
+        - "A .env file is a reasonable choice for a personal experiment like this — the lesson specifically distinguishes a personal experiment (where .env is fine) from anything beyond that (where a real secret manager is warranted)."
+        - "A secret manager is mandatory for absolutely every credential, regardless of context."
+        - "Neither is acceptable; credentials should never be stored on any local machine."
+        - "A .env file is never acceptable under any circumstances."
+      answer: 0
+      explanation: "The lesson explicitly draws this line: a .env file is fine for a personal experiment, while a real secret manager is warranted for anything beyond that — a solo side-project prototype on one's own machine is exactly the personal-experiment case."
+      written_prompt: "Explain why a .env file is a reasonable choice for this specific personal-experiment scenario."
+    - question: |
+        A company's production payment-processing credential sits in a .env file on a shared build server that dozens of engineers across multiple teams can access.
+        Does this call for something beyond a .env file, and why?
+      options:
+        - "Yes — this goes well beyond a personal experiment (a production credential, a shared server, many people with access), which is exactly the case the lesson says calls for a real secret manager with controlled access instead."
+        - "No — a .env file is equally appropriate regardless of how many people can access the server it sits on."
+        - "No, as long as the credential was rotated at least once in its lifetime."
+        - "Yes, but only because it's a payment-related credential specifically, not for any other reason."
+      answer: 0
+      explanation: "This is exactly the scenario the lesson flags as beyond a personal experiment — a production credential accessible to many people on a shared server calls for a real secret manager with controlled, auditable access, not a plain-text .env file."
+      written_prompt: "Explain why this production credential setup calls for a secret manager rather than a .env file."
+    - question: |
+        A team gives their document-summarization Skill's API key the same broad permissions as their admin API key, reasoning "it's simpler to manage one set of permissions."
+        What hygiene practice does this violate?
+      options:
+        - "Giving each key the narrowest access it actually needs — a Skill that only reads documents to summarize them shouldn't hold a key with broad admin-level permissions it doesn't need for its actual task."
+        - "Key rotation, since permission scope and rotation are the same thing."
+        - "This doesn't violate any documented practice, since simplicity is always the priority."
+        - "The .env vs. secret-manager distinction, since permission scope is unrelated to that."
+      answer: 0
+      explanation: "This violates the narrowest-necessary-access principle: a Skill that only needs to read and summarize documents shouldn't be given broad admin-level permissions just for convenience — that scope mismatch is exactly the risk the lesson flags."
+      written_prompt: "Explain which hygiene practice is violated by giving this summarization Skill admin-level permissions."
+    - question: |
+        A company rotates all of its API keys immediately after a suspected security incident, but has no regular rotation schedule otherwise — the same keys had been in place, unchanged, for over three years before the incident.
+        Does reactive rotation after an incident satisfy the documented hygiene guidance?
+      options:
+        - "No — the guidance is to rotate keys periodically on a schedule, not just when a leak is suspected; three years with no scheduled rotation is a real gap even though they responded correctly after the incident."
+        - "Yes — rotating immediately after any suspected incident is all the guidance requires."
+        - "Yes, since three years without any actual confirmed leak proves the keys were secure the whole time."
+        - "No, but only because they should have rotated within 24 hours of the incident instead of immediately."
+      answer: 0
+      explanation: "The documented guidance is to rotate periodically on a schedule, not only reactively — responding correctly after an incident doesn't retroactively close the three-year gap in scheduled rotation that came before it."
+      written_prompt: "Explain why rotating only after a suspected incident doesn't satisfy the documented rotation guidance."
