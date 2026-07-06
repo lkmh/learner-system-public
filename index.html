@@ -973,6 +973,7 @@ let classPlayer = null;
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
   const fab = document.getElementById('cp-resume-fab');
   if(fab) fab.hidden = !(classPlayer && id!=='page-class-player');
 }
