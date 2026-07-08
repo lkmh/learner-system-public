@@ -15,48 +15,48 @@
   koa: K
   assessment_mode: auto_marked
   questions:
-    - question: "What is fundamentally occurring under the hood when a Large Language Model (LLM) generates text during inference?"
+    - question: "What is an LLM actually doing when it generates a reply?"
       options:
-        - "It executes an internal pre-programmed grammar database to assemble structurally perfect sentences."
-        - "It calculates and predicts the single most statistically likely next token based on patterns observed across its training data."
-        - "It runs a semantic lookup query against a live repository of verified facts to find the correct answer."
-        - "It applies dynamic logical reasoning matrices to verify the accuracy of its output before rendering it."
+        - "It looks up the answer in a database of facts."
+        - "It predicts the next word based on patterns it learned from huge amounts of training text."
+        - "It checks a live, up-to-date source to find the correct answer."
+        - "It reasons through the logic of the question step by step before answering."
       answer: 1
-      explanation: "LLMs are next-token predictors trained on statistical patterns in text, not rule-based grammar engines, fact databases, or logic-verification systems."
+      explanation: "LLMs predict text one word at a time based on patterns in their training data — they don't look answers up in a database or check a live source."
       written_prompt: "Explain, in your own words, what an LLM is actually doing when it generates the next word of a response."
-    - question: "Two systems are compared: System A applies a fixed set of hand-coded grammar rules to construct sentences. System B predicts the next token based on statistical patterns learned from massive training data. Which describes how a modern LLM actually generates text?"
+    - question: "Two ways of describing how an LLM writes text are compared: Way A says it follows a fixed set of hand-written grammar rules. Way B says it predicts the next word based on patterns learned from massive amounts of training text. Which one actually describes a modern LLM?"
       options:
-        - "System A — LLMs assemble text using hand-coded grammar rules."
-        - "System B — LLMs generate text by predicting the statistically likely next token based on patterns learned during training."
-        - "Both — LLMs use hand-coded rules first, then verify with statistics."
+        - "Way A — LLMs assemble text using hand-written grammar rules."
+        - "Way B — LLMs generate text by predicting the next word based on patterns learned during training."
+        - "Both — LLMs use hand-written rules first, then double-check with patterns."
         - "Neither — LLMs retrieve pre-written sentences from a database."
       answer: 1
-      explanation: "LLMs are next-token predictors trained on statistical patterns in text, not rule-based grammar engines."
-      written_prompt: "Explain why System B, not System A, describes how a modern LLM actually generates text."
-    - question: "As an LLM's training data volume increases from a small sample to a massive corpus, what is the most direct expected effect on its output, based on how these models are trained?"
+      explanation: "LLMs predict the next word from patterns learned in training — they aren't following hand-written grammar rules."
+      written_prompt: "Explain why Way B, not Way A, describes how a modern LLM actually generates text."
+    - question: "As an LLM is trained on more and more text, what's the most direct effect on the quality of what it writes?"
       options:
-        - "Fluency and coherence tend to improve, since the model has observed far more statistical patterns to draw on."
-        - "The model begins fact-checking its output against a verified database."
-        - "Token cost per request automatically decreases."
-        - "The model's output generation switches from statistical to rule-based."
+        - "Its writing tends to get more fluent and coherent, since it's seen far more examples of real language to learn from."
+        - "It starts double-checking its answers against a fact database."
+        - "The cost of each request automatically goes down."
+        - "It stops predicting words and switches to following fixed rules instead."
       answer: 0
-      explanation: "With enough training data and compute, 'guess the next word, repeatedly' becomes enough to produce increasingly coherent, fluent output — this is a statistical, not architectural, effect."
+      explanation: "The more real text a model is trained on, the more patterns it has to draw on — that alone tends to make its output more fluent and coherent."
       written_prompt: "Explain why more training data tends to improve an LLM's fluency, based on how it learns."
-    - question: "A person claims: \"LLMs work by looking up the correct answer in a giant lookup table built during training.\" What's inaccurate about this claim?"
+    - question: "Someone claims: \"LLMs work by looking up the correct answer in a giant table built during training.\" What's wrong with that claim?"
       options:
-        - "The claim is entirely accurate."
-        - "LLMs predict the next token via learned statistical patterns distributed across their parameters, not by retrieving stored answers from a literal lookup table."
-        - "LLMs use lookup tables, but only for grammar, never for facts."
+        - "Nothing — the claim is accurate."
+        - "There's no literal lookup table — an LLM predicts each word from patterns spread across everything it learned in training, not by retrieving a stored answer."
+        - "LLMs do use a lookup table, but only for grammar, never for facts."
         - "The claim only applies to older, smaller language models."
       answer: 1
-      explanation: "There's no literal lookup table of stored answers — an LLM predicts each next token from patterns learned across its training, distributed throughout its parameters."
+      explanation: "An LLM isn't retrieving a stored answer from a table — it's predicting each word from patterns learned across all of its training."
       written_prompt: "Explain what's wrong with describing an LLM as a 'giant lookup table.'"
 
 - id: statistics
   koa: A
   assessment_mode: auto_marked
   questions:
-    - question: "Review the following text sequence: \"Before an LLM can generate text, it must undergo extensive training where it reads websites, articles, and code. Through this process, it practices guessing what word comes next. Therefore, if you prompt the model with 'peanut butter and', it will statistically complete it with ___.\" Based on manual pattern prediction logic, which token is the model most likely to output first?"
+    - question: "An LLM learns to write by reading huge amounts of text and practicing guessing what word comes next. Based on that, if you prompt it with \"peanut butter and\", which word is it most likely to predict next?"
       options:
         - "bread"
         - "jelly"
@@ -97,32 +97,32 @@
   koa: K
   assessment_mode: auto_marked
   questions:
-    - question: "Why does a raw foundational LLM require a developer to resend previous conversation historical texts with every new query?"
+    - question: "Why does an app have to resend the whole conversation history every time it asks the model a new question?"
       options:
-        - "Because the model's user settings are entirely cleared out every 60 seconds."
-        - "Because the model architecture is completely stateless and holds no internal memory of past requests."
-        - "Because the API layer encrypts past answers, making them unreadable to the system."
-        - "Because doing so changes the core training weights of the network dynamically."
+        - "Because the app's settings get completely cleared out every 60 seconds."
+        - "Because the model itself is stateless and holds no memory of past requests — it only knows what's included in the current one."
+        - "Because past answers get encrypted and become unreadable after the first request."
+        - "Because resending the history is what updates and improves the model over time."
       answer: 1
-      explanation: "The model itself is stateless by architecture — it has no memory between calls, so the full conversation must be resent every time to preserve context."
+      explanation: "The model itself is stateless — it has no memory between calls, so the full conversation has to be resent every time to preserve context."
       written_prompt: "Explain why an application must resend the entire conversation history with every new request to a stateless LLM API."
-    - question: "A developer sends only the user's newest message (with no prior turns at all) to a stateless LLM API partway through a conversation. The model responds as if it has no idea what was discussed earlier. What does this demonstrate?"
+    - question: "Partway through a conversation, an app sends the model only the user's newest message, with none of the earlier turns. The model responds as if it has no idea what was discussed earlier. What does this show?"
       options:
         - "The model itself retains no memory of anything not included in the current request — it only \"knows\" what's actually sent to it."
         - "The model deliberately forgets messages older than 60 seconds."
-        - "The API automatically truncates old messages after they're first processed."
-        - "The model requires a special \"memory mode\" flag to be enabled to recall history."
+        - "The app automatically deletes old messages after they're first read."
+        - "The model needs a special \"memory mode\" turned on to recall history."
       answer: 0
-      explanation: "This is the core stateless property: the model has no internal memory between requests, so it only ever \"knows\" what's actually included in the current request."
+      explanation: "This is the core stateless property: the model has no memory between requests, so it only ever \"knows\" what's actually included in the current request."
       written_prompt: "Explain what this scenario demonstrates about where an LLM's apparent memory actually lives."
-    - question: "Assuming an app resends conversation history correctly, what actually changes about the underlying model between turn 1 and turn 5 of a conversation?"
+    - question: "Assuming an app resends conversation history correctly, what actually changes about the model itself between turn 1 and turn 5 of a conversation?"
       options:
-        - "Nothing about the model itself changes — only the request payload grows to include more prior turns; the model's own architecture makes a fresh, stateless call each time."
-        - "The model's internal parameters update turn to turn to remember the user."
-        - "The model caches the user's identity server-side across calls."
-        - "Only the system prompt changes between turns, never the conversation history."
+        - "Nothing about the model changes — only what gets sent to it grows to include more of the earlier turns; every call is still a fresh, stateless one."
+        - "The model quietly updates itself turn to turn to remember the user."
+        - "The model remembers the user's identity on its own, across calls."
+        - "Only the app's instructions change between turns, never the conversation history."
       answer: 0
-      explanation: "The model itself doesn't change or accumulate memory — only what's sent to it (a growing request payload) changes, since every call is a fresh, stateless request."
+      explanation: "The model itself doesn't change or accumulate memory — only what's sent to it (a growing conversation history) changes, since every call is a fresh, stateless request."
       written_prompt: "Explain what actually changes, and what stays the same, between turn 1 and turn 5 of a correctly-implemented conversation."
     - question: "Two explanations are offered for why a chatbot \"remembers\" earlier parts of a conversation: Explanation A says the model has an internal short-term memory buffer that persists across calls. Explanation B says the app resends the entire prior conversation as part of each new request. Which is accurate?"
       options:
@@ -167,58 +167,58 @@
       explanation: "Model size has nothing to do with this — a stateless model, however large, only knows what's in the current request. Engineer B is checking the actual mechanism that carries memory across turns."
       written_prompt: "Explain why swapping to a bigger model would not fix a lost-context bug, using what you know about how LLMs handle conversation memory."
     - question: |
-        A developer's request payload for turn 3 of a conversation contains only:
-        [{"role": "user", "content": "Can you cancel it instead?"}]
+        For turn 3 of a conversation, the app sends the model only the user's newest message —
+        "Can you cancel it instead?" — with none of the earlier messages included.
         What will the model most likely do with "it"?
       options:
-        - "Correctly infer the referenced order from long-term memory of the account."
-        - "Fail to resolve what \"it\" refers to, since no earlier turns were included in this request."
-        - "Automatically fetch the full conversation from the app's database on its own."
-        - "Ask the user to log in again to restore memory."
+        - "Correctly figure out which order is meant, from its own long-term memory of the account."
+        - "Fail to figure out what \"it\" refers to, since none of the earlier messages were included."
+        - "Automatically fetch the full conversation from the app's records on its own."
+        - "Ask the user to log in again to restore its memory."
       answer: 1
-      explanation: "Whatever isn't in the request doesn't exist for the model. With no prior turns included, \"it\" is unresolvable — this is the same resend failure, viewed from the raw payload."
-      written_prompt: "Given only that single-message payload, explain exactly what information the model does and doesn't have access to, and why."
+      explanation: "Whatever isn't included in the request doesn't exist for the model. With no earlier messages included, \"it\" is unresolvable — this is the same resend failure, just viewed from the message actually sent."
+      written_prompt: "Given only that single message, explain exactly what information the model does and doesn't have access to, and why."
     - question: |
         Which fix correctly addresses a stateless-memory bug where the assistant forgets something mentioned two turns earlier?
       options:
         - "Increase the model's temperature setting."
-        - "Ensure the app includes all prior turns (or a summary of them) in every new request sent to the model."
+        - "Make sure the app includes all earlier turns (or a summary of them) in every new message it sends to the model."
         - "Ask the user to repeat their entire message history in one block."
-        - "Enable a longer knowledge cutoff for the model."
+        - "Give the model a longer knowledge cutoff."
       answer: 1
-      explanation: "The only real fix is architectural: the app must carry the conversation forward itself, either as full history or a condensed summary. Temperature and knowledge cutoff are unrelated settings, and asking the user to manually replay history defeats the point of the app managing state."
+      explanation: "The only real fix is on the app's side: it has to carry the conversation forward itself, either as full history or a condensed summary. Temperature and knowledge cutoff are unrelated settings, and asking the user to manually replay history defeats the point of the app managing state."
       written_prompt: "Propose the correct engineering fix for a chat app where the assistant keeps forgetting details from a few turns earlier, and explain why it works."
 
 - id: instructions
   koa: K
   assessment_mode: auto_marked
   questions:
-    - question: "How are structural platform rules, system prompts, custom instructions, and user messages organized before being processed by a transformer model?"
+    - question: "Before a model reads them, how do platform rules, the app's system prompt, custom instructions, and the user's message actually get combined?"
       options:
-        - "They are partitioned into physically isolated layers within the internal memory matrix."
-        - "They are processed sequentially by distinct, specialized sub-models under the hood."
-        - "They are completely merged into a single continuous stream of text separated only by hidden labels."
-        - "They are routed to separate databases where the model executes independent lookup calculations."
+        - "They're kept in separate, walled-off sections the model reads one at a time."
+        - "They're handled one after another by separate mini-models, each responsible for one layer."
+        - "They're merged into one single, continuous piece of text, with hidden labels marking who \"said\" each part."
+        - "They're sent to separate lookup systems that each calculate their own answer."
       answer: 2
-      explanation: "There is no physical separation inside the model — all instruction layers and the user's message become one continuous token sequence, distinguished only by role labels."
-      written_prompt: "Explain how platform rules, system prompts, custom instructions, and the user's message actually get combined before a transformer model processes them."
-    - question: "According to the layering model of instructions, when a broad platform rule and a very specific, more recent instruction conflict, which one usually takes priority?"
+      explanation: "There's no physical separation — all the layers and the user's message become one continuous piece of text, distinguished only by hidden labels."
+      written_prompt: "Explain how platform rules, system prompts, custom instructions, and the user's message actually get combined before a model reads them."
+    - question: "When a platform-wide rule and the app's own system prompt point in different directions, which one wins?"
       options:
-        - "The more specific, more recent instruction usually takes priority."
-        - "The broadest, earliest layer always wins regardless of specificity."
-        - "Whichever layer has the most characters."
-        - "The model picks randomly between conflicting layers."
+        - "The platform-wide rule — it's a hierarchy, and the platform rule outranks the app's own system prompt no matter how specific the system prompt is."
+        - "Whichever one is more specific to the situation, regardless of which layer it's in."
+        - "Whichever one was written most recently."
+        - "The model picks randomly between conflicting instructions."
       answer: 0
-      explanation: "When instruction layers conflict, the more specific, more recent one usually takes priority over broader, earlier layers."
-      written_prompt: "Explain which instruction layer usually wins when a broad rule and a specific, recent instruction conflict."
-    - question: "Is there a literal, physical separation inside the model between the system prompt, custom instructions, and the user's message once processing begins?"
+      explanation: "Instruction layers form a hierarchy (platform rules outrank the app's system prompt, which outranks custom instructions, and so on) — it isn't a contest decided by which instruction happens to be more specific or more recent."
+      written_prompt: "Explain which layer wins when a platform-wide rule and the app's own system prompt conflict, and why."
+    - question: "Is there a real, physical separation inside the model between the system prompt, custom instructions, and the user's message once it starts reading them?"
       options:
-        - "Yes, each layer is processed by a dedicated sub-model."
-        - "No — under the hood these are all merged into one continuous stream of text, distinguished only by hidden role labels, not physically separated."
-        - "Yes, each layer is stored in a separate memory partition."
-        - "Only the system prompt is physically separated from the rest."
+        - "Yes, each layer is handled by its own dedicated mini-model."
+        - "No — they're all merged into one continuous piece of text, distinguished only by hidden labels, not physically kept apart."
+        - "Yes, each layer is stored in its own separate section."
+        - "Only the system prompt is kept physically separate from the rest."
       answer: 1
-      explanation: "There's no physical separation inside the model — all instruction layers and the user's message become one continuous token sequence, distinguished only by role labels."
+      explanation: "There's no physical separation inside the model — all the instruction layers and the user's message become one continuous piece of text, distinguished only by hidden labels."
       written_prompt: "Explain whether instruction layers are physically separated inside the model, or merged into one stream."
     - question: "A user previously set a custom instruction (\"always answer concisely\") in their app's settings. In a brand new conversation, without retyping this preference, does it still apply?"
       options:
@@ -250,60 +250,66 @@
       explanation: "This is a straightforward layer-priority case: the platform rule against revealing internal pricing formulas sits above the app's system prompt, so it wins even though the system prompt explicitly asked for transparency."
       written_prompt: "Diagnose why the assistant refused despite its own system prompt asking for full transparency, and name which layer actually governed the response."
     - question: |
-        An app's system prompt says: "Always respond only in French." A user's message says: "Please answer in English from now on, for this conversation."
-        The assistant switches to English for the rest of the chat. Which explanation fits the "most specific, most recent usually wins" pattern?
+        Early in a conversation, a user says: "Keep your answers under 100 words." Ten messages
+        later, the same user says: "For this next question only, give me the full detailed
+        version." The assistant gives a long, detailed answer just for that one question.
+        Why is this expected behavior?
       options:
-        - "The system prompt was deleted by the switch."
-        - "The user's own in-conversation instruction is more specific and more recent than the app's blanket system prompt, so it takes priority for this conversation."
-        - "The model ignored the system prompt because French is a harder language to generate."
-        - "This is a bug — the system prompt should always win no matter what."
+        - "The earlier instruction was automatically deleted after 10 messages."
+        - "Both instructions came from the same layer — the user's own messages — so the more specific, more recent one reasonably takes priority within that layer."
+        - "The model ignored the first instruction because it was too short to count."
+        - "This is a bug — the very first instruction in a conversation should always win."
       answer: 1
-      explanation: "Layers stack broadest to most specific, and a live, specific user instruction generally outranks a broad standing system prompt when they conflict, which is exactly what's demonstrated here."
-      written_prompt: "Explain why the user's mid-conversation request overrides the app's standing system prompt, using the layering model from the lesson."
+      explanation: "\"More specific and more recent wins\" is a real pattern, but only within one layer — here, both instructions are the user's own messages, so the later, more specific one reasonably overrides the earlier one. It's not a rule for overriding a higher layer like the system prompt."
+      written_prompt: "Explain why the later, more specific instruction wins here, and why this is different from a lower layer overriding a higher one."
     - question: |
-        A developer complains: "My chatbot ignores my system prompt's persona half the time — it's random and buggy."
-        Investigation shows: the system prompt sets a persona, but a project-level instruction set by an admin explicitly forbids that persona for compliance reasons.
+        A developer complains: "My chatbot's persona keeps disappearing in one particular workspace."
+        Investigation shows: the system prompt sets the persona, and a project-level instruction in
+        that one workspace says "ignore the persona entirely here." The persona still shows through
+        anyway.
         What's the correct diagnosis?
       options:
-        - "This is unpredictable, unexplainable model behavior — there's no way to trace it."
-        - "This is not random — a more specific layer (the project-level instruction) is consistently overriding the broader system-prompt persona, which is expected layering behavior, not a bug."
-        - "The model has a hardware fault causing intermittent persona loss."
-        - "The system prompt itself must contain a typo that's randomly triggering."
+        - "This is unpredictable, unexplainable behavior — there's no way to trace it."
+        - "This is expected: the system prompt sits above project-level instructions in the hierarchy, so it wins when they conflict — the project-level instruction isn't able to override it."
+        - "The system prompt must contain a typo that's randomly triggering."
+        - "The model has a fault causing intermittent persona loss."
       answer: 1
-      explanation: "What looks 'random' from outside is actually deterministic layer precedence — the project-level rule is more specific and consistently wins, so the persona loss isn't a bug, it's correct layering behavior the developer hasn't identified yet."
-      written_prompt: "Explain to the developer why their chatbot's inconsistent persona isn't a bug, identifying the actual layer that's overriding the system prompt."
+      explanation: "This isn't random — it's the hierarchy working as designed. The system prompt outranks a project-level instruction, so the persona coming through even when a project-level instruction tries to suppress it is expected, not a bug."
+      written_prompt: "Explain to the developer why the persona still shows through, identifying which layer is actually winning and why."
     - question: |
-        Under the hood, a request is assembled from: a platform rule, a system prompt, a custom instruction, and the user's message. A developer asks: "Can I inspect which physical memory region holds the platform rule, separately from the user's message, at inference time?"
+        A request to the model is built from a platform rule, a system prompt, a custom instruction,
+        and the user's message. A developer asks: "Can I find a specific spot inside the model
+        where the platform rule is being kept separate from the user's message?"
       options:
-        - "Yes — each layer occupies a separate, inspectable memory partition inside the model."
-        - "No — all layers are merged into one continuous stream of text (with hidden role labels) before the model reads any of it; there is no physical separation to inspect."
-        - "Yes, but only for the top-tier model in a given family."
-        - "No, because the platform rule is stored outside the model entirely and never reaches it."
+        - "Yes — each layer is kept in its own separate, inspectable section inside the model."
+        - "No — all the layers are merged into one continuous piece of text (with hidden labels) before the model reads any of it; there's no separate spot to look for."
+        - "Yes, but only for the largest model in a given family."
+        - "No, because the platform rule never actually reaches the model at all."
       answer: 1
-      explanation: "‘Layers' is a mental model for humans, not a real architectural boundary — everything becomes one token stream distinguished only by labels, so there's no separate memory region to inspect."
-      written_prompt: "Explain why a developer can't inspect a 'separate memory region' for the platform rule versus the user's message, referring to how these layers actually get merged."
+      explanation: "\"Layers\" is a mental model for us, not a real boundary inside the model — everything becomes one continuous piece of text distinguished only by hidden labels, so there's no separate spot to inspect."
+      written_prompt: "Explain why a developer can't find a separate spot inside the model for the platform rule versus the user's message, referring to how these layers actually get merged."
 
 - id: prompt-elements
   koa: K
   assessment_mode: auto_marked
   questions:
-    - question: "What is the primary operational consequence of omitting specific structural elements — such as tone, format, or constraints — from a prompt string?"
+    - question: "What happens if you leave details like tone, format, or length limits out of a prompt?"
       options:
-        - "The model API will reject the request payload and return a structural schema validation failure."
-        - "The missing elements are completely ignored by the calculation layer during generation."
-        - "The model will automatically substitute the omitted elements using random text distributions."
-        - "The model will fill in the missing elements via improvisation and assumptions, reducing your control over the response."
+        - "The AI tool will show an error and refuse to respond."
+        - "The missing details are simply skipped, and the response is generated without them."
+        - "The tool automatically picks the missing details at random."
+        - "The model fills in the gaps with its own guess — which reduces how much control you have over the result."
       answer: 3
-      explanation: "Omitted prompt elements aren't skipped — the model guesses/improvises them, which is why being explicit about elements that matter removes that guesswork."
+      explanation: "Missing prompt details aren't skipped — the model guesses/improvises them, which is why being explicit about the things that matter removes that guesswork."
       written_prompt: "Explain what happens to a prompt's tone, format, or constraints if you never specify them explicitly."
-    - question: "Which of the following best describes the six prompt elements (role, task, context, format, constraints, examples)?"
+    - question: "Which best describes the six prompt elements (role, task, context, format, constraints, examples)?"
       options:
-        - "They're a checklist of vocabulary a prompt can be built from — not separate modules the model processes one at a time, but one combined calculation over the whole prompt."
-        - "They are six separate sequential passes the model performs one after another."
-        - "They are mandatory fields required in every single prompt."
-        - "They are specific to the Prompt Frameworks templates only, not general prompt vocabulary."
+        - "A checklist of ingredients you can build a prompt from — not separate steps the model works through one at a time, but all considered together at once."
+        - "Six separate steps the model performs one after another."
+        - "Fields that must be filled in on every single prompt."
+        - "Terms that only apply to the Prompt Frameworks templates, not prompts in general."
       answer: 0
-      explanation: "These six elements are a checklist for the person writing the prompt, not separate modules the model runs through — internally, it's one calculation over the whole prompt at once."
+      explanation: "These six elements are a checklist for the person writing the prompt, not separate steps the model works through — the model considers the whole prompt together, not one piece at a time."
       written_prompt: "Explain how the six prompt elements relate to how the model actually processes a prompt."
     - question: "Is it necessary to include all six prompt elements (role, task, context, format, constraints, examples) in every single prompt?"
       options:
@@ -800,7 +806,7 @@
       answer: 1
       explanation: "A model's knowledge cutoff is simply the point in time its training data was collected up to — anything after that, it either doesn't know, guesses, or flags uncertainty about."
       written_prompt: "Explain what a model's 'knowledge cutoff' actually refers to."
-    - question: "When a consumer chat app answers a question about very recent news, what is actually happening under the hood?"
+    - question: "When a consumer chat app correctly answers a question about very recent news, what's actually going on?"
       options:
         - "The model's internal weights are being silently updated in real time with the news."
         - "The model's knowledge cutoff automatically extends itself whenever a recent topic is detected."
@@ -977,15 +983,15 @@
   koa: K
   assessment_mode: auto_marked
   questions:
-    - question: "What does the temperature setting actually do to a model's output, mechanically?"
+    - question: "What does the temperature setting actually change about a model's output?"
       options:
-        - "It directly injects random noise characters into the generated text after it's produced."
-        - "It reshapes the model's probability distribution over next-word candidates before one gets sampled — lower values sharpen it toward the top choice, higher values flatten it."
-        - "It changes how many tokens the model is allowed to generate in total."
-        - "It controls how many parallel tool calls the model can make simultaneously."
+        - "It scrambles random characters into the generated text after it's written."
+        - "It changes how much the model favors its single best guess for the next word versus a wider range of options — lower settings make output more predictable, higher settings make it more varied."
+        - "It changes the maximum length of the response the model can generate."
+        - "It controls how many tools the model can use at once."
       answer: 1
-      explanation: "Temperature reshapes the probability distribution over candidate next tokens prior to sampling — it doesn't add randomness directly or change token limits."
-      written_prompt: "Explain, mechanically, what the temperature setting actually changes about how a model generates its next token."
+      explanation: "Temperature changes how much weight the model gives its top guess versus other reasonable options — it doesn't add random garbled text or change length/tool limits."
+      written_prompt: "Explain, in your own words, what the temperature setting actually changes about how a model picks its next word."
     - question: "What trade-off does raising temperature introduce?"
       options:
         - "Higher temperature gives less-likely, more surprising words a real shot at being picked, which is good for brainstorming but also more likely to wander or make mistakes."
@@ -1004,68 +1010,71 @@
       answer: 0
       explanation: "Low temperature sharpens the distribution toward the single most likely token, producing highly consistent, repeatable output."
       written_prompt: "Describe what happens to a model's output at very low temperature settings, and why that makes it more consistent."
-    - question: "Why is temperature described as reshaping a distribution 'before one gets sampled,' rather than injecting randomness directly?"
+    - question: "Is temperature best thought of as an on/off switch (either fully random or fully predictable), or as a dial?"
       options:
-        - "Because the model still samples from a probability distribution afterward — temperature only changes the shape of that distribution, not the randomness mechanism itself."
-        - "Because temperature settings are purely cosmetic and don't affect the underlying math at all."
-        - "Because 'sampling' and 'temperature' are two unrelated, entirely separate model settings."
-        - "Because temperature is applied only after the entire response has already been generated."
+        - "A dial — it can be set anywhere between very predictable and very varied, not just one of two extremes."
+        - "An on/off switch — there are really only two useful settings, off and on."
+        - "Temperature has no adjustable range; it's a fixed setting."
+        - "A dial, but only for image generation, never for text."
       answer: 0
-      explanation: "The distinction matters: temperature adjusts the shape of the candidate-token probability distribution; the actual random selection from that reshaped distribution is a separate sampling step."
-      written_prompt: "Explain why temperature is described as reshaping the probability distribution rather than directly injecting randomness into the output."
+      explanation: "Temperature is a continuous setting, not a binary switch — it can be dialed anywhere between very consistent and very varied, depending on what the task needs."
+      written_prompt: "Explain why temperature is better described as a dial than as an on/off switch."
 
 - id: temperature
   koa: A
   assessment_mode: auto_marked
   questions:
     - question: |
-        Config: { "task": "generate SQL from a natural-language question", "temperature": 1.3 }
-        Result: the SQL is often syntactically inconsistent, sometimes inventing column names that don't exist in the schema.
+        A tool that converts plain-English questions into database queries is set to a high
+        temperature. The queries it generates are often inconsistent, and sometimes reference
+        column names that don't even exist.
         What's the correct diagnosis and fix?
       options:
-        - "Temperature is unrelated to this; the schema itself must be wrong."
-        - "Temperature is too high for a task that needs precise, consistent output — lowering it (e.g. toward 0.0-0.2) would sharpen the distribution toward the most likely, schema-consistent tokens and reduce invented column names."
+        - "Temperature is unrelated to this; the database itself must be set up wrong."
+        - "Temperature is too high for a task that needs precise, consistent output — lowering it would push the model toward its most likely, consistent answer and reduce the invented column names."
         - "Temperature should be raised further to let the model be more creative about column names."
-        - "The model needs to be replaced with a bigger model; temperature has no bearing on SQL correctness."
+        - "The model needs to be replaced with a bigger one; temperature has no bearing on this kind of accuracy."
       answer: 1
-      explanation: "SQL generation needs precise, deterministic output, which is exactly what low temperature supports by sharpening the distribution toward the most likely (and here, most schema-consistent) tokens — high temperature is the wrong setting for this task, and it's a temperature issue, not a schema or model-size issue."
-      written_prompt: "Diagnose the SQL-generation problem and explain why lowering temperature (not raising it or swapping models) is the correct fix."
+      explanation: "Generating a database query needs precise, consistent output, which is exactly what low temperature supports — high temperature is the wrong setting for this task, and it's a temperature issue, not a database or model-size issue."
+      written_prompt: "Diagnose this problem and explain why lowering temperature (not raising it or swapping models) is the correct fix."
     - question: |
-        Config: { "task": "write comforting, varied responses for a grief-support chat line", "temperature": 0.0 }
-        Result: every conversation gets the exact same canned phrases, which feels robotic and repetitive to returning users.
+        A grief-support chat line sets temperature to 0.0 to keep responses safe and predictable.
+        Instead, every conversation gets the exact same canned phrases, which feels robotic and
+        repetitive to returning users.
         What's the correct diagnosis?
       options:
-        - "Temperature 0.0 sharpens the distribution toward the single most likely completion every time, producing highly consistent but repetitive output — this task would likely benefit from a moderate temperature increase to introduce natural variety while staying coherent."
+        - "Temperature 0.0 makes the model pick its single most likely response every time, which is very consistent but also very repetitive — this task would likely benefit from raising temperature a bit to add natural variety while staying coherent."
         - "The model is broken and needs a restart."
         - "Temperature has no effect on repetitiveness; the issue must be the prompt wording alone."
         - "Temperature 0.0 is correct for this task and should not be changed."
       answer: 0
-      explanation: "This is the textbook low-temperature symptom: maximal consistency at the cost of variety. A task needing warmth and natural variation (not exact precision) benefits from raising temperature moderately, unlike the SQL-generation case which genuinely needs low temperature."
+      explanation: "This is the classic low-temperature symptom: maximum consistency at the cost of variety. A task needing warmth and natural variation (not exact precision) benefits from raising temperature a bit, unlike the database-query case which genuinely needs low temperature."
       written_prompt: "Explain why temperature 0.0 is a poor fit for this grief-support use case, contrasting it with a task where low temperature would be correct."
     - question: |
-        Two configs are tested for the same creative-writing task:
-        Config A: temperature 0.1 — outputs are safe, similar, slightly bland across many generations.
-        Config B: temperature 1.5 — outputs are wildly varied but sometimes incoherent or off-topic.
-        Which best fits a "highly polished but exploratory" first draft brainstorm, and why?
+        Two settings are tested for the same creative-writing task:
+        Setting A: very low temperature — outputs are safe, similar, slightly bland across many tries.
+        Setting B: very high temperature — outputs are wildly varied but sometimes incoherent or off-topic.
+        Which best fits a "polished but exploratory" first-draft brainstorm, and why?
       options:
-        - "Config A, because low temperature always produces the highest-quality creative writing."
-        - "Config B, because higher temperature is always strictly better for any creative task, regardless of coherence."
-        - "Neither config as given — the ideal for exploratory-but-usable brainstorming is likely a moderate temperature between these two extremes, trading some of Config A's blandness for some of Config B's variety without going as far as incoherence."
+        - "Setting A, because low temperature always produces the highest-quality creative writing."
+        - "Setting B, because higher temperature is always strictly better for any creative task, regardless of coherence."
+        - "Neither setting as given — a moderate temperature between the two extremes would likely trade some of Setting A's blandness for some of Setting B's variety, without going as far as incoherence."
         - "Temperature doesn't affect creative writing tasks at all, only factual ones."
       answer: 2
-      explanation: "This tests understanding of the dial itself, not just its extremes — the two extremes shown (too sharp, too flat) point to a moderate middle setting as the reasoned answer, consistent with the lesson's framing of temperature as a dial between predictable and creative rather than an on/off switch."
-      written_prompt: "Explain why neither extreme config is ideal for exploratory brainstorming, and what setting would likely work better."
+      explanation: "This tests understanding of temperature as a dial, not just its extremes — the two extremes shown (too safe, too wild) point to a moderate middle setting as the reasoned answer, consistent with temperature being a dial between predictable and creative, not an on/off switch."
+      written_prompt: "Explain why neither extreme setting is ideal for exploratory brainstorming, and what setting would likely work better."
     - question: |
-        A developer sets temperature to 0.0 for a chatbot meant to answer the same FAQ question, hoping for absolute reproducibility, but is surprised the wording still varies slightly between calls that also change other sampling settings (e.g. top-p).
-        What does this reveal about temperature specifically?
+        A legal team needs an AI tool to generate the exact same standard contract clause every
+        time, word for word, for compliance reasons.
+        What temperature setting fits this best, and why?
       options:
-        - "Temperature is the only sampling parameter that affects output, so this shouldn't be possible."
-        - "Temperature reshapes the probability distribution before sampling, but other sampling parameters (like top-p) also affect which candidates are available to be picked — temperature alone doesn't guarantee absolute determinism if other settings are still introducing variation."
-        - "This proves temperature has no effect on output determinism at all."
-        - "The chatbot must be malfunctioning, since temperature 0.0 always guarantees identical output regardless of any other setting."
+        - "A very high temperature, since more variety gives more legally sound options to choose from."
+        - "A very low temperature (near 0), since it makes the model consistently pick its most likely wording each time, which is what word-for-word repeatability needs."
+        - "Temperature doesn't matter here since it only affects creative writing, not legal text."
+        - "A moderate temperature, to balance consistency and creativity evenly."
       answer: 1
-      explanation: "Temperature specifically reshapes the distribution before sampling, but it's one lever among several (like top-p/top-k) that jointly determine what gets picked — reasoning correctly about temperature means not overselling it as the sole determinant of determinism."
-      written_prompt: "Explain what this observation reveals about the scope of what temperature alone controls, versus other sampling settings."
+      explanation: "When the goal is the exact same output every time, low temperature is the right setting — it consistently favors the model's single most likely wording instead of introducing variety."
+      written_prompt: "Explain why low temperature, not high or moderate, fits this compliance use case."
 
 - id: model-choice
   koa: K
@@ -3294,17 +3303,19 @@
       explanation: "As the lesson notes, not every plan supports image or audio input — this is a capability gap tied to the plan tier, not a bug or a prompting issue."
       written_prompt: "Explain why this is a plan-tier limitation rather than a bug, and what the actual fix would be."
     - question: |
-        A developer integrates a multimodal-capable model into their app, but forgot to update the app's request payload to actually attach the image bytes — it still only sends the text portion of the user's message, even though the model itself fully supports vision.
-        A user complains the app "can't see images" despite using a vision-capable model.
+        A team builds an app on top of a model that supports images, but the app itself was never
+        set up to actually send the uploaded image along with the user's message — only the typed
+        text gets sent.
+        A user complains the app "can't see images" despite the model supporting vision.
         Where's the actual fault?
       options:
         - "The model itself, since it claims to support vision but isn't working."
-        - "The app's integration code, which never sends the image data to the model in the first place — the model can't process an image it was never given, regardless of its underlying vision capability."
+        - "The app — it never actually sends the image to the model in the first place, so the model can't process an image it was never given, regardless of what it's otherwise capable of."
         - "The user, for uploading an unsupported image format."
         - "There's no way to diagnose this without retraining the model."
       answer: 1
-      explanation: "This is an integration bug, not a model-capability gap — the model was never actually sent the image bytes, so its vision capability is irrelevant to this specific failure."
-      written_prompt: "Explain why this failure is about the app's integration rather than the model's underlying multimodal capability."
+      explanation: "This is a problem with how the app was built, not a gap in the model's capability — the model was never actually sent the image, so its ability to understand images is irrelevant to this specific failure."
+      written_prompt: "Explain why this failure is about how the app was built rather than the model's underlying ability to understand images."
     - question: |
         A user asks a vision-capable model to analyze a 4K-resolution architectural blueprint image, and the response comes back noticeably slower and costs more than a typical text-only request of similar apparent complexity.
         What best explains this?
@@ -4286,12 +4297,12 @@
       written_prompt: "Explain GDPR's core principles for processing personal data."
     - question: "What is Singapore's PDPA, and when was it introduced/revised?"
       options:
-        - "The Personal Data Protection Act — passed in 2012 and revised in 2020 — regulating how organisations collect, use, and disclose personal data, with extraterritorial reach to overseas organisations handling data collected in Singapore."
+        - "The Personal Data Protection Act — passed in 2012 and revised in 2020 — regulating how organisations collect, use, and disclose personal data. It also applies to overseas organisations that handle data collected from people in Singapore, not just local ones."
         - "A voluntary industry code with no legal force, introduced in 2024."
         - "An EU regulation that Singapore adopted directly without modification."
         - "A regulation that applies only to government agencies, not private organisations."
       answer: 0
-      explanation: "The PDPA was passed in 2012 and revised in 2020, regulates private-sector data handling, and has extraterritorial reach similar to GDPR."
+      explanation: "The PDPA was passed in 2012 and revised in 2020, regulates private-sector data handling, and — like GDPR — also applies to overseas organisations handling data collected from people in Singapore."
       written_prompt: "Explain what the PDPA is, when it was introduced and revised, and who it applies to."
     - question: "What did Singapore's Personal Data Protection Commission (PDPC) address in its 2024 AI-specific advisory guidelines?"
       options:

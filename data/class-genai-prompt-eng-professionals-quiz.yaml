@@ -73,7 +73,7 @@ mcq:
   - question: "A brainstorming prompt keeps returning the same handful of ideas with almost no variety. What's the most direct fix?"
     options:
       - "Rewrite the prompt to be longer."
-      - "Raise the temperature — it flattens the probability distribution over next-word candidates, giving less-likely, more varied options a real shot at being picked."
+      - "Raise the temperature — it widens the range of words the model is willing to pick from, giving less-obvious, more varied options a real shot at being chosen."
       - "Lower the temperature to force more consistency."
       - "Switch to a smaller model."
     answer: 1
