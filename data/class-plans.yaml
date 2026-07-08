@@ -1,0 +1,64 @@
+# ============================================================
+# Live, playable courses. See CLASS_PLANS_README.md for the full
+# editing guide — short version: every entry below automatically
+# gets a button in the "Courses" tile on the home menu (no other
+# file needs editing to add/remove a course), and every {module,
+# id} pair under `includes` must already exist in that module's
+# -koa.yaml with matching testbank entries, or it's silently
+# skipped at runtime.
+#
+# The `recap` / `final_quiz` fields below are just documentation
+# pointers to the offline artifacts `class-builder` also generates
+# (a handout + a standalone quiz file) — the live Class Player does
+# NOT read either of them; it generates its recap and final-quiz
+# pages fresh, live, from the KOA/testbank data every time.
+# ============================================================
+
+- id: genai-prompt-eng-professionals
+  title: "GenAI and Prompt Engineering for Professionals"
+  sections:
+    - name: "LLM101"
+      note: "Foundational LLM mechanics — scene-setting context before the syllabus's own LU1-3, not itself one of the accredited LUs below."
+      includes:
+        - {module: concepts, id: statistics}
+        - {module: concepts, id: stateless}
+        - {module: concepts, id: instructions}
+        - {module: concepts, id: tokens}
+        - {module: concepts, id: context-window}
+        - {module: concepts, id: hallucination}
+    - name: "Basic Prompting and Frameworks"
+      note: "Covers LU1 T1/T2 (prompt-elements carries both the K7 principles half and the A6 definitions half) and T7/T8, plus LU2 T9 (zero/one/few-shot + temperature standing in for 'hyper-parameters') and T10."
+      includes:
+        - {module: concepts, id: prompt-elements}        # T1 (K7) + T2 (A6)
+        - {module: concepts, id: prompt-design-concept}   # T7 (K4)
+        - {module: concepts, id: prompt-building-practice} # T8 (A4)
+        - {module: frameworks, id: zero-shot}             # T9 (K1, zero-shot)
+        - {module: frameworks, id: one-shot}              # T9 (K1, one-shot)
+        - {module: frameworks, id: few-shot}              # T9 (K1, domain/variety coverage)
+        - {module: concepts, id: temperature}             # T9 (K1, hyper-parameters)
+        - {module: concepts, id: prompt-best-practices}   # T10 (A7)
+    - name: "Use Cases"
+      note: "LU2 T11/T12."
+      includes:
+        - {module: concepts, id: tailoring-output-format} # T11 (K6)
+        - {module: concepts, id: iterative-prompting}     # T12 (A8)
+    - name: "Responsible AI Use"
+      note: "LU1 T3-T6."
+      includes:
+        - {module: concepts, id: prompt-guardrails}            # T3 (K2)
+        - {module: concepts, id: prompt-misuse-risks}          # T4 (A5)
+        - {module: concepts, id: privacy-regulations-overview} # T5 (K3)
+        - {module: concepts, id: data-anonymisation}           # T6 (A2)
+    - name: "Choosing the Right Tool"
+      note: "Not in the LU1-3 table — added per instructor request, same 'match capability to the job' theme as the rest of the syllabus."
+      includes:
+        - {module: concepts, id: model-choice}
+        - {module: concepts, id: parameters-model-size}
+    - name: "Troubleshooting AI Interactions"
+      note: "LU3 T13-T15."
+      includes:
+        - {module: concepts, id: ai-troubleshooting-framework} # T13 (K5)
+        - {module: concepts, id: recognising-ai-pitfalls}      # T14 (A1)
+        - {module: concepts, id: systematic-troubleshooting}   # T15 (A3)
+  recap: "per-section, see data/class-genai-prompt-eng-professionals-recap.yaml"
+  final_quiz: "data/class-genai-prompt-eng-professionals-quiz.yaml"

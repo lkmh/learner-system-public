@@ -278,6 +278,12 @@
   }
   .cover-tile h2{margin:0;font-size:1.15rem;}
   .cover-tile p{margin:0;color:var(--muted);font-size:0.9rem;}
+  .course-btn-list{display:flex;flex-wrap:wrap;gap:8px;}
+  .course-btn-list button{
+    background:var(--brand);color:#fff;border:none;border-radius:8px;
+    padding:8px 14px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  .course-btn-list .placeholder{font-size:0.85rem;color:var(--muted);}
   button.primarybtn{
     background:var(--brand);color:#fff;border:none;border-radius:8px;
     padding:10px 18px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
@@ -706,6 +712,11 @@
         <button class="primarybtn" id="cover-to-map">Open</button>
       </div>
       <div class="cover-tile">
+        <h2>Courses</h2>
+        <p>Ready-made classes assembled from the content above — sections of topics, a recap quiz after each, and a cumulative final quiz.</p>
+        <div class="course-btn-list" id="cover-courses-list"></div>
+      </div>
+      <div class="cover-tile">
         <h2>Self-Quiz</h2>
         <p>Enter your class code to start the revision quiz.</p>
         <div class="code-row">
@@ -1010,9 +1021,14 @@ document.getElementById('reveal-builder').addEventListener('click', ()=>{
 
 /* ===================== QUIZ CODE GATE ===================== */
 let classesData = [];
+let defaultQuizData = null;
+let classPlans = [];
+let contentMapModules = null;
+const classQuizCache = {};
 function tryEnterQuiz(){
   const input = document.getElementById('cover-code-input');
   const errEl = document.getElementById('cover-code-error');
+  const submitBtn = document.getElementById('cover-code-submit');
   const val = input.value.trim();
   if(!val){
     errEl.textContent = 'Enter a class code first.';
@@ -1027,7 +1043,29 @@ function tryEnterQuiz(){
   }
   errEl.classList.add('hidden');
   document.getElementById('quiz-page-title').textContent = 'Self-Quiz — ' + match.label;
-  showPage('page-quiz');
+
+  function enter(quizData){
+    initQuiz(quizData || defaultQuizData);
+    showPage('page-quiz');
+  }
+
+  if(!match.quiz_file){
+    enter(defaultQuizData);
+    return;
+  }
+  if(classQuizCache[match.quiz_file]){
+    enter(classQuizCache[match.quiz_file]);
+    return;
+  }
+  submitBtn.disabled = true;
+  const origLabel = submitBtn.textContent;
+  submitBtn.textContent = 'Loading quiz…';
+  loadYamlOptional(match.quiz_file).then(data=>{
+    submitBtn.disabled = false;
+    submitBtn.textContent = origLabel;
+    if(data){ classQuizCache[match.quiz_file] = data; }
+    enter(data);
+  });
 }
 document.getElementById('cover-code-submit').addEventListener('click', tryEnterQuiz);
 document.getElementById('cover-code-input').addEventListener('keydown', e=>{
@@ -1082,10 +1120,13 @@ Promise.all([
   loadYamlOptional('data/frameworks-koa.yaml'),
   loadYamlOptional('data/frameworks-testbank.yaml'),
   loadYamlOptional('data/skills-concepts-koa.yaml'),
-  loadYamlOptional('data/skills-concepts-testbank.yaml')
+  loadYamlOptional('data/skills-concepts-testbank.yaml'),
+  loadYamlOptional('data/class-plans.yaml')
 ]).then(([examples, quiz, classes, concepts, frameworks, skillsConcepts, skillsFramework, skillsExamples,
-          conceptsKoa, conceptsTestbank, frameworksKoa, frameworksTestbank, skillsKoa, skillsTestbank])=>{
+          conceptsKoa, conceptsTestbank, frameworksKoa, frameworksTestbank, skillsKoa, skillsTestbank, classPlansData])=>{
   classesData = classes || [];
+  defaultQuizData = quiz;
+  classPlans = classPlansData || [];
   initLibrary(examples);
   initQuiz(quiz);
   conceptsDeck.init(concepts);
@@ -1093,11 +1134,13 @@ Promise.all([
   skillsConceptsDeck.init(skillsConcepts);
   initSkillsFramework(skillsFramework[0]);
   initSkillsLibrary(skillsExamples);
-  initContentMap({
-    concepts: {koa: conceptsKoa, testbank: conceptsTestbank, label: 'Concepts', page: 'page-concepts', goTo: id=>conceptsDeck.goToConceptId(id)},
-    frameworks: {koa: frameworksKoa, testbank: frameworksTestbank, label: 'Frameworks', page: 'page-frameworks', goTo: id=>frameworksApi.selectFramework(id)},
-    skills: {koa: skillsKoa, testbank: skillsTestbank, label: 'Skills.md 101', page: 'page-skills', goTo: id=>skillsConceptsDeck.goToConceptId(id)}
-  });
+  contentMapModules = {
+    concepts: {koa: conceptsKoa, testbank: conceptsTestbank, label: 'Concepts', page: 'page-concepts', goTo: id=>conceptsDeck.goToConceptId(id), data: concepts},
+    frameworks: {koa: frameworksKoa, testbank: frameworksTestbank, label: 'Frameworks', page: 'page-frameworks', goTo: id=>frameworksApi.selectFramework(id), data: frameworks},
+    skills: {koa: skillsKoa, testbank: skillsTestbank, label: 'Skills.md 101', page: 'page-skills', goTo: id=>skillsConceptsDeck.goToConceptId(id), data: skillsConcepts}
+  };
+  initContentMap(contentMapModules);
+  initClassPresets();
 }).catch(err=>{
   document.querySelector('.wrap').insertAdjacentHTML('afterbegin',
     '<div class="feedback wrong">Could not load data files. If you opened this file directly by double-clicking it, '+
@@ -1263,11 +1306,18 @@ function renderBuilder(ex){
 
 /* ===================== QUIZ TAB ===================== */
 let quizState = {checked:0, total:0};
+let currentQuizData = null;
+document.getElementById('quiz-reset').addEventListener('click', ()=>{
+  if(currentQuizData) initQuiz(currentQuizData);
+});
 
 function initQuiz(data){
+  currentQuizData = data;
   const mcqWrap = document.getElementById('quiz-mcq');
   const seqWrap = document.getElementById('quiz-seq');
   const wbWrap = document.getElementById('quiz-wb');
+  mcqWrap.innerHTML = ''; seqWrap.innerHTML = ''; wbWrap.innerHTML = '';
+  quizState.checked = 0;
 
   quizState.total = (data.mcq?.length||0) + (data.sequence?.length||0) + (data.word_bank?.length||0);
   updateScoreBar();
@@ -1462,12 +1512,6 @@ function initQuiz(data){
     });
   });
 
-  document.getElementById('quiz-reset').addEventListener('click', ()=>{
-    mcqWrap.innerHTML=''; seqWrap.innerHTML=''; wbWrap.innerHTML='';
-    quizState.checked = 0;
-    updateScoreBar();
-    initQuiz(data);
-  });
 }
 
 function markChecked(){
@@ -1598,10 +1642,15 @@ const demoBuilders = {
   'iterative-diagnosis': buildIterativeDiagnosisDemo,
   'parameters-model-size': buildParametersModelSizeDemo,
   'attention-intro': buildAttentionIntroDemo,
+  'attention-embeddings': buildAttentionEmbeddingsDemo,
+  'attention-qkv': buildAttentionQKVDemo,
   'attention-paper': buildAttentionPaperDemo,
   'attention-multihead': buildMultiHeadAttentionDemo,
   'attention-positional': buildAttentionPositionalDemo,
+  'attention-tower': buildAttentionTowerDemo,
   'attention-encdec': buildAttentionEncDecDemo,
+  'attention-mask': buildAttentionMaskDemo,
+  'attention-output': buildAttentionOutputDemo,
   'rag-chunking': buildRagChunkingDemo,
   'rag-vector-db': buildRagVectorDbDemo,
   'rag-similarity-search': buildRagSimilaritySearchDemo,
@@ -3202,7 +3251,7 @@ function buildStatelessDemo(root){
     </div>
     <label class="toggle-row">
       <input type="checkbox" id="stateless-toggle" checked>
-      Include conversation history in the next request
+      Same conversation (unchecked = brand-new chat, no history to resend)
     </label>
     <button class="primarybtn" id="stateless-ask">Ask: "What's my name?"</button>
     <div class="chat-mini" id="stateless-answer"></div>
@@ -3213,7 +3262,7 @@ function buildStatelessDemo(root){
   root.querySelector('#stateless-ask').addEventListener('click', ()=>{
     const ans = historyOn
       ? "Your name is Jamie — you told me earlier in this conversation."
-      : "I don't have any information about your name. This request has no memory of anything said before it — could you tell me?";
+      : "I don't have any information about your name. This is a brand-new chat — nothing from any other conversation was sent with this request, so there's nothing for me to read. Could you tell me?";
     root.querySelector('#stateless-answer').innerHTML = `
       <div class="chat-row user">What's my name?</div>
       <div class="chat-row bot">${escHtml(ans)}</div>
@@ -3273,7 +3322,7 @@ function buildLayersDemo(root){
     {label:"2. App's system prompt", example:'Set by the app you\'re using, before you type anything. Example: "You are a helpful coding assistant. Today\'s date is [date]."'},
     {label:'3. Custom instructions', example:'Set by you or your organization, applied to every conversation. Example: "Always respond in bullet points."'},
     {label:'4. Project-level instructions', example:'Applies only inside one project or workspace. Example: "This project uses Python 3.11 and pytest."'},
-    {label:'5. Your message', example:'The most specific, most recent instruction — usually wins if it conflicts with anything above.'}
+    {label:'5. Your message', example:'The lowest layer, not the winner by default — it can customize within what the layers above allow, but it doesn\'t override a platform rule or an app\'s system prompt just by being more specific or more recent.'}
   ];
   root.innerHTML = `
     <div class="layers-stack">
@@ -3419,7 +3468,7 @@ function buildHallucinationDemo(root){
       <button class="primarybtn" id="hall-ask" ${asked?'disabled':''}>Ask the model</button>
       ${asked ? `<div class="hall-answer">"The Treaty of Bemidji was signed in 1847, formally ending the Northern Lakes Conflict between regional fur-trading factions."</div>` : ''}
       ${asked ? `<button class="resetbtn" id="hall-check" ${checked?'disabled':''}>Fact-check this answer</button>` : ''}
-      ${checked ? `<div class="hall-factcheck">There is no "Treaty of Bemidji" or "Northern Lakes Conflict" — this is entirely fabricated. The model answered confidently anyway because it's optimized to produce plausible-sounding text, not to verify facts against a database.</div>` : ''}
+      ${checked ? `<div class="hall-factcheck">There is no "Treaty of Bemidji" or "Northern Lakes Conflict" — this is entirely fabricated. The model answered confidently anyway because it picked a high-probability-sounding continuation, the same way it picks any token — nothing in that process checks the result against real facts.</div>` : ''}
       ${checked ? `<button class="resetbtn" id="hall-reset">Try again</button>` : ''}
     `;
     const askBtn = root.querySelector('#hall-ask');
@@ -3584,8 +3633,10 @@ function buildModelChoiceDemo(root){
       ticks++;
       let allDone = true;
       models.forEach((m,i)=>{
-        const pct = Math.min(100, ticks*m.speed*10);
-        const credits = Math.round(ticks*m.cost*0.5);
+        const finishTick = 10/m.speed;
+        const effectiveTicks = Math.min(ticks, finishTick);
+        const pct = Math.min(100, effectiveTicks*m.speed*10);
+        const credits = Math.round(effectiveTicks*m.cost*0.5);
         root.querySelector('#mc-fill-'+i).style.width = pct+'%';
         root.querySelector('#mc-credits-'+i).textContent = credits+' credits used';
         if(pct<100) allDone = false;
@@ -3879,19 +3930,43 @@ function buildParametersModelSizeDemo(root){
 }
 
 function buildAttentionPaperDemo(root){
-  const sentence = ["The","trophy","didn't","fit","in","the","suitcase","because","it","was","too","big"];
-  const attention = {
-    8: {0:0.05,1:0.55,2:0.02,3:0.05,4:0.02,5:0.05,6:0.20,7:0.02,9:0.02,10:0.01,11:0.01}
+  const words = ["The","trophy","suitcase","because","it","was"];
+  const matrix = [
+    [0.40,0.10,0.10,0.10,0.20,0.10],
+    [0.10,0.40,0.10,0.10,0.20,0.10],
+    [0.10,0.10,0.40,0.10,0.20,0.10],
+    [0.10,0.10,0.10,0.40,0.20,0.10],
+    [0.05,0.55,0.20,0.05,0.10,0.05],
+    [0.05,0.10,0.05,0.05,0.55,0.20]
+  ];
+  const notes = {
+    4: '"it" is weighing "trophy" far more heavily than anything else — that\'s how it resolves what "it" refers to.',
+    5: '"was" attends most to "it" — the subject-verb link, a purely grammatical relationship, not a meaning one.'
   };
-  let selected = 8;
+  let row = 4;
   function render(){
     root.innerHTML = `
-      <p class="cutoff-line">Click a word — highlighted words show what it “attends to” most (simplified):</p>
-      <p class="tp-sentence">${sentence.map((w,i)=>`<span class="chip" data-i="${i}" style="margin:2px;${i===selected?'background:var(--brand);color:#fff;':''}">${escHtml(w)}</span>`).join('')}</p>
-      <div class="curtain-payload" id="attn-note">${attention[selected] ? '“it” is weighing “trophy” far more heavily than “suitcase” — that’s how it resolves what “it” refers to.' : 'Click “it” (highlighted by default) to see its attention weights.'}</div>
+      <p class="cutoff-line">This is the actual "heat map" the paper's attention scores produce for one sentence. Click a word to make it the row — every cell shows how much that row-word attends to each column-word:</p>
+      <div class="tp-choices">
+        ${words.map((w,i)=>`<button class="chip${i===row?' active-tab':''}" data-i="${i}">${escHtml(w)}</button>`).join('')}
+      </div>
+      <table style="border-collapse:collapse;width:100%;margin:10px 0;">
+        <tr>
+          <td></td>
+          ${words.map(w=>`<td style="text-align:center;padding:4px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;">${escHtml(w)}</td>`).join('')}
+        </tr>
+        <tr>
+          <td style="padding:4px 8px;white-space:nowrap;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;">${escHtml(words[row])} →</td>
+          ${matrix[row].map(v=>{
+            const pct = Math.round(v*100);
+            return `<td style="text-align:center;padding:10px 4px;border:1px solid var(--border);background:color-mix(in srgb, var(--brand) ${pct}%, var(--paper));color:${pct>35?'#fff':'var(--ink)'};font-size:0.75rem;">${pct}%</td>`;
+          }).join('')}
+        </tr>
+      </table>
+      <p class="tv-note">${notes[row] || 'Most rows spread their attention fairly evenly across nearby words and themselves — nothing surprising going on. Try "it" or "was" for the two interesting rows in this sentence.'}</p>
     `;
-    root.querySelectorAll('.chip').forEach(btn=>{
-      btn.addEventListener('click', ()=>{ selected = parseInt(btn.dataset.i); render(); });
+    root.querySelectorAll('[data-i]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{ row = parseInt(btn.dataset.i); render(); });
     });
   }
   render();
@@ -4006,6 +4081,126 @@ function buildAttentionEncDecDemo(root){
     if(nextBtn) nextBtn.addEventListener('click', ()=>{ if(stage<stages.length-1){ stage++; render(); } });
   }
   render();
+}
+
+function buildAttentionEmbeddingsDemo(root){
+  const points = [
+    {text:'king', x:300, y:90, group:'royalty'},
+    {text:'queen', x:325, y:115, group:'royalty'},
+    {text:'prince', x:270, y:70, group:'royalty'},
+    {text:'dog', x:110, y:230, group:'animals'},
+    {text:'puppy', x:135, y:250, group:'animals'},
+    {text:'cat', x:90, y:205, group:'animals'},
+    {text:'banana', x:440, y:230, group:'other'},
+  ];
+  let selected = null;
+  function render(){
+    const groupOf = selected!==null ? points[selected].group : null;
+    root.innerHTML = `
+      <p class="cutoff-line">Before a model can do any math on a word, it's converted into a point plotted in space (in reality hundreds of numbers — this is a simplified 2D view). Click a word to see which others it lands near:</p>
+      <svg viewBox="0 0 500 300" style="width:100%;height:auto;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin:12px 0;">
+        ${points.map((p,i)=>`
+          <circle cx="${p.x}" cy="${p.y}" r="${selected===i?11:7}" fill="${groupOf===p.group?'var(--brand)':'var(--border-strong)'}" stroke="#fff" stroke-width="2"/>
+          <text x="${p.x}" y="${p.y-14}" font-size="12" font-family="'IBM Plex Mono',monospace" text-anchor="middle" fill="var(--ink)">${escHtml(p.text)}</text>
+        `).join('')}
+      </svg>
+      <p class="tv-note" id="emb-note">${selected===null ? 'Click any word above.' : `"${escHtml(points[selected].text)}" landed near other ${escHtml(groupOf)} words — related meaning shows up as nearby coordinates, purely from patterns in training data, not a hand-built dictionary. "banana" sits far from both clusters — unrelated meaning, unrelated location.`}</p>
+    `;
+    root.querySelectorAll('circle').forEach((c,i)=>{
+      c.style.cursor = 'pointer';
+      c.addEventListener('click', ()=>{ selected = i; render(); });
+    });
+  }
+  render();
+}
+
+function buildAttentionQKVDemo(root){
+  const sentence = ["The","trophy","didn't","fit","in","the","suitcase","because","it","was","too","big"];
+  const scores = {0:5,1:55,2:2,3:5,4:2,5:5,6:20,7:2,9:2,10:1,11:1};
+  let revealed = false;
+  function render(){
+    root.innerHTML = `
+      <p class="cutoff-line">Every word hands out two cards and holds one: a <strong>Query</strong> ("what am I looking for?"), a <strong>Key</strong> ("what do I have to offer?"), and a <strong>Value</strong> (its actual content). Focus word: <strong>"it"</strong>.</p>
+      <p class="tp-sentence">${sentence.map((w,i)=>`<span class="chip" style="margin:2px;${i===8?'background:var(--brand);color:#fff;':''}">${escHtml(w)}</span>`).join('')}</p>
+      <button class="primarybtn state-done" id="qkv-go" ${revealed?'disabled':''}>${revealed?'✓ Compared':'Compare "it"\'s Query against every other word\'s Key'}</button>
+      ${revealed ? `
+        <div class="mc-rows">
+          ${sentence.map((w,i)=>i===8?'':`
+            <div class="mc-row">
+              <span class="mc-name">${escHtml(w)}'s Key</span>
+              <div class="mc-bar-track"><div class="mc-bar-fill" style="width:${scores[i]}%"></div></div>
+              <span class="mc-credits">${scores[i]}% match</span>
+            </div>
+          `).join('')}
+        </div>
+        <p class="tv-note">"trophy" scores far above everything else, so "it" pulls in mostly <strong>trophy's Value</strong> (its content) to build its own updated representation — "suitcase" and "because" contribute a little, everything else barely at all. This score-then-blend step is exactly what "attention" means.</p>
+      ` : ''}
+    `;
+    const btn = root.querySelector('#qkv-go');
+    if(btn) btn.addEventListener('click', ()=>{ revealed = true; render(); });
+  }
+  render();
+}
+
+function buildAttentionTowerDemo(root){
+  demoRounds(root, [
+    {label:'Ground floor — the raw input', note:'Each word starts as just its embedding (meaning) plus its positional encoding (order). "it" doesn\'t know what it refers to yet.'},
+    {label:'Floor 1: attention, then a feed-forward filter', note:'Attention lets "it" gather a first rough pass of context from nearby words. A feed-forward layer — a small filter applied to every word\'s new representation, the same filter reused for each word — refines that result before passing it up.'},
+    {label:'Floor 2: attention, then filter — again', note:'The floor above repeats the same two-step pattern (attention, then feed-forward), but now working on the already-refined output of floor 1, not the raw input.'},
+    {label:'Floors 3–4: relationships stack on relationships', note:'By now "it" has picked up grammatical links (which verb it governs), not just nearby words — each floor builds on the abstractions the floor below already worked out.'},
+    {label:'Floor 5: reference is nearly resolved', note:'"it" is now strongly linked to "trophy" specifically, not just "some noun nearby" — the ambiguity from floor 1 has mostly been resolved.'},
+    {label:'Top floor: fully context-aware', note:'By the last floor (real models stack many more than 6), "it" carries essentially the full meaning of "the trophy, in the context of not fitting in the suitcase." Every floor used the exact same two building blocks — attention, then feed-forward — just repeated.'}
+  ], {counterLabel:'Floor', nextLabel:'Go up one floor →', endLabel:'✓ Reached the top floor'});
+}
+
+function buildAttentionMaskDemo(root){
+  const words = ["The","cat","sat","on","mat"];
+  demoToggle(root, {
+    offLabel: 'Unmasked (encoder-style)',
+    onLabel: 'Masked (decoder-style — generating text)',
+    render: on => {
+      const rows = words.map((w,i)=>{
+        const cells = words.map((_,j)=>{
+          const hidden = on && j>i;
+          const pct = hidden ? 0 : (i===j?55:Math.max(10,40-Math.abs(i-j)*10));
+          return `<td style="text-align:center;padding:8px 4px;border:1px solid var(--border);background:${hidden?'repeating-linear-gradient(45deg,var(--border),var(--border) 4px,var(--paper) 4px,var(--paper) 8px)':`color-mix(in srgb, var(--brand) ${pct}%, var(--paper))`};color:${hidden?'var(--muted)':pct>35?'#fff':'var(--ink)'};font-size:0.7rem;">${hidden?'—':pct+'%'}</td>`;
+        }).join('');
+        return `<tr><td style="padding:4px 8px;white-space:nowrap;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;">${escHtml(w)} →</td>${cells}</tr>`;
+      }).join('');
+      return `
+        <table style="border-collapse:collapse;width:100%;margin:10px 0;">
+          <tr><td></td>${words.map(w=>`<td style="text-align:center;padding:4px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;">${escHtml(w)}</td>`).join('')}</tr>
+          ${rows}
+        </table>
+        <p class="tv-note">${on
+          ? 'The blacked-out (hatched) cells are words that don\'t exist yet at that point in generation — "cat" (row 2) is never allowed to look ahead at "sat," "on," or "mat," only at itself and "The." This is what makes it valid to generate text one word at a time without the model "cheating" by peeking at its own future output.'
+          : 'With no masking, every word can freely attend to every other word, including ones later in the sentence — fine for reading a finished sentence (an encoder), but not for generating one word at a time.'}</p>
+      `;
+    }
+  });
+}
+
+function buildAttentionOutputDemo(root){
+  const candidates = [
+    {word:'mat', pct:45},
+    {word:'floor', pct:25},
+    {word:'roof', pct:15},
+    {word:'windowsill', pct:10},
+    {word:'moon', pct:5}
+  ];
+  root.innerHTML = `
+    <p class="cutoff-line">After every floor of attention + feed-forward, the last word's representation is turned into one probability for <em>every</em> word in the model's vocabulary — tens of thousands of them. Here are the top 5 for "The cat sat on the ___":</p>
+    <div class="mc-rows">
+      ${candidates.map(c=>`
+        <div class="mc-row">
+          <span class="mc-name" style="width:auto;min-width:60px;">${escHtml(c.word)}</span>
+          <div class="mc-bar-track"><div class="mc-bar-fill" style="width:${c.pct}%"></div></div>
+          <span class="mc-credits">${c.pct}%</span>
+        </div>
+      `).join('')}
+    </div>
+    <p class="tv-note">Recognize this? It's the exact same probability bar chart from the very first concept in this deck ("LLMs are statistics machines") — everything covered on this page (embeddings, positional encoding, Query/Key/Value, the attention heatmap, multi-head, feed-forward, stacking floors) is what happens <em>before</em> this final step, to make this probability estimate as good as possible.</p>
+  `;
 }
 
 /* ===================== RAG PIPELINE (2–9 of 10; basics = rag-basics reuses buildRagDemo) ===================== */
@@ -5255,33 +5450,65 @@ function escAttr(str){ return escHtml(str); }
 /* ===================== CONTENT MAP (stocktake table) ===================== */
 const COURSE_DRAFT_KEY = 'contentMapCourseDraft';
 
+// Flatten one {module, koa-entry} into ONE ROW PER K/A STATEMENT (not per topic) — a topic
+// with both a Knowledge and an Ability statement produces two rows, each tested by its own
+// separate recap block. Shared by initContentMap (all entries) and rowsForIds (a curated subset).
+function rowsFromKoaEntry(modules, moduleKey, entry){
+  const mod = modules[moduleKey];
+  const testbank = mod.testbank || [];
+  const blocks = testbank.filter(t=>t.id===entry.id);
+  const out = [];
+  [['K', entry.knowledge], ['A', entry.ability]].forEach(([koa, statement])=>{
+    if(!statement || statement==='None') return;
+    const block = blocks.find(b=>b.koa===koa);
+    out.push({
+      module: moduleKey,
+      moduleLabel: mod.label,
+      id: entry.id,
+      koa,
+      lu: entry.lu,
+      topic: entry.topic,
+      lo: entry.lo,
+      statement,
+      block: block || null,
+      questionCount: block ? block.questions.length : 0
+    });
+  });
+  return out;
+}
+
+// Rows for a curated list of {module, id} pairs (e.g. one class-plan section), in the order given.
+function rowsForIds(modules, includes){
+  let rows = [];
+  (includes||[]).forEach(({module: moduleKey, id})=>{
+    const mod = modules[moduleKey];
+    const entry = mod && (mod.koa||[]).find(e=>e.id===id);
+    if(entry) rows = rows.concat(rowsFromKoaEntry(modules, moduleKey, entry));
+  });
+  return rows;
+}
+
+// Group consecutive K/A rows that belong to the same {module, id} into one topic-group,
+// so a topic with both a Knowledge and an Ability statement gets ONE lesson card (with both
+// statements listed on it), not two duplicate copies of the same lesson content.
+function groupRowsForTopics(rows){
+  const groups = [];
+  rows.forEach(r=>{
+    const last = groups[groups.length-1];
+    if(last && last.module===r.module && last.id===r.id){
+      last.statements.push(r);
+    } else {
+      groups.push({module:r.module, id:r.id, moduleLabel:r.moduleLabel, topic:r.topic, lo:r.lo, statements:[r]});
+    }
+  });
+  return groups;
+}
+
 function initContentMap(modules){
-  // Flatten every {module, koa-entry} into ONE ROW PER K/A STATEMENT (not per topic) —
-  // a topic with both a Knowledge and an Ability statement produces two rows, each
-  // tested by its own separate recap block.
   const rows = [];
   Object.keys(modules).forEach(moduleKey=>{
-    const mod = modules[moduleKey];
-    const koaList = mod.koa || [];
-    const testbank = mod.testbank || [];
-    koaList.forEach(entry=>{
-      const blocks = testbank.filter(t=>t.id===entry.id);
-      [['K', entry.knowledge], ['A', entry.ability]].forEach(([koa, statement])=>{
-        if(!statement || statement==='None') return;
-        const block = blocks.find(b=>b.koa===koa);
-        rows.push({
-          module: moduleKey,
-          moduleLabel: mod.label,
-          id: entry.id,
-          koa,
-          lu: entry.lu,
-          topic: entry.topic,
-          lo: entry.lo,
-          statement,
-          block: block || null,
-          questionCount: block ? block.questions.length : 0
-        });
-      });
+    (modules[moduleKey].koa || []).forEach(entry=>{
+      rows.push(...rowsFromKoaEntry(modules, moduleKey, entry));
     });
   });
 
@@ -5463,14 +5690,46 @@ function saveCourseDraft(rows){
    "Open full lesson" leaves this page for the real content page/demo; the floating
    "Resume class" button (#cp-resume-fab) brings the learner back to where they left off. */
 
+// One page per individual lesson step (heading+body+demo), pulled from the raw concept/
+// framework data — a framework has no step deck, so it becomes a single lesson-step page.
+// Ends with one "topic-summary" page listing the K/A statement(s) being tested on this topic.
+function pushTopicSteps(steps, group){
+  const mod = contentMapModules && contentMapModules[group.module];
+  const raw = mod && mod.data ? mod.data.find(d=>d.id===group.id) : null;
+  if(raw && Array.isArray(raw.steps) && raw.steps.length){
+    raw.steps.forEach((s,si)=>{
+      steps.push({type:'lesson-step', group, raw, lessonStep:s, stepIdx:si, stepCount:raw.steps.length});
+    });
+  } else {
+    steps.push({type:'lesson-step', group, raw, lessonStep:null, stepIdx:0, stepCount:1});
+  }
+  if(group.statements.length) steps.push({type:'topic-summary', group});
+}
+
+// One page per individual quiz question (not one page per whole quiz block).
+function pushQuestionSteps(steps, questions, heading){
+  questions.forEach((q,qi)=>{
+    steps.push({type:'quiz-question', heading, question:q, qIndex:qi, qCount:questions.length});
+  });
+}
+function flattenAndShuffleQuestions(rows){
+  let all = [];
+  rows.forEach(r=>{ all = all.concat(r.block.questions.map(q=>Object.assign({}, q, {_topic:r.topic}))); });
+  return shuffle(all);
+}
+
 function buildClassPlayerSteps(rows){
   const steps = [];
-  rows.forEach(r=>{
-    steps.push({type:'topic', row:r});
-    if(r.block && r.block.questions && r.block.questions.length) steps.push({type:'recap', row:r});
+  groupRowsForTopics(rows).forEach(group=>{
+    pushTopicSteps(steps, group);
+    group.statements.forEach(r=>{
+      if(r.block && r.block.questions && r.block.questions.length){
+        pushQuestionSteps(steps, r.block.questions.map(q=>Object.assign({}, q, {_topic:r.topic})), `Recap check — ${r.topic}`);
+      }
+    });
   });
   const finalRows = rows.filter(r=>r.block && r.block.questions && r.block.questions.length);
-  if(finalRows.length) steps.push({type:'final', rows:finalRows});
+  if(finalRows.length) pushQuestionSteps(steps, flattenAndShuffleQuestions(finalRows), 'Revision quiz — cumulative');
   steps.push({type:'finish'});
   return steps;
 }
@@ -5480,11 +5739,63 @@ function startClassPlayer(rows, title){
     title,
     steps: buildClassPlayerSteps(rows),
     stepIdx: 0,
-    score: {correct:0, total:0},
-    finalQuestions: null
+    score: {correct:0, total:0}
   };
   showPage('page-class-player');
   renderClassPlayerStep();
+}
+
+// Section-aware steps for a preset class-plan: topics grouped by section, one combined
+// recap quiz per section (not per topic), then one course-wide cumulative quiz at the end.
+// Every lesson step and every quiz question is its own page.
+function buildSectionedClassPlayerSteps(sections, modules){
+  const steps = [];
+  const allRows = [];
+  (sections||[]).forEach(section=>{
+    const rows = rowsForIds(modules, section.includes);
+    groupRowsForTopics(rows).forEach(group=> pushTopicSteps(steps, group));
+    allRows.push(...rows);
+    const recapRows = rows.filter(r=>r.block && r.block.questions && r.block.questions.length);
+    if(recapRows.length) pushQuestionSteps(steps, flattenAndShuffleQuestions(recapRows), `Section recap — ${section.name}`);
+  });
+  const finalRows = allRows.filter(r=>r.block && r.block.questions && r.block.questions.length);
+  if(finalRows.length) pushQuestionSteps(steps, flattenAndShuffleQuestions(finalRows), 'Revision quiz — cumulative');
+  steps.push({type:'finish'});
+  return steps;
+}
+
+function startPresetClassPlayer(classPlan, modules, title){
+  classPlayer = {
+    title,
+    steps: buildSectionedClassPlayerSteps(classPlan.sections, modules),
+    stepIdx: 0,
+    score: {correct:0, total:0},
+    isPreset: true
+  };
+  showPage('page-class-player');
+  renderClassPlayerStep();
+}
+
+function initClassPresets(){
+  const list = document.getElementById('cover-courses-list');
+  if(!list) return;
+  if(!classPlans || !classPlans.length){
+    list.innerHTML = '<span class="placeholder">No courses assembled yet.</span>';
+    return;
+  }
+  list.innerHTML = classPlans.map((plan,i)=>
+    `<button type="button" data-i="${i}">${escHtml(plan.title)}</button>`
+  ).join('');
+  list.querySelectorAll('button[data-i]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const plan = classPlans[parseInt(btn.dataset.i)];
+      if(!plan || !contentMapModules){
+        alert('This class isn\'t available right now — its data file may not have loaded.');
+        return;
+      }
+      startPresetClassPlayer(plan, contentMapModules, plan.title);
+    });
+  });
 }
 
 function renderInlineQuiz(container, questions, onAnswered){
@@ -5554,34 +5865,57 @@ function renderClassPlayerStep(){
     nextBtn.disabled = cards.length>0 && !Array.from(cards).every(c=>c.dataset.done==='1');
   }
 
-  if(step.type==='topic'){
-    const r = step.row;
-    const koaLabel = r.koa==='K' ? 'Knowledge' : 'Ability';
+  if(step.type==='lesson-step'){
+    const g = step.group;
+    const raw = step.raw;
+    const demoId = `cp-lesson-demo-${g.module}-${g.id}-${step.stepIdx}`;
+    let inner;
+    if(step.lessonStep){
+      // concepts / skills-concepts shape: one {heading, body, demo} from raw.steps
+      inner = `
+        <h4>${escHtml(step.lessonStep.heading)}</h4>
+        <div class="concept-explain">${marked.parse((step.lessonStep.body||'').trim())}</div>
+        ${step.lessonStep.demo ? `<div class="demo-box" id="${demoId}"></div>` : ''}`;
+    } else if(raw && raw.components){
+      // frameworks shape: no step deck — tagline/guidance/components + one worked example
+      const theme = raw.themes && raw.themes[0];
+      const natural = (raw.id==='zero-shot' || raw.id==='one-shot' || raw.id==='few-shot');
+      const compiled = theme ? raw.components.map(c=>{
+        const val = theme.values[c.label];
+        return natural ? val : c.label.toUpperCase()+': '+val;
+      }).join('\n\n') : '';
+      inner = `
+        <p class="cp-lo">${escHtml(raw.tagline||'')}</p>
+        <div class="fw-guidance-line fw-guidance-best"><strong>✅ Best for:</strong>${escHtml(raw.best_for||'')}</div>
+        <div class="fw-guidance-line fw-guidance-avoid"><strong>⚠️ Skip if:</strong>${escHtml(raw.avoid_when||'')}</div>
+        <div class="concept-explain">${(raw.components||[]).map(c=>`<p><strong>${escHtml(c.label)}</strong> — ${escHtml(c.hint)}</p>`).join('')}</div>
+        ${theme ? `<p class="cp-lo" style="margin-top:10px;"><strong>Example (${escHtml(theme.theme)}):</strong></p><pre class="curtain-payload">${escHtml(compiled)}</pre>` : ''}`;
+    } else {
+      inner = '<p class="cp-lo">Lesson content not found for this topic.</p>';
+    }
     body.innerHTML = `
       <div class="cp-topic-card">
-        <span class="map-module-badge">${escHtml(r.moduleLabel)}</span>
-        <h3>${escHtml(r.topic)}</h3>
-        <p class="cp-lo">${escHtml(r.lo)}</p>
-        <div class="cp-statement"><strong>${koaLabel} focus</strong>${escHtml(r.statement)}</div>
-        <button class="primarybtn" id="cp-open-lesson">Open full lesson &rarr;</button>
-        ${!r.block ? '<p class="cp-lo" style="margin-top:10px;">No recap questions tagged for this topic yet.</p>' : ''}
+        <span class="map-module-badge">${escHtml(g.moduleLabel)}</span>
+        <h3>${escHtml(g.topic)}${step.stepCount>1 ? ` <span class="cp-lo" style="font-weight:400;display:inline;">— part ${step.stepIdx+1} of ${step.stepCount}</span>` : ''}</h3>
+        ${step.stepIdx===0 ? `<p class="cp-lo">${escHtml(g.lo)}</p>` : ''}
+        <div class="concept-step">${inner}</div>
       </div>`;
-    document.getElementById('cp-open-lesson').addEventListener('click', ()=>{
-      if(window.goToRowGlobal) window.goToRowGlobal(r);
-    });
-  } else if(step.type==='recap'){
-    const r = step.row;
-    body.innerHTML = `<p class="cp-section-title">Recap check &mdash; ${escHtml(r.topic)}</p><div id="cp-quiz-slot"></div>`;
-    renderInlineQuiz(document.getElementById('cp-quiz-slot'), r.block.questions, gateNextOnQuiz);
-    gateNextOnQuiz();
-  } else if(step.type==='final'){
-    if(!classPlayer.finalQuestions){
-      let all = [];
-      step.rows.forEach(r=>{ all = all.concat(r.block.questions.map(q=>Object.assign({}, q, {_topic:r.topic}))); });
-      classPlayer.finalQuestions = shuffle(all);
+    if(step.lessonStep && step.lessonStep.demo && demoBuilders[step.lessonStep.demo]){
+      const el = document.getElementById(demoId);
+      if(el) demoBuilders[step.lessonStep.demo](el);
     }
-    body.innerHTML = `<p class="cp-section-title">Revision quiz &mdash; cumulative, ${classPlayer.finalQuestions.length} questions</p><div id="cp-quiz-slot"></div>`;
-    renderInlineQuiz(document.getElementById('cp-quiz-slot'), classPlayer.finalQuestions, gateNextOnQuiz);
+  } else if(step.type==='topic-summary'){
+    const g = step.group;
+    body.innerHTML = `
+      <div class="cp-topic-card">
+        <span class="map-module-badge">${escHtml(g.moduleLabel)}</span>
+        <h3>${escHtml(g.topic)} — what you'll be tested on</h3>
+        ${g.statements.map(r=>`<div class="cp-statement"><strong>${r.koa==='K'?'Knowledge':'Ability'} focus</strong>${escHtml(r.statement)}</div>`).join('')}
+        ${g.statements.every(r=>!r.block) ? '<p class="cp-lo" style="margin-top:10px;">No recap questions tagged for this topic yet.</p>' : ''}
+      </div>`;
+  } else if(step.type==='quiz-question'){
+    body.innerHTML = `<p class="cp-section-title">${escHtml(step.heading)} (${step.qIndex+1} of ${step.qCount})</p><div id="cp-quiz-slot"></div>`;
+    renderInlineQuiz(document.getElementById('cp-quiz-slot'), [step.question], gateNextOnQuiz);
     gateNextOnQuiz();
   } else if(step.type==='finish'){
     nextBtn.hidden = true;
@@ -5590,11 +5924,12 @@ function renderClassPlayerStep(){
       <div class="cp-finish">
         <p>Class complete: ${escHtml(classPlayer.title)}</p>
         <div class="cp-score">${classPlayer.score.correct} / ${classPlayer.score.total} (${pct}%)</div>
-        <button class="primarybtn" id="cp-back-to-map">Back to Content Map</button>
+        <button class="primarybtn" id="cp-back-to-map">${classPlayer.isPreset ? 'Back to menu' : 'Back to Content Map'}</button>
       </div>`;
     document.getElementById('cp-back-to-map').addEventListener('click', ()=>{
+      const wasPreset = classPlayer.isPreset;
       classPlayer = null;
-      showPage('page-map');
+      showPage(wasPreset ? 'page-cover' : 'page-map');
     });
   }
 }

@@ -40,11 +40,11 @@
       demo: training-viz
     - heading: "Step 2 — Prediction: one word at a time"
       body: |
-        - Once training is done, using the model is simple in concept: give it some text, and it predicts the single most likely next word.
-        - It adds that word to the text and predicts the next one — over and over.
-        - That's genuinely most of what's happening under the hood.
-        - With enough training data and compute, "guess the next word, repeatedly" is enough to produce coherent paragraphs, working code, and reasoned-sounding answers.
-        - Try it yourself below — pick the next word each time, just like the model does.
+        - Once training is done, using the model is simple in concept: give it some text, and it calculates a **probability for every possible next word** — not just one guess.
+        - It doesn't always take the single highest-probability word. By default it *samples* from that probability list, so a 45%-likely word is picked most often, but a 5%-likely word can still get picked sometimes (you'll see this in the demo below — try picking a low-percentage option). The "Temperature" concept later covers how this is tuned.
+        - Whichever word gets picked, it's added to the text, and the model predicts the next one — over and over.
+        - With enough training data and compute, "predict probabilities for the next word, repeatedly" is enough to produce coherent paragraphs, working code, and reasoned-sounding answers.
+        - Try it yourself below — the percentages are the model's actual predicted odds; you can pick any of them, not just the top one.
       demo: next-token
 
 - id: stateless
@@ -56,7 +56,8 @@
         - The model itself has **no memory** between requests.
         - Every message starts from zero — it has no idea anything happened before, not your last conversation, not even the start of this one.
         - It only "knows" earlier context if that text is included again, right there in the request.
-        - Toggle the setting below and ask the same question both ways.
+        - This is easy to miss because a chat app's screen shows every message you've ever sent, which makes it *feel* like the model can see all of it too. It can't — the model only ever sees what's actually included in that one request.
+        - Below, "same conversation" resends everything said so far (the normal case). "Brand-new chat" is what happens if you open a fresh conversation and ask the same question — no earlier messages exist to resend, so there's nothing for the model to read.
         
         ---
         *Source: Vaswani et al. (2017), "Attention Is All You Need"; OpenAI API Reference Documentation on Chat Completions.*
@@ -89,17 +90,21 @@
         - These get quietly added to every conversation, without you retyping them each time.
         - Toggle one on below and see how it changes the answer to the exact same question.
       demo: custom-instructions
-    - heading: "Step 3 — Instructions stack in layers, and the most specific one usually wins"
+    - heading: "Step 3 — Instructions stack in layers, and it's a hierarchy, not \"most specific wins\""
       body: |
-        - A real conversation is shaped by several layers stacked broadest to most specific:
-        - 1. Platform-wide safety rules
+        - A real conversation is shaped by several layers, highest authority first:
+        - 1. Platform-wide safety rules (set by the AI company — outranks everything below)
         - 2. The app's own system prompt
         - 3. Your custom instructions
         - 4. Instructions specific to one project or workspace
-        - 5. Your actual message
-        - When these layers conflict, the more specific, more recent one usually takes priority.
+        - 5. Your actual message (lowest authority)
+        - It's tempting to assume "the most specific or most recent instruction wins," but that's not the rule — it's a **hierarchy**: a higher layer sets the boundaries, and each layer below only gets to customize *within* those boundaries. A platform safety rule beats an app's system prompt even though the system prompt is more specific to that app; your own message can't override either.
+        - Where "most specific wins" *does* hold is within a single layer — e.g. a detail in your current message overriding an earlier, vaguer instruction you gave in the same conversation. It's not a rule for resolving conflicts *across* layers.
         - Under the hood there's no physical separation between these layers at all — they're all merged into one continuous stream of text (with hidden labels marking who "said" each part) before the model reads any of it. "Layers" is a mental model for us, not a real boundary inside the model.
         - Click each layer below to see an example.
+
+        ---
+        *Source: OpenAI, "The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions" (2024), arXiv:2404.13208 — formalizes system > developer > user > tool-output priority as a trained hierarchy, not a recency/specificity heuristic.*
       demo: layers
     - heading: "Practice — diagnose an instruction conflict"
       body: |
@@ -160,7 +165,7 @@
         - Click through a few rounds below and watch the prompt (and the answer) sharpen each time.
         
         ---
-        *Source: MyEngineeringPath Prompt Engineering Guide; Medium Prompt Engineering Basics (2026).*
+        *Source: Anthropic, "Claude prompting best practices" — Claude Docs, https://platform.claude.com/docs/en/docs/build-with-claude/prompt-engineering/claude-prompting-best-practices; OpenAI, "Prompt Engineering Guide" — OpenAI API Docs, https://developers.openai.com/api/docs/guides/prompt-engineering. Both vendor docs frame prompting as an iterative, test-and-refine process rather than a one-shot write.*
       demo: iterative-prompting
     - heading: "Step 2 — Diagnose before you rewrite"
       body: |
@@ -190,6 +195,9 @@
         - In English: **1,000 tokens ≈ 750 words** (each token averages about 4 characters, a bit under one full word).
         - This is why model pricing, usage limits, and context windows are almost always quoted in tokens, not words or characters — tokens are the model's actual unit of text.
         - That ratio only holds for common English text. Rare words, non-English languages, code, and math get chopped into many more, smaller tokens — making them cost more and, in practice, harder for the model to reason about well.
+
+        ---
+        *Source: OpenAI Help Center, "What are tokens and how to count them?", https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them.*
     - heading: "Practice — diagnose a tokenization mismatch"
       body: |
         - Below are two text snippets and their tokenizer previews. Work out which uses more tokens, and why, before picking an answer.
@@ -204,7 +212,7 @@
         - Every model has a maximum **context window**: a hard cap on how many tokens (messages, replies, files) it can consider at once.
         - It compounds as a conversation gets longer — turn 10 has to resend turns 1 through 9 too.
         - Once you hit the cap, the oldest messages start getting silently dropped to make room for new ones — they stay visible in your chat window, but they're quietly gone from what the model actually reads. (That dropping/summarizing is done by the app wrapped around the model — the raw model just errors out if you hand it more tokens than it can hold.)
-        - Even well within the cap, models are measurably worse at using facts buried in the *middle* of a long context than facts near the start or end — so a longer context isn't a free lunch even before you hit the limit.
+        - Even well within the cap, models are measurably worse at using facts buried in the *middle* of a long context than facts near the start or end — a pattern researchers call **"lost in the middle."** So a longer context isn't a free lunch even before you hit the limit.
         - Send a few messages below and watch the gap open up between "what you see" and "what's actually sent."
         
         ---
@@ -227,9 +235,9 @@
   steps:
     - heading: "Step 1 — Plausible-sounding isn't the same as true"
       body: |
-        - The model is optimized to produce the next **plausible-sounding** token — not to check facts against a database.
-        - It can state completely fabricated information with total confidence.
-        - It isn't lying on purpose — it has no built-in way to tell a true fact apart from a statistically plausible-sounding sentence, unless it's grounded with real context or tools.
+        - Recall from the first concept: the model picks each next token by **probability** — how statistically likely that token is to follow, given its training data and the text so far. "Plausible-sounding" isn't a separate thing from probability, it *is* what a high-probability continuation sounds like.
+        - Nothing in that probability calculation checks the result against real-world facts or a database — it can produce a completely fabricated name, date, or citation with exactly the same fluent confidence as a true one, because both are just high-probability text.
+        - It isn't lying on purpose — it has no built-in way to tell a true fact apart from a statistically likely-sounding sentence, unless it's grounded with real context or tools (covered in Tool Use and RAG, later).
         - See it happen below.
         
         ---
@@ -347,38 +355,68 @@
   steps:
     - heading: "Step 1 — The problem before 2017: reading one word at a time"
       body: |
-        - Before 2017, language models mostly processed text in strict order, one word after another (recurrent networks, or RNNs) — each word had to wait for the one before it to finish processing.
-        - This was slow to train (no parallelism) and prone to "forgetting" earlier words by the time it reached the end of a long sentence.
+        - Before 2017, the dominant design was the **RNN (recurrent neural network)**: it reads a sequence one word at a time, and carries forward a single running summary (a "hidden state") that gets updated at each step and passed to the next.
+        - Each word had to wait for the one before it to finish updating that running summary — it's fundamentally sequential, word 6 can't start until word 5 is done.
+        - Two problems fall out of that: it's slow to train (no parallelism, since each step depends on the last), and the running summary tends to "forget" or dilute earlier words by the time it reaches the end of a long sentence — there's no direct link back to word 1 once you're at word 20.
         - Compare sequential vs. parallel processing of the same sentence below.
-        
+
         ---
         *Source: Vaswani et al. (2017), "Attention Is All You Need."*
       demo: attention-intro
-    - heading: "Step 2 — The fix: self-attention, so every word looks at every other word at once"
+    - heading: "Step 2 — Input embeddings: words become points in space"
       body: |
-        - A Google paper called *Attention Is All You Need* proposed the **transformer**: drop the strict order-by-order processing, and instead let every word look directly at every other word at once via a mechanism called **self-attention**.
-        - This turned out to both train faster (everything can be computed in parallel) and handle long-range relationships in text better. Every major LLM today — GPT, Claude, Gemini, Llama — is a transformer.
-        - For each word, self-attention computes a weighted mix of *all other words* in the input — the weights say "how relevant is that word to understanding this one right now."
-        - Click a word below to see a simplified view of which other words it "attends to" most.
+        - Before any attention happens, every word is converted into an **embedding**: a point plotted in a vast numerical space (hundreds of dimensions in a real model — the demo below uses a simplified 2D view). This is the model's actual starting material — not letters, coordinates.
+        - Words with related meaning land near each other, purely because of patterns in what text they tend to appear alongside during training — nobody manually places them.
+        - Click a word below to see which others it lands near.
+      demo: attention-embeddings
+    - heading: "Step 3 — Positional encoding: putting word order back in"
+      body: |
+        - Self-attention (coming up next) looks at all words at once, which means by itself it has no built-in sense of order — it treats the input as a set of words, not a sequence. Without help, "the cat sat" and "sat cat the" would look identical to it.
+        - The fix: right after embedding, a **positional encoding** — a small, unique numeric pattern for each position (1st word, 2nd word, ...) — gets added to each word's point, so position becomes part of what the model reads, without needing a separate "clock."
+        - See a sentence gain positional information below.
+      demo: attention-positional
+    - heading: "Step 4 — Query, Key, Value: the matchmaking system behind attention"
+      body: |
+        - **Self-attention** is the mechanism that lets every word look directly at every other word at once, instead of only nearby ones. Under the hood, each word produces three things: a **Query** ("what am I looking for?"), a **Key** ("what do I have to offer?"), and a **Value** (its actual content).
+        - To figure out what a word should pay attention to, its Query gets compared against every other word's Key — a good match scores high. Those scores decide how much of each other word's Value gets blended in.
+        - This is the mechanical heart of the paper's title: "attention" is just this score-then-blend calculation, done for every word, all at once.
+      demo: attention-qkv
+    - heading: "Step 5 — Scaled dot-product attention: the full picture, as a heat map"
+      body: |
+        - Do that Query-vs-Key comparison for *every* word against *every other* word, and you get a grid — one row per word, one column per word, each cell shaded by how strongly the row-word attends to the column-word. This grid is literally what "attention" looks like, computed.
+        - Most cells in a real sentence are unremarkable (a word mostly attending to itself and its neighbors). The interesting cells are the ones like "it," which reach far outside their immediate neighbors.
+        - Explore the grid below.
       demo: attention-paper
-    - heading: "Step 3 — Multi-head attention: many relationships, at once"
+    - heading: "Step 6 — Multi-head attention: many relationships, at once"
       body: |
-        - A single attention pass can only learn one kind of relationship well. Transformers run several attention "heads" in parallel, each free to specialize in a different kind of relationship — one might track grammatical structure, another which noun a pronoun refers to, another nearby words in the same phrase.
+        - A single attention pass (Step 4-5's grid) can only learn one kind of relationship well. Transformers run several attention "heads" in parallel, each producing its own Query/Key/Value and its own grid, free to specialize in a different kind of relationship — one might track grammatical structure, another which noun a pronoun refers to, another nearby words in the same phrase.
         - Their outputs get combined afterward, so the model reasons with all these relationship types simultaneously, not one at a time.
         - Switch between heads below to see the same word attend to different things depending on which relationship that head specializes in.
       demo: attention-multihead
-    - heading: "Step 4 — Positional encoding: putting word order back in"
+    - heading: "Step 7 — Feed-forward layers, stacked into a tower of floors"
       body: |
-        - Self-attention by itself has no built-in sense of order — it treats the input as a set of words, not a sequence. Without help, "the cat sat" and "sat cat the" would look identical to it.
-        - The fix: before anything else happens, a **positional encoding** — a small, unique numeric pattern for each position (1st word, 2nd word, ...) — gets added to each word's representation, so position becomes part of what the model reads.
-        - See a sentence gain positional information below.
-      demo: attention-positional
-    - heading: "Step 5 — The original shape: encoder-decoder (and why most LLMs today skip half of it)"
+        - After attention blends in context from other words, each word individually passes through a **feed-forward layer** — a small filter applied one word at a time, the same filter reused for every word — which refines that blended result further.
+        - One round of "attention, then feed-forward" is one **layer**. Transformers stack many of these layers on top of each other, like floors of a building — a word's representation gets passed up floor by floor, becoming more abstract and more context-aware at each level.
+        - Step through the floors below to see "it" go from ambiguous to fully resolved.
+      demo: attention-tower
+    - heading: "Step 8 — The original shape: encoder-decoder (and why most LLMs today skip half of it)"
       body: |
-        - The original paper's transformer had two stacked halves: an **encoder** (reads the whole input and builds a representation of it) and a **decoder** (generates the output one token at a time, referring back to that representation) — built for machine translation.
-        - Most modern LLMs you chat with (GPT, Claude, Llama) are **decoder-only**: there's no separate encoder half, just a decoder stack predicting the next token, reading its own prior output as it goes — simpler, and it turned out to scale extremely well for open-ended text generation.
-        - Step through the original two-part shape below, then see the decoder-only shape most LLMs actually use.
+        - The original paper's transformer had two stacked towers: an **encoder** (reads the whole input and builds a representation of it) and a **decoder** (generates the output one token at a time, referring back to that representation) — built for machine translation.
+        - Most modern LLMs you chat with (GPT, Claude, Llama) are **decoder-only**: there's no separate encoder tower, just a decoder stack predicting the next token, reading its own prior output as it goes — simpler, and it turned out to scale extremely well for open-ended text generation.
+        - Step through the original two-tower shape below, then see the decoder-only shape most LLMs actually use.
       demo: attention-encdec
+    - heading: "Step 9 — Masked attention: the decoder can't peek at its own future"
+      body: |
+        - A decoder generates one word at a time, and it isn't allowed to "cheat" by looking ahead at words it hasn't produced yet.
+        - This is enforced with a **mask**: in the attention grid from Step 5, every cell above the diagonal (a word attending to a word that comes later) gets blacked out — a word can only attend to itself and whatever came before it.
+        - Compare an unmasked grid (fine for reading a finished sentence) against a masked one (required for generating text one word at a time) below.
+      demo: attention-mask
+    - heading: "Step 10 — The output: one probability per possible next word"
+      body: |
+        - After the last floor, the final word's representation gets converted into a probability for every word in the model's entire vocabulary — tens of thousands of candidates. This is the exact same probability step from the very first concept in this deck.
+        - Everything else on this page — embeddings, positional encoding, Query/Key/Value, the attention heat map, multiple heads, feed-forward, stacking floors, masking — exists purely to make this one final probability estimate as good as possible.
+        - See the final bars below.
+      demo: attention-output
     - heading: "Practice — diagnose a transformer component"
       body: |
         - Below is a description of one architectural piece. Work out which transformer component it's describing before picking an answer.

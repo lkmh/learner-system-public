@@ -1,0 +1,204 @@
+# ============================================================
+# Cumulative final quiz for the "GenAI and Prompt Engineering for
+# Professionals" class (see data/class-plans.yaml,
+# id: genai-prompt-eng-professionals).
+#
+# NOT the sitewide self-quiz (data/quiz.yaml) — a standalone,
+# class-specific review set covering all 6 sections. Same
+# mcq/sequence/word_bank shape as quiz.yaml (see QUIZ_README.md),
+# but these questions are fresh and cumulative, not copies of the
+# per-section recap in class-genai-prompt-eng-professionals-recap.yaml.
+# ============================================================
+
+mcq:
+  # --- LLM101 ---
+  - question: "A user says: \"ChatGPT remembered my job title from a chat I had last week.\" What actually explains this?"
+    options:
+      - "The model has persistent memory across all conversations by default."
+      - "The app likely resent relevant earlier context (or a saved memory feature) with this request — the underlying model itself has no memory between requests."
+      - "The model guessed correctly by coincidence."
+      - "Job titles are stored permanently inside the model's parameters after being mentioned once."
+    answer: 1
+    explanation: "LLMs are stateless — any apparent memory comes from the app resending context (full history, a summary, or a separate saved-memory feature), not from the model itself retaining anything."
+  - question: "Why can a well-within-context-window conversation still lose track of a detail mentioned 40 turns ago?"
+    options:
+      - "The context window was exceeded and the detail was silently dropped."
+      - "The \"lost in the middle\" effect — models are measurably worse at using facts buried in the middle of a long context, even when those facts are technically still present."
+      - "The model's knowledge cutoff was reached mid-conversation."
+      - "Tokens were miscounted by the app."
+    answer: 1
+    explanation: "Even well within the token cap, recall degrades for facts buried in the middle of a long context — a separate failure mode from hard truncation."
+  - question: "A platform-wide safety rule and an app's own system prompt point in opposite directions on the same request. Which wins, and why?"
+    options:
+      - "The system prompt, because it's more specific to the app the user is in."
+      - "The user's own message, because it's the most recent instruction."
+      - "The platform-wide rule — instruction layers form a hierarchy (platform > app > custom instructions > project > message), not a most-specific-or-most-recent contest."
+      - "Neither — the model picks randomly when instructions conflict."
+    answer: 2
+    explanation: "Higher layers set boundaries that lower layers can only customize within, not override — a platform rule beats an app's system prompt regardless of specificity."
+  - question: "Why does the same block of code typically cost more tokens than an English sentence of similar character length?"
+    options:
+      - "Code is always processed by a separate, more expensive model."
+      - "Punctuation, operators, and less-common symbol combinations in code get split into many small tokens, while common English words often map to single tokens."
+      - "Token counting doesn't apply to code at all."
+      - "Code triggers automatic translation overhead."
+    answer: 1
+    explanation: "Tokenizers chunk based on frequency in training data — common English words are efficient single tokens; code's symbols and rarer character combinations are not."
+
+  # --- Basic Prompting and Frameworks ---
+  - question: "A prompt asks for \"a summary of our Q3 results\" with no format, length, or audience specified, and the reply comes back as a long, overly formal paragraph. What actually happened?"
+    options:
+      - "The model is bad at summarization."
+      - "Every unspecified prompt element (format, tone, audience) still gets filled in — by the model's own guess — rather than being skipped, and this time the guess didn't match what was wanted."
+      - "The model needs to be retrained on the company's writing style."
+      - "Summaries always default to formal tone regardless of instructions."
+    answer: 1
+    explanation: "Missing prompt elements aren't skipped — they're improvised. Being explicit about format, tone, and audience removes that guesswork."
+  - question: "A task needs a very specific, unusual output structure the model has likely never seen described in words. Which technique is the safest starting point?"
+    options:
+      - "Zero-shot — just describe the structure in detail."
+      - "One-shot or few-shot — show a worked example of the exact structure wanted, since a concrete example anchors an unusual format far more reliably than a description alone."
+      - "Increase the temperature to give the model more freedom to figure it out."
+      - "Fine-tune a new model before attempting the task."
+    answer: 1
+    explanation: "Unusual, hard-to-describe formats are exactly where showing (one/few-shot) beats telling (zero-shot) — a description leaves room for a wrong guess an example doesn't."
+  - question: "A team wants highly consistent structured output across many varied inputs, and is currently relying on one example. What's the most likely failure mode, and the fix?"
+    options:
+      - "No failure mode — one example is always sufficient regardless of input variety."
+      - "The single example risks overfitting to that one case; moving to few-shot (2-4 varied examples) reduces formatting drift across varied inputs."
+      - "The fix is to increase temperature."
+      - "The fix is to switch to zero-shot for more flexibility."
+    answer: 1
+    explanation: "One-shot locks in a format effectively for a single consistent shape, but on genuinely varied inputs it risks overfitting — few-shot's several examples reduce that drift."
+  - question: "A brainstorming prompt keeps returning the same handful of ideas with almost no variety. What's the most direct fix?"
+    options:
+      - "Rewrite the prompt to be longer."
+      - "Raise the temperature — it flattens the probability distribution over next-word candidates, giving less-likely, more varied options a real shot at being picked."
+      - "Lower the temperature to force more consistency."
+      - "Switch to a smaller model."
+    answer: 1
+    explanation: "Low temperature sharpens the distribution toward the top candidate (consistent but repetitive); raising it flattens the distribution, increasing variety."
+  - question: "Which of these is a documented prompt-design best practice, versus a common misconception?"
+    options:
+      - "Best practice: vague, short prompts are always more efficient."
+      - "Best practice: being specific, providing examples, explaining the underlying goal (not just the surface task), and iterating on the result — versus the misconception that a single, cleverly-worded prompt should get it right on the first try."
+      - "Best practice: never provide any context, since the model already knows everything."
+      - "Best practice: longer prompts are always better regardless of content."
+    answer: 1
+    explanation: "Effective prompting is specific, example-anchored, goal-explaining, and iterative — not a one-shot guess at the perfect wording."
+
+  # --- Use Cases ---
+  - question: "The exact same request — \"explain our refund policy\" — needs a completely different output shape depending on whether it's going into a customer-facing chat bubble or a downstream JSON field for another system. What does this illustrate?"
+    options:
+      - "The model is inconsistent and needs fine-tuning to fix this."
+      - "Prompts should explicitly specify output format/style, since the same task can require very different output shapes depending on who or what actually consumes the answer."
+      - "This can't be solved with prompting and requires two separate models."
+      - "JSON output is never appropriate for customer-facing content."
+    answer: 1
+    explanation: "Format and style are prompt elements that must be set deliberately — output naturally differs by consumer (human reader vs. downstream system), and the prompt needs to say so."
+  - question: "A first-draft prompt produced a summary that missed the source article's key statistic. What's the more effective next step: rewriting the whole prompt from scratch, or making a targeted fix?"
+    options:
+      - "Always start over completely — patched prompts are inherently unreliable."
+      - "Diagnose the specific cause (e.g. no instruction to preserve numbers) and make a targeted addition, then re-check it against other typical inputs too, not just the one that broke."
+      - "Increase the temperature to encourage more thorough answers."
+      - "Switch models instead of adjusting the prompt."
+    answer: 1
+    explanation: "Effective iteration diagnoses the specific failure and fixes that, then verifies the fix doesn't break other cases — not a full rewrite from scratch each round."
+
+  # --- Responsible AI Use ---
+  - question: "A support-bot prompt says \"only answer questions about our product catalog\" and separately specifies exactly when to refuse and hand off to a human. What are these two things called, and what do they guarantee?"
+    options:
+      - "Format locks — they guarantee the output is always valid JSON."
+      - "Guardrails (scope limit + refusal condition) — they reduce the chance of the bot drifting outside its intended boundary, but don't eliminate it entirely (e.g. prompt injection can still push past them)."
+      - "Fine-tuning instructions — they permanently retrain the underlying model."
+      - "Rate limits — they control how many requests the bot can handle per minute."
+    answer: 1
+    explanation: "Guardrails are boundaries written into the prompt itself; they reduce drift risk but are not an absolute guarantee against every way a model can be pushed off course."
+  - question: "An employee is about to paste a customer's full name, email, and account number into a public consumer AI chat tool to help draft a response. What should happen first?"
+    options:
+      - "Nothing — public AI tools are equivalent to internal company systems for data-handling purposes."
+      - "Apply a basic anonymisation technique (e.g. masking, pseudonymisation) to the personal data before it goes into the prompt, since data privacy regulations apply to what's pasted into a prompt, not just what's stored in a database."
+      - "Only anonymise the account number; names and emails are not considered sensitive."
+      - "Anonymisation is only required for data pasted into developer APIs, not consumer chat tools."
+    answer: 1
+    explanation: "Privacy regulations (e.g. GDPR, PDPA) apply to personal data the moment it's processed — including being typed into a prompt — so anonymising it first is the correct move regardless of which tool it's headed to."
+  - question: "A poor AI output is traced back to \"the prompt never said what industry the request was about, and never gave an example of the expected tone.\" What category of problem is this?"
+    options:
+      - "A model capability limitation that no prompt could have fixed."
+      - "A common prompt misuse — missing context and vague instructions — not a model or configuration problem."
+      - "A rate-limiting issue."
+      - "A hallucination."
+    answer: 1
+    explanation: "Missing context and vague instructions are textbook prompt-misuse causes of a poor output, distinct from a genuine model or infrastructure limitation."
+
+  # --- Choosing the Right Tool ---
+  - question: "A high-volume, simple classification task (sorting support tickets into 5 fixed categories) is currently routed to the largest, most expensive model available. What's the likely issue?"
+    options:
+      - "No issue — always use the largest model available for reliability."
+      - "This is likely an over-powered model assigned to a task that doesn't need it — a smaller, faster, cheaper model that reliably handles the job would be the better fit, since bigger models cost more and run slower without necessarily improving a simple, well-defined task."
+      - "The task should instead be handled by increasing the temperature setting."
+      - "This is correct because larger models are always cheaper per request at high volume."
+    answer: 1
+    explanation: "Picking the smallest model that reliably does the job matters as much as prompt quality — over-provisioning costs speed and money with no guaranteed benefit on a simple task."
+  - question: "A colleague argues \"we should switch to the model with more parameters — it'll definitely perform better on our narrow, specialized task.\" Is this reasoning sound?"
+    options:
+      - "Yes — parameter count is a perfect, direct predictor of quality on any task."
+      - "Not necessarily — a smaller model fine-tuned or well-prompted for a narrow task can beat a larger general model on that exact task, since parameter count alone doesn't guarantee it's better suited to a specific, specialized use case."
+      - "No — parameter count has no relationship to model capability at all."
+      - "Yes, but only if the new model is also more expensive."
+    answer: 1
+    explanation: "Bigger generally correlates with more general capability, but it's not a guarantee on a narrow task — a well-matched smaller model can outperform it there."
+
+  # --- Troubleshooting AI Interactions ---
+  - question: "An AI output confidently states a specific, detailed fact that turns out to be completely fabricated. What category of issue is this, and what's true about how it happened?"
+    options:
+      - "A rate-limiting issue — the model ran out of quota and guessed."
+      - "Hallucination — the model produced a plausible-sounding, high-probability continuation with nothing in that process checking it against real-world facts."
+      - "A tokenization bug that corrupted the output."
+      - "A guardrail failure specific to that one topic."
+    answer: 1
+    explanation: "Hallucination happens because token generation optimizes for statistical plausibility, not fact-verification — confident and correct are not the same thing."
+  - question: "A model's outputs default to describing a \"nurse\" as female and a \"CEO\" as male without being asked to. What's the correct classification, and the fix?"
+    options:
+      - "A hallucination — the model invented these details randomly."
+      - "A bias-driven default, reflecting statistical associations in training data — naming the desired diversity or neutrality explicitly in the prompt heads it off."
+      - "A rate-limit symptom unrelated to content."
+      - "A guardrail correctly enforcing a company policy."
+    answer: 1
+    explanation: "This is a bias issue rooted in training-data associations, not a random fabrication — explicit prompt instructions counteract the default."
+
+sequence:
+  - question: "Put these steps of the standard AI-troubleshooting framework in the order you'd actually follow them:"
+    items:
+      - "Isolate — narrow down exactly which part of the output/pipeline is misbehaving"
+      - "Categorize — classify the failure type (prompt issue, retrieval issue, model-capability limit, configuration setting)"
+      - "Test — try one targeted change at a time"
+      - "Confirm — verify the fix actually resolved it, and didn't break anything else"
+    correct_order:
+      - "Isolate — narrow down exactly which part of the output/pipeline is misbehaving"
+      - "Categorize — classify the failure type (prompt issue, retrieval issue, model-capability limit, configuration setting)"
+      - "Test — try one targeted change at a time"
+      - "Confirm — verify the fix actually resolved it, and didn't break anything else"
+    explanation: "Isolate-categorize-test-confirm mirrors real diagnostic work: narrow the problem, name its type, change one thing, then verify — not guess-and-check across the whole prompt at once."
+  - question: "Put these prompt-framework choices in order from least to most structured/labeled:"
+    items:
+      - "Zero-shot (plain instruction, no example)"
+      - "One-shot (a single worked example)"
+      - "Few-shot (several worked examples)"
+      - "A named structured framework like RTF or CO-STAR (explicit labeled slots)"
+    correct_order:
+      - "Zero-shot (plain instruction, no example)"
+      - "One-shot (a single worked example)"
+      - "Few-shot (several worked examples)"
+      - "A named structured framework like RTF or CO-STAR (explicit labeled slots)"
+    explanation: "This progression trades increasing prep effort for increasing output reliability — from a bare instruction, to one example, to several, to a fully labeled structural scaffold."
+
+word_bank:
+  - question: "Complete the sentence: When a conversation is well within the context window but an early detail still gets lost, the cause is most likely the ___ ___ ___ ___ effect."
+    word_bank: [lost, in, the, middle, dropped, from, cache, hallucinated, entirely, forgotten, on, purpose]
+    correct_sequence: [lost, in, the, middle]
+    explanation: "\"Lost in the middle\" describes measurably worse recall for facts buried in the middle of a long context, distinct from hard truncation past the context window."
+  - question: "Complete the sentence: Guardrails reduce the chance of a model drifting outside an intended boundary, but they ___ ___ ___ it ___."
+    word_bank: [do, not, eliminate, entirely, always, guarantee, completely, block, definitely, prevent, mostly, partially]
+    correct_sequence: [do, not, eliminate, entirely]
+    explanation: "Guardrails are a boundary written into the prompt — they lower drift risk but aren't an absolute guarantee, especially against something like prompt injection."
