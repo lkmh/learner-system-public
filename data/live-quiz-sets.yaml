@@ -1,0 +1,44 @@
+# Question sets selectable from the "Start a new session" screen in
+# live-quiz/host.html. Two shapes are supported:
+#
+# 1. A flat live-quiz file (same shape as live-quiz-demo.yaml: a `title` and
+#    a flat `questions` list) — just set `source`.
+#
+# 2. A class recap file (the same sections[].topics[].recap_questions[]
+#    shape the self-paced Class Player reads, e.g.
+#    class-genai-prompt-eng-professionals-recap.yaml) — set `source` AND
+#    `section` (must exactly match a `section:` value in that file). All of
+#    that section's K + A recap questions, across every topic in it, get
+#    flattened into one ordered live-quiz question list.
+#
+# This is what lets the exact same authored MCQ content power both the
+# self-paced Class Player recap (single-player) and this live host-controlled
+# quiz (multi-player) — nothing is duplicated or re-written by hand.
+
+sets:
+  - label: "Demo — LLM Fundamentals (5 Qs)"
+    source: "live-quiz-demo.yaml"
+
+  - label: "GenAI for Professionals — LLM101 recap"
+    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    section: "LLM101"
+
+  - label: "GenAI for Professionals — Basic Prompting and Frameworks recap"
+    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    section: "Basic Prompting and Frameworks"
+
+  - label: "GenAI for Professionals — Use Cases recap"
+    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    section: "Use Cases"
+
+  - label: "GenAI for Professionals — Responsible AI Use recap"
+    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    section: "Responsible AI Use"
+
+  - label: "GenAI for Professionals — Choosing the Right Tool recap"
+    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    section: "Choosing the Right Tool"
+
+  - label: "GenAI for Professionals — Troubleshooting AI Interactions recap"
+    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    section: "Troubleshooting AI Interactions"

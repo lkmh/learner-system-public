@@ -1,0 +1,57 @@
+# Question set for the live (Kahoot-style) quiz in live-quiz/host.html and
+# live-quiz/join.html. Same mcq shape as quiz.yaml (0-based `answer` index),
+# but read top-to-bottom in a fixed order (never shuffled) since the host
+# controls pacing question by question.
+#
+# To run a different set for a different class/section, point host.html's
+# QUESTIONS_URL at a different file with this same shape — these 5 are pulled
+# straight from the "LLMs are statistics machines" / "LLMs are stateless"
+# recap testbank (class-genai-prompt-eng-professionals-recap.yaml) as a
+# working demo, not written fresh.
+
+title: "Live Recap — LLM Fundamentals"
+questions:
+  - question: "What is an LLM actually doing when it generates a reply?"
+    options:
+      - "It looks up the answer in a database of facts."
+      - "It predicts the next word based on patterns it learned from huge amounts of training text."
+      - "It checks a live, up-to-date source to find the correct answer."
+      - "It reasons through the logic of the question step by step before answering."
+    answer: 1
+    explanation: "LLMs predict text one word at a time based on patterns in their training data — they don't look answers up in a database or check a live source."
+
+  - question: "As an LLM is trained on more and more text, what's the most direct effect on the quality of what it writes?"
+    options:
+      - "Its writing tends to get more fluent and coherent, since it's seen far more examples of real language to learn from."
+      - "It starts double-checking its answers against a fact database."
+      - "The cost of each request automatically goes down."
+      - "It stops predicting words and switches to following fixed rules instead."
+    answer: 0
+    explanation: "The more real text a model is trained on, the more patterns it has to draw on — that alone tends to make its output more fluent and coherent."
+
+  - question: "Someone claims: \"LLMs work by looking up the correct answer in a giant table built during training.\" What's wrong with that claim?"
+    options:
+      - "Nothing — the claim is accurate."
+      - "There's no literal lookup table — an LLM predicts each word from patterns spread across everything it learned in training, not by retrieving a stored answer."
+      - "LLMs do use a lookup table, but only for grammar, never for facts."
+      - "The claim only applies to older, smaller language models."
+    answer: 1
+    explanation: "An LLM isn't retrieving a stored answer from a table — it's predicting each word from patterns learned across all of its training."
+
+  - question: "Why does an app have to resend the whole conversation history every time it asks the model a new question?"
+    options:
+      - "Because the app's settings get completely cleared out every 60 seconds."
+      - "Because the model itself is stateless and holds no memory of past requests — it only knows what's included in the current one."
+      - "Because past answers get encrypted and become unreadable after the first request."
+      - "Because resending the history is what updates and improves the model over time."
+    answer: 1
+    explanation: "The model itself is stateless — it has no memory between calls, so the full conversation has to be resent every time to preserve context."
+
+  - question: "Assuming an app resends conversation history correctly, what actually changes about the model itself between turn 1 and turn 5 of a conversation?"
+    options:
+      - "Nothing about the model changes — only what gets sent to it grows to include more of the earlier turns; every call is still a fresh, stateless one."
+      - "The model quietly updates itself turn to turn to remember the user."
+      - "The model remembers the user's identity on its own, across calls."
+      - "Only the app's instructions change between turns, never the conversation history."
+    answer: 0
+    explanation: "The model itself doesn't change or accumulate memory — only what's sent to it (a growing conversation history) changes, since every call is a fresh, stateless request."

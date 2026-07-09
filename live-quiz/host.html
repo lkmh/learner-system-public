@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Quiz — Host</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --bg:#F8F9F9; --paper:#FFFFFF; --ink:#212427; --muted:#757F8A;
+    --border:#C8CCD0; --border-strong:#757F8A;
+    --blue:#19599F; --blue-bg:#D3E5F8;
+    --brand:#134479; --brand-light:#1F6FC6;
+    --green:#32855C; --green-bg:#E3ECE7;
+    --wrong:#D9262F; --wrong-bg:#FBE2E4;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3{font-family:'Space Grotesk','Inter',sans-serif; margin:0;}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 20px 80px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.06em; margin:0 0 6px;
+  }
+  .card{
+    background:var(--paper); border:1px solid var(--border); border-radius:var(--radius);
+    padding:28px; margin-top:20px;
+  }
+  .code-display{
+    font-family:'IBM Plex Mono',monospace; font-size:3rem; font-weight:600;
+    letter-spacing:.12em; color:var(--brand); text-align:center; margin:10px 0;
+  }
+  .join-url{
+    text-align:center; color:var(--muted); font-size:0.95rem; word-break:break-all;
+  }
+  .join-url button{
+    margin-left:8px; font-size:0.8rem; padding:4px 10px; border-radius:6px;
+    border:1px solid var(--border); background:var(--bg); color:var(--ink); cursor:pointer;
+  }
+  #qr-code{display:flex; justify-content:center; margin:18px 0 4px;}
+  #qr-code img{border-radius:8px; border:1px solid var(--border); padding:8px; background:#fff;}
+  .participant-row{display:flex; align-items:center; justify-content:space-between; margin-top:24px;}
+  .participant-count{font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:1.1rem;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;}
+  .chip{
+    background:var(--blue-bg); color:var(--brand); border-radius:999px;
+    padding:6px 14px; font-size:0.88rem; font-weight:500;
+  }
+  .empty-hint{color:var(--muted); font-size:0.9rem; margin-top:14px;}
+
+  button.primary{
+    display:block; width:100%; margin-top:24px; padding:16px;
+    border:none; border-radius:var(--radius); background:var(--brand); color:#fff;
+    font-size:1.05rem; font-weight:600; cursor:pointer; font-family:'Space Grotesk',sans-serif;
+  }
+  button.primary:hover{background:var(--brand-light);}
+  button.primary:disabled{opacity:.5; cursor:not-allowed;}
+  button.secondary{
+    display:block; width:100%; margin-top:12px; padding:12px;
+    border:1px solid var(--border-strong); border-radius:var(--radius); background:transparent;
+    color:var(--ink); font-size:0.95rem; font-weight:500; cursor:pointer;
+  }
+  .link-btn{
+    background:none; border:none; color:var(--muted); font-size:0.85rem; cursor:pointer;
+    text-decoration:underline; padding:0; margin-top:18px; display:block; margin-left:auto; margin-right:auto;
+  }
+
+  select, input[type=number], input[type=text], input[type=email], input[type=password]{
+    width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:var(--radius);
+    font-size:1rem; font-family:inherit; background:var(--paper); color:var(--ink);
+  }
+  label{display:block; font-weight:600; font-size:0.9rem; margin:16px 0 6px;}
+
+  .pacing-choice{display:flex; flex-direction:column; gap:8px;}
+  .pacing-option{
+    display:flex; align-items:flex-start; gap:10px; padding:12px 14px; border:1px solid var(--border);
+    border-radius:var(--radius); cursor:pointer; font-weight:400; font-size:0.92rem;
+  }
+  .pacing-option:has(input:checked){border-color:var(--blue); background:var(--blue-bg);}
+  .pacing-option input{margin-top:3px;}
+  .pacing-option .sub{display:block; color:var(--muted); font-size:0.82rem; font-weight:400; margin-top:2px;}
+
+  .btn-row{display:flex; gap:10px; margin-top:12px;}
+  .btn-row button{margin-top:0; flex:1;}
+
+  .resume-item{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 14px; border:1px solid var(--border); border-radius:var(--radius);
+    margin-bottom:8px; background:var(--bg); cursor:pointer; text-align:left; width:100%;
+    font-family:inherit; font-size:0.92rem; color:var(--ink);
+  }
+  .resume-item:hover{border-color:var(--blue);}
+  .resume-item .code{font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--brand);}
+  .resume-item .status{color:var(--muted); font-size:0.8rem; text-transform:uppercase; letter-spacing:.04em;}
+  .divider{border:none; border-top:1px solid var(--border); margin:24px 0;}
+
+  .q-progress{font-family:'IBM Plex Mono',monospace; color:var(--muted); font-size:0.85rem; margin-bottom:6px;}
+  .q-text{font-size:1.4rem; font-weight:600; margin:6px 0 20px;}
+  .option-row{
+    display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:var(--radius);
+    border:1px solid var(--border); margin-bottom:10px; background:var(--bg);
+  }
+  .option-letter{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--muted); flex-shrink:0;
+  }
+  .answered-stat{
+    text-align:center; font-family:'Space Grotesk',sans-serif; font-size:1.1rem;
+    font-weight:600; margin:18px 0 4px; color:var(--brand);
+  }
+
+  .bar-row{margin-bottom:16px;}
+  .bar-label{display:flex; justify-content:space-between; font-size:0.95rem; margin-bottom:6px;}
+  .bar-label .txt{flex:1; padding-right:12px;}
+  .bar-label .pct{font-family:'IBM Plex Mono',monospace; font-weight:600; flex-shrink:0;}
+  .bar-track{background:var(--bg); border:1px solid var(--border); border-radius:999px; height:14px; overflow:hidden;}
+  .bar-fill{height:100%; background:var(--blue); border-radius:999px; transition:width .4s ease;}
+  .bar-row.correct .bar-fill{background:var(--green);}
+  .bar-row.correct .bar-label .txt{color:var(--green); font-weight:600;}
+  .bar-row.correct .bar-label .txt::after{content:" ✓ correct"; font-size:0.8rem;}
+  .explanation{
+    margin-top:20px; padding:14px 16px; background:var(--green-bg); border-radius:var(--radius);
+    font-size:0.92rem; color:var(--ink);
+  }
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  details.howto{
+    border:1px solid var(--border); border-radius:var(--radius); background:var(--bg);
+    padding:12px 16px; margin-bottom:20px;
+  }
+  details.howto summary{
+    cursor:pointer; font-weight:600; font-family:'Space Grotesk',sans-serif; font-size:0.95rem;
+  }
+  details.howto[open] summary{margin-bottom:12px;}
+  details.howto h3{font-size:0.85rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:16px 0 6px;}
+  details.howto h3:first-of-type{margin-top:4px;}
+  details.howto ol{margin:0; padding-left:20px; font-size:0.9rem; line-height:1.6;}
+  details.howto li{margin-bottom:4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Live Quiz · Host</p>
+  <h1 id="quiz-title">Loading…</h1>
+
+  <!-- Login -->
+  <div class="view" id="view-login">
+    <div class="card">
+      <p class="eyebrow" style="text-align:center;">Host sign-in</p>
+      <label for="login-email">Email</label>
+      <input type="text" id="login-email" autocomplete="username">
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" autocomplete="current-password">
+      <button class="primary" id="login-btn">Log in</button>
+      <p id="login-status" style="color:var(--wrong);text-align:center;"></p>
+    </div>
+  </div>
+
+  <!-- Setup / resume -->
+  <div class="view" id="view-setup">
+    <div class="card">
+      <details class="howto">
+        <summary>How this works — for you and for players</summary>
+        <h3>For you (the presenter)</h3>
+        <ol>
+          <li>Pick a question set and a pacing mode below, then click "Create session."</li>
+          <li>Share the join code, link, or QR code that appears with the class.</li>
+          <li>Once everyone's in, click "Start quiz."</li>
+          <li><strong>Host-paced (question by question):</strong> one question is open to everyone at once. Click "Close &amp; reveal results" to lock it and show the % breakdown, then "Next question" to open the next one. Repeat until the last question, then click "End quiz."</li>
+          <li><strong>Self-paced (whole quiz, timed):</strong> every question is open at once and each player moves through them on their own screen, in any order, until the timer runs out. Click "Close quiz &amp; start review" any time — even if some players haven't finished — to lock all further answers. Then step through the aggregated results together with Previous/Next, one question at a time.</li>
+        </ol>
+        <h3>For players (share this part)</h3>
+        <ol>
+          <li>Open the join link, scan the QR code, or go to the join page and type in the code.</li>
+          <li>Enter your name and tap Join.</li>
+          <li><strong>Host-paced:</strong> wait for each question to appear, tap an answer, then wait for the host to reveal results before the next question shows up.</li>
+          <li><strong>Self-paced:</strong> answer questions in any order using Previous/Next at your own speed, before time runs out or the host closes the quiz.</li>
+          <li>When the host starts the review, everyone sees the same question together with the % breakdown and the correct answer highlighted.</li>
+        </ol>
+      </details>
+      <button class="link-btn" id="logout-btn" style="margin-top:0;margin-bottom:16px;">Log out</button>
+      <div id="resume-section" style="display:none;">
+        <p class="eyebrow">Resume a session</p>
+        <div id="resume-list"></div>
+        <hr class="divider">
+      </div>
+      <p class="eyebrow">Start a new session</p>
+      <label for="set-select">Question set</label>
+      <select id="set-select"></select>
+
+      <label>Pacing</label>
+      <div class="pacing-choice">
+        <label class="pacing-option">
+          <input type="radio" name="mode" value="lockstep" checked>
+          <span>Host-paced — one question at a time<span class="sub">You control when each question opens and reveals. Best for short sets.</span></span>
+        </label>
+        <label class="pacing-option">
+          <input type="radio" name="mode" value="timed">
+          <span>Self-paced — everyone works through it within a time limit<span class="sub">Learners answer at their own speed until time's up or you close it. Best for longer sets — then you review the results together.</span></span>
+        </label>
+      </div>
+      <div id="duration-row" style="display:none;">
+        <label for="duration-input">Time limit (minutes)</label>
+        <input type="number" id="duration-input" value="30" min="1" max="180">
+      </div>
+
+      <button class="primary" id="create-btn">Create session</button>
+      <p id="setup-status" style="color:var(--wrong);text-align:center;"></p>
+    </div>
+  </div>
+
+  <!-- Lobby -->
+  <div class="view" id="view-lobby">
+    <div class="card">
+      <p class="eyebrow" style="text-align:center;margin-bottom:0;">Join code</p>
+      <div class="code-display" id="code-display">····</div>
+      <div id="qr-code"></div>
+      <p class="join-url">
+        <span id="join-url-text"></span>
+        <button type="button" id="copy-link-btn">Copy link</button>
+      </p>
+      <div class="participant-row">
+        <span class="participant-count"><span id="participant-count">0</span> joined</span>
+      </div>
+      <div class="chips" id="participant-chips"></div>
+      <p class="empty-hint" id="empty-hint">Waiting for learners to join…</p>
+      <button class="primary" id="start-btn">Start quiz</button>
+      <button class="link-btn" id="abandon-btn-lobby">End this session and start over</button>
+    </div>
+  </div>
+
+  <!-- Question active (host-paced) -->
+  <div class="view" id="view-question">
+    <div class="card">
+      <p class="q-progress" id="q-progress-1"></p>
+      <p class="q-text" id="q-text-1"></p>
+      <div id="q-options-1"></div>
+      <p class="answered-stat" id="answered-stat"></p>
+      <button class="primary" id="close-btn">Close &amp; reveal results</button>
+    </div>
+  </div>
+
+  <!-- Active (self-paced, timed) -->
+  <div class="view" id="view-active">
+    <div class="card" style="text-align:center;">
+      <p class="eyebrow">Time remaining</p>
+      <div class="code-display" id="countdown-display" style="font-size:2.2rem;">--:--</div>
+      <p class="answered-stat" id="active-stats"></p>
+      <button class="primary" id="close-active-btn">Close quiz &amp; start review</button>
+      <button class="link-btn" id="abandon-btn-active">End this session and start over</button>
+    </div>
+  </div>
+
+  <!-- Results / review -->
+  <div class="view" id="view-results">
+    <div class="card">
+      <p class="q-progress" id="q-progress-2"></p>
+      <p class="q-text" id="q-text-2"></p>
+      <div id="bars"></div>
+      <div class="explanation" id="explanation"></div>
+      <div class="btn-row">
+        <button class="secondary" id="prev-btn" style="display:none;">Previous question</button>
+        <button class="primary" id="next-btn">Next question</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ended -->
+  <div class="view" id="view-ended">
+    <div class="card" style="text-align:center;">
+      <h2>Quiz complete</h2>
+      <p style="color:var(--muted);margin-top:8px;" id="ended-summary"></p>
+      <button class="secondary" id="restart-btn">Start a new session</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+  import { loadManifest, loadQuestionSet } from './questions.js';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I
+  const SESSION_STORAGE_KEY = 'live-quiz-session-id';
+
+  let manifest = [];
+  let questions = [];
+  let sessionId = null;
+  let sessionCode = null;
+  let sessionMode = 'lockstep';
+  let sessionDurationMinutes = 30;
+  let currentIndex = -1;
+  let participants = [];   // {id, name}
+  let answers = [];        // answers for the CURRENT question index only
+  let channel = null;
+  let countdownTimer = null;
+  let totalAnswers = 0;
+
+  const views = ['login', 'setup', 'lobby', 'question', 'active', 'results', 'ended'];
+  function showView(name) {
+    for (const v of views) {
+      document.getElementById('view-' + v).classList.toggle('active', v === name);
+    }
+  }
+
+  function randomCode(len = 5) {
+    let out = '';
+    for (let i = 0; i < len; i++) out += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
+    return out;
+  }
+
+  function optionLetters() { return ['A', 'B', 'C', 'D', 'E', 'F']; }
+
+  async function getUser() {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session ? session.user : null;
+  }
+
+  async function login() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    if (!email || !password) {
+      document.getElementById('login-status').textContent = 'Enter your email and password.';
+      return;
+    }
+    document.getElementById('login-btn').disabled = true;
+    document.getElementById('login-status').textContent = 'Signing in…';
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    document.getElementById('login-btn').disabled = false;
+    if (error) {
+      document.getElementById('login-status').textContent = error.message || 'Could not sign in.';
+      return;
+    }
+    document.getElementById('login-status').textContent = '';
+    await afterLogin(data.user);
+  }
+
+  async function logout() {
+    stopCountdown();
+    await supabase.auth.signOut();
+    location.reload();
+  }
+
+  // ---------- Setup / resume ----------
+
+  function populateSetSelect() {
+    const sel = document.getElementById('set-select');
+    sel.innerHTML = '';
+    manifest.forEach((def, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = def.label;
+      sel.appendChild(opt);
+    });
+  }
+
+  function selectedMode() {
+    return document.querySelector('input[name="mode"]:checked').value;
+  }
+
+  document.querySelectorAll('input[name="mode"]').forEach((el) => {
+    el.addEventListener('change', () => {
+      document.getElementById('duration-row').style.display = selectedMode() === 'timed' ? 'block' : 'none';
+    });
+  });
+
+  function renderResumeList(sessions) {
+    const section = document.getElementById('resume-section');
+    const list = document.getElementById('resume-list');
+    list.innerHTML = '';
+    if (!sessions.length) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    for (const s of sessions) {
+      const btn = document.createElement('button');
+      btn.className = 'resume-item';
+      btn.innerHTML = `<span><span class="code">${s.code}</span> — ${s.question_label || s.question_source}</span><span class="status">${s.status}</span>`;
+      btn.addEventListener('click', () => resumeSession(s));
+      list.appendChild(btn);
+    }
+  }
+
+  async function createSession() {
+    const def = manifest[Number(document.getElementById('set-select').value)];
+    const mode = selectedMode();
+    const durationMinutes = mode === 'timed'
+      ? Math.max(1, Number(document.getElementById('duration-input').value) || 30)
+      : null;
+    document.getElementById('create-btn').disabled = true;
+    document.getElementById('setup-status').textContent = 'Creating…';
+    try {
+      const set = await loadQuestionSet(def);
+      questions = set.questions;
+
+      let row = null;
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const code = randomCode();
+        const { data, error } = await supabase
+          .from('live_quiz_sessions')
+          .insert({
+            code,
+            status: 'lobby',
+            question_index: -1,
+            question_source: def.source,
+            question_section: def.section || null,
+            question_label: def.label,
+            mode,
+            duration_minutes: durationMinutes,
+          })
+          .select()
+          .single();
+        if (!error) { row = data; break; }
+        if (error.code !== '23505') throw error; // not a unique-violation, don't retry
+      }
+      if (!row) throw new Error('Could not allocate a join code — try again.');
+
+      sessionStorage.setItem(SESSION_STORAGE_KEY, row.id);
+      await enterSession(row);
+    } catch (err) {
+      console.error(err);
+      document.getElementById('setup-status').textContent = err.message || 'Could not create session.';
+      document.getElementById('create-btn').disabled = false;
+    }
+  }
+
+  async function resumeSession(row) {
+    sessionStorage.setItem(SESSION_STORAGE_KEY, row.id);
+    const def = manifest.find((m) => m.source === row.question_source && (m.section || null) === row.question_section) ||
+      { source: row.question_source, section: row.question_section, label: row.question_label };
+    const set = await loadQuestionSet(def);
+    questions = set.questions;
+    await enterSession(row);
+  }
+
+  // ---------- Entering / running a session ----------
+
+  async function enterSession(row) {
+    sessionId = row.id;
+    sessionCode = row.code;
+    sessionMode = row.mode || 'lockstep';
+    sessionDurationMinutes = row.duration_minutes || 30;
+    currentIndex = row.question_index;
+    document.getElementById('quiz-title').textContent = row.question_label || 'Live Quiz';
+
+    const { data: existingParticipants } = await supabase
+      .from('live_quiz_participants')
+      .select('id, name')
+      .eq('session_id', sessionId);
+    participants = existingParticipants || [];
+
+    if (row.status === 'question' || row.status === 'results' || row.status === 'review') {
+      await fetchAnswersForCurrent();
+    } else {
+      answers = [];
+    }
+    if (row.status === 'active') await fetchTotalAnswers();
+
+    subscribeRealtime();
+
+    if (row.status === 'lobby') renderLobby();
+    else if (row.status === 'question') renderQuestion();
+    else if (row.status === 'active') renderActive(row.ends_at);
+    else if (row.status === 'results' || row.status === 'review') renderResults();
+    else if (row.status === 'ended') renderEnded();
+  }
+
+  function renderLobby() {
+    document.getElementById('code-display').textContent = sessionCode;
+    const joinUrl = `${location.origin}${location.pathname.replace('host.html', 'join.html')}?code=${sessionCode}`;
+    document.getElementById('join-url-text').textContent = joinUrl;
+    document.getElementById('copy-link-btn').onclick = () => {
+      navigator.clipboard.writeText(joinUrl);
+      const btn = document.getElementById('copy-link-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => (btn.textContent = 'Copy link'), 1500);
+    };
+    const qrBox = document.getElementById('qr-code');
+    qrBox.innerHTML = '';
+    if (window.QRCode) new QRCode(qrBox, { text: joinUrl, width: 140, height: 140 });
+    document.getElementById('participant-count').textContent = participants.length;
+    document.getElementById('empty-hint').style.display = participants.length ? 'none' : 'block';
+    const chips = document.getElementById('participant-chips');
+    chips.innerHTML = '';
+    for (const p of participants) {
+      const c = document.createElement('span');
+      c.className = 'chip';
+      c.textContent = p.name;
+      chips.appendChild(c);
+    }
+    showView('lobby');
+  }
+
+  function renderQuestion() {
+    const q = questions[currentIndex];
+    document.getElementById('q-progress-1').textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+    document.getElementById('q-text-1').textContent = q.question;
+    const box = document.getElementById('q-options-1');
+    box.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const row = document.createElement('div');
+      row.className = 'option-row';
+      row.innerHTML = `<span class="option-letter">${optionLetters()[i]}</span><span>${opt}</span>`;
+      box.appendChild(row);
+    });
+    updateAnsweredStat();
+    showView('question');
+  }
+
+  function updateAnsweredStat() {
+    document.getElementById('answered-stat').textContent =
+      `${answers.length} of ${participants.length} answered`;
+  }
+
+  function formatClock(ms) {
+    const totalSeconds = Math.max(0, Math.round(ms / 1000));
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
+  }
+
+  function renderActive(endsAt) {
+    stopCountdown();
+    const endTime = new Date(endsAt).getTime();
+    const tick = () => {
+      const remaining = endTime - Date.now();
+      document.getElementById('countdown-display').textContent = formatClock(remaining);
+      if (remaining <= 0) stopCountdown();
+    };
+    tick();
+    countdownTimer = setInterval(tick, 1000);
+    updateActiveStats();
+    showView('active');
+  }
+
+  function stopCountdown() {
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  }
+
+  function updateActiveStats() {
+    const possible = participants.length * questions.length;
+    const pct = possible ? Math.round((totalAnswers / possible) * 100) : 0;
+    document.getElementById('active-stats').textContent =
+      `${totalAnswers} answers submitted from ${participants.length} participant${participants.length === 1 ? '' : 's'} (~${pct}% complete)`;
+  }
+
+  function renderResults() {
+    const q = questions[currentIndex];
+    const label = sessionMode === 'timed' ? 'review' : 'results';
+    document.getElementById('q-progress-2').textContent = `Question ${currentIndex + 1} of ${questions.length} — ${label}`;
+    document.getElementById('q-text-2').textContent = q.question;
+    const bars = document.getElementById('bars');
+    bars.innerHTML = '';
+    const total = answers.length;
+    q.options.forEach((opt, i) => {
+      const count = answers.filter((a) => a.option_index === i).length;
+      const pct = total ? Math.round((count / total) * 100) : 0;
+      const row = document.createElement('div');
+      row.className = 'bar-row' + (i === q.answer ? ' correct' : '');
+      row.innerHTML = `
+        <div class="bar-label"><span class="txt">${optionLetters()[i]}. ${opt}</span><span class="pct">${pct}% (${count})</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      `;
+      bars.appendChild(row);
+    });
+    document.getElementById('explanation').textContent = q.explanation || '';
+    document.getElementById('prev-btn').style.display =
+      (sessionMode === 'timed' && currentIndex > 0) ? 'block' : 'none';
+    document.getElementById('next-btn').textContent =
+      currentIndex + 1 < questions.length ? 'Next question' : 'End quiz';
+    showView('results');
+  }
+
+  function renderEnded() {
+    stopCountdown();
+    document.getElementById('ended-summary').textContent =
+      `${participants.length} participant${participants.length === 1 ? '' : 's'} played ${questions.length} questions.`;
+    sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    showView('ended');
+  }
+
+  async function fetchAnswersForCurrent() {
+    const { data, error } = await supabase
+      .from('live_quiz_answers')
+      .select('id, participant_id, option_index')
+      .eq('session_id', sessionId)
+      .eq('question_index', currentIndex);
+    if (error) { console.error(error); return; }
+    answers = data;
+  }
+
+  async function fetchTotalAnswers() {
+    const { count, error } = await supabase
+      .from('live_quiz_answers')
+      .select('id', { count: 'exact', head: true })
+      .eq('session_id', sessionId);
+    if (error) { console.error(error); return; }
+    totalAnswers = count || 0;
+  }
+
+  function subscribeRealtime() {
+    if (channel) supabase.removeChannel(channel);
+    channel = supabase
+      .channel(`host-${sessionId}`)
+      .on('postgres_changes', {
+        event: 'INSERT', schema: 'public', table: 'live_quiz_participants',
+        filter: `session_id=eq.${sessionId}`,
+      }, (payload) => {
+        participants.push({ id: payload.new.id, name: payload.new.name });
+        if (document.getElementById('view-lobby').classList.contains('active')) renderLobby();
+        if (document.getElementById('view-question').classList.contains('active')) updateAnsweredStat();
+        if (document.getElementById('view-active').classList.contains('active')) updateActiveStats();
+      })
+      .on('postgres_changes', {
+        event: 'INSERT', schema: 'public', table: 'live_quiz_answers',
+        filter: `session_id=eq.${sessionId}`,
+      }, (payload) => {
+        if (document.getElementById('view-active').classList.contains('active')) {
+          totalAnswers += 1;
+          updateActiveStats();
+          return;
+        }
+        if (payload.new.question_index !== currentIndex) return;
+        answers.push({ id: payload.new.id, participant_id: payload.new.participant_id, option_index: payload.new.option_index });
+        if (document.getElementById('view-question').classList.contains('active')) updateAnsweredStat();
+        if (document.getElementById('view-results').classList.contains('active')) renderResults();
+      })
+      .subscribe();
+  }
+
+  async function startQuiz() {
+    if (sessionMode === 'timed') {
+      totalAnswers = 0;
+      const { data: row, error } = await supabase
+        .from('live_quiz_sessions')
+        .update({
+          status: 'active',
+          started_at: new Date().toISOString(),
+          ends_at: new Date(Date.now() + (sessionDurationMinutes || 30) * 60000).toISOString(),
+        })
+        .eq('id', sessionId)
+        .select()
+        .single();
+      if (error) { console.error(error); return; }
+      renderActive(row.ends_at);
+      return;
+    }
+    currentIndex = 0;
+    answers = [];
+    const { error } = await supabase
+      .from('live_quiz_sessions')
+      .update({ question_index: 0, status: 'question' })
+      .eq('id', sessionId);
+    if (error) { console.error(error); return; }
+    renderQuestion();
+  }
+
+  async function closeAndReveal() {
+    await fetchAnswersForCurrent();
+    const { error } = await supabase
+      .from('live_quiz_sessions')
+      .update({ status: 'results' })
+      .eq('id', sessionId);
+    if (error) { console.error(error); return; }
+    renderResults();
+  }
+
+  async function closeActiveAndReview() {
+    stopCountdown();
+    currentIndex = 0;
+    await fetchAnswersForCurrent();
+    const { error } = await supabase
+      .from('live_quiz_sessions')
+      .update({ status: 'review', question_index: 0 })
+      .eq('id', sessionId);
+    if (error) { console.error(error); return; }
+    renderResults();
+  }
+
+  async function prevQuestion() {
+    if (currentIndex <= 0) return;
+    currentIndex -= 1;
+    await fetchAnswersForCurrent();
+    const { error } = await supabase
+      .from('live_quiz_sessions')
+      .update({ question_index: currentIndex })
+      .eq('id', sessionId);
+    if (error) { console.error(error); return; }
+    renderResults();
+  }
+
+  async function nextOrEnd() {
+    if (currentIndex + 1 < questions.length) {
+      currentIndex += 1;
+      if (sessionMode === 'timed') {
+        await fetchAnswersForCurrent();
+        const { error } = await supabase
+          .from('live_quiz_sessions')
+          .update({ question_index: currentIndex })
+          .eq('id', sessionId);
+        if (error) { console.error(error); return; }
+        renderResults();
+      } else {
+        answers = [];
+        const { error } = await supabase
+          .from('live_quiz_sessions')
+          .update({ question_index: currentIndex, status: 'question' })
+          .eq('id', sessionId);
+        if (error) { console.error(error); return; }
+        renderQuestion();
+      }
+    } else {
+      await supabase.from('live_quiz_sessions').update({ status: 'ended' }).eq('id', sessionId);
+      renderEnded();
+    }
+  }
+
+  async function abandonSession() {
+    stopCountdown();
+    if (sessionId) {
+      await supabase.from('live_quiz_sessions').update({ status: 'ended' }).eq('id', sessionId);
+    }
+    location.reload();
+  }
+
+  async function afterLogin(user) {
+    const pinnedId = sessionStorage.getItem(SESSION_STORAGE_KEY);
+    if (pinnedId) {
+      const { data: row } = await supabase.from('live_quiz_sessions').select('*').eq('id', pinnedId).maybeSingle();
+      if (row && row.status !== 'ended' && row.host_id === user.id) {
+        const def = manifest.find((m) => m.source === row.question_source && (m.section || null) === row.question_section) ||
+          { source: row.question_source, section: row.question_section, label: row.question_label };
+        const set = await loadQuestionSet(def);
+        questions = set.questions;
+        await enterSession(row);
+        return;
+      }
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    }
+
+    document.getElementById('quiz-title').textContent = 'Live Quiz';
+    const { data: mine } = await supabase
+      .from('live_quiz_sessions')
+      .select('*')
+      .eq('host_id', user.id)
+      .neq('status', 'ended')
+      .order('created_at', { ascending: false })
+      .limit(5);
+    renderResumeList(mine || []);
+    showView('setup');
+  }
+
+  async function init() {
+    manifest = await loadManifest();
+    populateSetSelect();
+    const user = await getUser();
+    if (user) {
+      await afterLogin(user);
+    } else {
+      document.getElementById('quiz-title').textContent = 'Live Quiz';
+      showView('login');
+    }
+  }
+
+  document.getElementById('login-btn').addEventListener('click', login);
+  document.getElementById('login-password').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') login();
+  });
+  document.getElementById('logout-btn').addEventListener('click', logout);
+  document.getElementById('create-btn').addEventListener('click', createSession);
+  document.getElementById('start-btn').addEventListener('click', startQuiz);
+  document.getElementById('close-btn').addEventListener('click', closeAndReveal);
+  document.getElementById('close-active-btn').addEventListener('click', closeActiveAndReview);
+  document.getElementById('prev-btn').addEventListener('click', prevQuestion);
+  document.getElementById('next-btn').addEventListener('click', nextOrEnd);
+  document.getElementById('restart-btn').addEventListener('click', () => location.reload());
+  document.getElementById('abandon-btn-lobby').addEventListener('click', abandonSession);
+  document.getElementById('abandon-btn-active').addEventListener('click', abandonSession);
+
+  init().catch((err) => {
+    console.error(err);
+    document.getElementById('quiz-title').textContent = 'Failed to start';
+    document.getElementById('setup-status').textContent = err.message || 'Something went wrong — check console.';
+    showView('setup');
+  });
+</script>
+</body>
+</html>

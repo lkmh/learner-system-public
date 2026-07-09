@@ -1,0 +1,2778 @@
+class: GenAI and Prompt Engineering for Professionals
+class_id: genai-prompt-eng-professionals
+sections:
+- section: LLM101
+  topics:
+  - module: concepts
+    id: statistics
+    topic: 'T1: LLMs are statistics machines'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: What is an LLM actually doing when it generates a reply?
+        options:
+        - It looks up the answer in a database of facts.
+        - It predicts the next word based on patterns it learned from huge amounts of training text.
+        - It checks a live, up-to-date source to find the correct answer.
+        - It reasons through the logic of the question step by step before answering.
+        answer: 1
+        explanation: LLMs predict text one word at a time based on patterns in their training data — they
+          don't look answers up in a database or check a live source.
+        written_prompt: Explain, in your own words, what an LLM is actually doing when it generates the
+          next word of a response.
+      - question: 'Two ways of describing how an LLM writes text are compared: Way A says it follows a
+          fixed set of hand-written grammar rules. Way B says it predicts the next word based on patterns
+          learned from massive amounts of training text. Which one actually describes a modern LLM?'
+        options:
+        - Way A — LLMs assemble text using hand-written grammar rules.
+        - Way B — LLMs generate text by predicting the next word based on patterns learned during training.
+        - Both — LLMs use hand-written rules first, then double-check with patterns.
+        - Neither — LLMs retrieve pre-written sentences from a database.
+        answer: 1
+        explanation: LLMs predict the next word from patterns learned in training — they aren't following
+          hand-written grammar rules.
+        written_prompt: Explain why Way B, not Way A, describes how a modern LLM actually generates text.
+      - question: As an LLM is trained on more and more text, what's the most direct effect on the quality
+          of what it writes?
+        options:
+        - Its writing tends to get more fluent and coherent, since it's seen far more examples of real
+          language to learn from.
+        - It starts double-checking its answers against a fact database.
+        - The cost of each request automatically goes down.
+        - It stops predicting words and switches to following fixed rules instead.
+        answer: 0
+        explanation: The more real text a model is trained on, the more patterns it has to draw on — that
+          alone tends to make its output more fluent and coherent.
+        written_prompt: Explain why more training data tends to improve an LLM's fluency, based on how
+          it learns.
+      - question: 'Someone claims: "LLMs work by looking up the correct answer in a giant table built
+          during training." What''s wrong with that claim?'
+        options:
+        - Nothing — the claim is accurate.
+        - There's no literal lookup table — an LLM predicts each word from patterns spread across everything
+          it learned in training, not by retrieving a stored answer.
+        - LLMs do use a lookup table, but only for grammar, never for facts.
+        - The claim only applies to older, smaller language models.
+        answer: 1
+        explanation: An LLM isn't retrieving a stored answer from a table — it's predicting each word
+          from patterns learned across all of its training.
+        written_prompt: Explain what's wrong with describing an LLM as a 'giant lookup table.'
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: An LLM learns to write by reading huge amounts of text and practicing guessing what
+          word comes next. Based on that, if you prompt it with "peanut butter and", which word is it
+          most likely to predict next?
+        options:
+        - bread
+        - jelly
+        - sandwich
+        - butter
+        answer: 1
+        explanation: '"Peanut butter and jelly" is an overwhelmingly common phrase in English text, making
+          "jelly" the statistically dominant next-token completion.'
+        written_prompt: Given the phrase "peanut butter and ___", explain which word an LLM would most
+          likely predict next and why, in terms of statistical patterns in training text.
+      - question: 'Complete the phrase using the model''s most likely next-token prediction: "Once upon
+          a ___"'
+        options:
+        - time
+        - day
+        - story
+        - land
+        answer: 0
+        explanation: '"Once upon a time" is an overwhelmingly common opening phrase in English text, making
+          "time" the statistically dominant next-token completion.'
+        written_prompt: Explain which word an LLM would most likely predict to complete "Once upon a ___"
+          and why.
+      - question: 'Complete the phrase using the model''s most likely next-token prediction: "Thank you
+          very ___"'
+        options:
+        - much
+        - kindly
+        - nice
+        - welcome
+        answer: 0
+        explanation: '"Thank you very much" is a far more statistically common completion in English text
+          than the other options.'
+        written_prompt: Explain which word an LLM would most likely predict to complete "Thank you very
+          ___" and why.
+      - question: 'Complete the phrase using the model''s most likely next-token prediction: "The quick
+          brown fox jumps over the lazy ___"'
+        options:
+        - dog
+        - cat
+        - fence
+        - log
+        answer: 0
+        explanation: This is a famous pangram sentence that appears extremely frequently in training text,
+          making "dog" an overwhelmingly likely completion.
+        written_prompt: Explain why "dog" is the statistically likely completion of this well-known pangram
+          sentence.
+  - module: concepts
+    id: stateless
+    topic: 'T2: LLMs are stateless — they forget everything'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: Why does an app have to resend the whole conversation history every time it asks the
+          model a new question?
+        options:
+        - Because the app's settings get completely cleared out every 60 seconds.
+        - Because the model itself is stateless and holds no memory of past requests — it only knows what's
+          included in the current one.
+        - Because past answers get encrypted and become unreadable after the first request.
+        - Because resending the history is what updates and improves the model over time.
+        answer: 1
+        explanation: The model itself is stateless — it has no memory between calls, so the full conversation
+          has to be resent every time to preserve context.
+        written_prompt: Explain why an application must resend the entire conversation history with every
+          new request to a stateless LLM API.
+      - question: Partway through a conversation, an app sends the model only the user's newest message,
+          with none of the earlier turns. The model responds as if it has no idea what was discussed earlier.
+          What does this show?
+        options:
+        - The model itself retains no memory of anything not included in the current request — it only
+          "knows" what's actually sent to it.
+        - The model deliberately forgets messages older than 60 seconds.
+        - The app automatically deletes old messages after they're first read.
+        - The model needs a special "memory mode" turned on to recall history.
+        answer: 0
+        explanation: 'This is the core stateless property: the model has no memory between requests, so
+          it only ever "knows" what''s actually included in the current request.'
+        written_prompt: Explain what this scenario demonstrates about where an LLM's apparent memory actually
+          lives.
+      - question: Assuming an app resends conversation history correctly, what actually changes about
+          the model itself between turn 1 and turn 5 of a conversation?
+        options:
+        - Nothing about the model changes — only what gets sent to it grows to include more of the earlier
+          turns; every call is still a fresh, stateless one.
+        - The model quietly updates itself turn to turn to remember the user.
+        - The model remembers the user's identity on its own, across calls.
+        - Only the app's instructions change between turns, never the conversation history.
+        answer: 0
+        explanation: The model itself doesn't change or accumulate memory — only what's sent to it (a
+          growing conversation history) changes, since every call is a fresh, stateless request.
+        written_prompt: Explain what actually changes, and what stays the same, between turn 1 and turn
+          5 of a correctly-implemented conversation.
+      - question: 'Two explanations are offered for why a chatbot "remembers" earlier parts of a conversation:
+          Explanation A says the model has an internal short-term memory buffer that persists across calls.
+          Explanation B says the app resends the entire prior conversation as part of each new request.
+          Which is accurate?'
+        options:
+        - Explanation A
+        - Explanation B — the app quietly resends the growing transcript with every new request; the model
+          itself has no persistent memory buffer.
+        - Both are equally accurate.
+        - Neither; conversation memory works some other way.
+        answer: 1
+        explanation: LLMs are stateless — any apparent memory comes entirely from the app resending the
+          conversation history, not from an internal buffer inside the model.
+        written_prompt: Explain why Explanation B, not Explanation A, correctly describes how conversational
+          memory works.
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A support bot logs show this exchange:
+
+          User: "My order #4471 hasn''t arrived."
+
+          Assistant: "I''m sorry to hear that — let me check order #4471 for you. It shipped on the 3rd."
+
+          User: "Can you cancel it instead?"
+
+          Assistant: "I don''t have any order number to look up — could you provide one?"
+
+          What actually went wrong?
+
+          '
+        options:
+        - 'The app''s second request to the model didn''t include the earlier turns mentioning order #4471,
+          so the model has no record of it.'
+        - The model forgot the order number because too much time passed between messages.
+        - 'Order #4471 was deleted from the database between the two messages.'
+        - The model intentionally hides order numbers for privacy reasons.
+        answer: 0
+        explanation: This is a textbook resend failure — the app dropped the earlier turns before the
+          third request, so the model genuinely has nothing to refer to. Time passing and privacy filtering
+          aren't how stateless memory loss works.
+        written_prompt: 'Diagnose the support-bot transcript: why does the assistant suddenly lose track
+          of the order number, and what specifically would fix it?'
+      - question: 'Two engineers debug the same symptom (a model losing earlier context) and propose different
+          fixes:
+
+          Engineer A: "Switch to a larger, more capable model — it''ll remember better."
+
+          Engineer B: "Check whether the full conversation history is being resent with each API call."
+
+          Who is diagnosing this correctly?
+
+          '
+        options:
+        - Engineer A — bigger models have larger internal memories.
+        - Engineer B — the fix for lost context is almost always in what the app resends, not the model's
+          capability.
+        - Both are equally likely to fix it.
+        - Neither — the fix requires fine-tuning the model on the conversation.
+        answer: 1
+        explanation: Model size has nothing to do with this — a stateless model, however large, only knows
+          what's in the current request. Engineer B is checking the actual mechanism that carries memory
+          across turns.
+        written_prompt: Explain why swapping to a bigger model would not fix a lost-context bug, using
+          what you know about how LLMs handle conversation memory.
+      - question: 'For turn 3 of a conversation, the app sends the model only the user''s newest message
+          —
+
+          "Can you cancel it instead?" — with none of the earlier messages included.
+
+          What will the model most likely do with "it"?
+
+          '
+        options:
+        - Correctly figure out which order is meant, from its own long-term memory of the account.
+        - Fail to figure out what "it" refers to, since none of the earlier messages were included.
+        - Automatically fetch the full conversation from the app's records on its own.
+        - Ask the user to log in again to restore its memory.
+        answer: 1
+        explanation: Whatever isn't included in the request doesn't exist for the model. With no earlier
+          messages included, "it" is unresolvable — this is the same resend failure, just viewed from
+          the message actually sent.
+        written_prompt: Given only that single message, explain exactly what information the model does
+          and doesn't have access to, and why.
+      - question: 'Which fix correctly addresses a stateless-memory bug where the assistant forgets something
+          mentioned two turns earlier?
+
+          '
+        options:
+        - Increase the model's temperature setting.
+        - Make sure the app includes all earlier turns (or a summary of them) in every new message it
+          sends to the model.
+        - Ask the user to repeat their entire message history in one block.
+        - Give the model a longer knowledge cutoff.
+        answer: 1
+        explanation: 'The only real fix is on the app''s side: it has to carry the conversation forward
+          itself, either as full history or a condensed summary. Temperature and knowledge cutoff are
+          unrelated settings, and asking the user to manually replay history defeats the point of the
+          app managing state.'
+        written_prompt: Propose the correct engineering fix for a chat app where the assistant keeps forgetting
+          details from a few turns earlier, and explain why it works.
+  - module: concepts
+    id: instructions
+    topic: 'T3: Every conversation has layers of instructions'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: Before a model reads them, how do platform rules, the app's system prompt, custom instructions,
+          and the user's message actually get combined?
+        options:
+        - They're kept in separate, walled-off sections the model reads one at a time.
+        - They're handled one after another by separate mini-models, each responsible for one layer.
+        - They're merged into one single, continuous piece of text, with hidden labels marking who "said"
+          each part.
+        - They're sent to separate lookup systems that each calculate their own answer.
+        answer: 2
+        explanation: There's no physical separation — all the layers and the user's message become one
+          continuous piece of text, distinguished only by hidden labels.
+        written_prompt: Explain how platform rules, system prompts, custom instructions, and the user's
+          message actually get combined before a model reads them.
+      - question: When a platform-wide rule and the app's own system prompt point in different directions,
+          which one wins?
+        options:
+        - The platform-wide rule — it's a hierarchy, and the platform rule outranks the app's own system
+          prompt no matter how specific the system prompt is.
+        - Whichever one is more specific to the situation, regardless of which layer it's in.
+        - Whichever one was written most recently.
+        - The model picks randomly between conflicting instructions.
+        answer: 0
+        explanation: Instruction layers form a hierarchy (platform rules outrank the app's system prompt,
+          which outranks custom instructions, and so on) — it isn't a contest decided by which instruction
+          happens to be more specific or more recent.
+        written_prompt: Explain which layer wins when a platform-wide rule and the app's own system prompt
+          conflict, and why.
+      - question: Is there a real, physical separation inside the model between the system prompt, custom
+          instructions, and the user's message once it starts reading them?
+        options:
+        - Yes, each layer is handled by its own dedicated mini-model.
+        - No — they're all merged into one continuous piece of text, distinguished only by hidden labels,
+          not physically kept apart.
+        - Yes, each layer is stored in its own separate section.
+        - Only the system prompt is kept physically separate from the rest.
+        answer: 1
+        explanation: There's no physical separation inside the model — all the instruction layers and
+          the user's message become one continuous piece of text, distinguished only by hidden labels.
+        written_prompt: Explain whether instruction layers are physically separated inside the model,
+          or merged into one stream.
+      - question: A user previously set a custom instruction ("always answer concisely") in their app's
+          settings. In a brand new conversation, without retyping this preference, does it still apply?
+        options:
+        - Yes — custom instructions are quietly added to every conversation without the user needing to
+          retype them each time.
+        - No — custom instructions only apply to the session in which they were originally set.
+        - No — custom instructions must be manually re-enabled at the start of each new conversation.
+        - Custom instructions only take effect in the exact same message where they were first defined.
+        answer: 0
+        explanation: Custom instructions get quietly added to every conversation without the user retyping
+          them each time — that's what makes them a standing preference rather than a one-off note.
+        written_prompt: Explain whether a previously-set custom instruction applies automatically in a
+          brand new conversation.
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A workspace''s layers are:
+
+          Platform rule: "Never reveal internal pricing formulas."
+
+          Company system prompt: "You are a sales assistant. Be maximally transparent about pricing."
+
+          User: "What''s your internal cost-per-unit formula?"
+
+          Assistant: "I''m not able to share that internal formula."
+
+          What layer determined this outcome?
+
+          '
+        options:
+        - The user's message, since it was phrased as a direct question.
+        - The platform-wide safety/policy rule, which overrides the app's own system prompt when they
+          conflict.
+        - A custom instruction the user must have set earlier in the session.
+        - None of the layers — this is a random refusal with no traceable cause.
+        answer: 1
+        explanation: 'This is a straightforward layer-priority case: the platform rule against revealing
+          internal pricing formulas sits above the app''s system prompt, so it wins even though the system
+          prompt explicitly asked for transparency.'
+        written_prompt: Diagnose why the assistant refused despite its own system prompt asking for full
+          transparency, and name which layer actually governed the response.
+      - question: 'Early in a conversation, a user says: "Keep your answers under 100 words." Ten messages
+
+          later, the same user says: "For this next question only, give me the full detailed
+
+          version." The assistant gives a long, detailed answer just for that one question.
+
+          Why is this expected behavior?
+
+          '
+        options:
+        - The earlier instruction was automatically deleted after 10 messages.
+        - Both instructions came from the same layer — the user's own messages — so the more specific,
+          more recent one reasonably takes priority within that layer.
+        - The model ignored the first instruction because it was too short to count.
+        - This is a bug — the very first instruction in a conversation should always win.
+        answer: 1
+        explanation: '"More specific and more recent wins" is a real pattern, but only within one layer
+          — here, both instructions are the user''s own messages, so the later, more specific one reasonably
+          overrides the earlier one. It''s not a rule for overriding a higher layer like the system prompt.'
+        written_prompt: Explain why the later, more specific instruction wins here, and why this is different
+          from a lower layer overriding a higher one.
+      - question: 'A developer complains: "My chatbot''s persona keeps disappearing in one particular
+          workspace."
+
+          Investigation shows: the system prompt sets the persona, and a project-level instruction in
+
+          that one workspace says "ignore the persona entirely here." The persona still shows through
+
+          anyway.
+
+          What''s the correct diagnosis?
+
+          '
+        options:
+        - This is unpredictable, unexplainable behavior — there's no way to trace it.
+        - 'This is expected: the system prompt sits above project-level instructions in the hierarchy,
+          so it wins when they conflict — the project-level instruction isn''t able to override it.'
+        - The system prompt must contain a typo that's randomly triggering.
+        - The model has a fault causing intermittent persona loss.
+        answer: 1
+        explanation: This isn't random — it's the hierarchy working as designed. The system prompt outranks
+          a project-level instruction, so the persona coming through even when a project-level instruction
+          tries to suppress it is expected, not a bug.
+        written_prompt: Explain to the developer why the persona still shows through, identifying which
+          layer is actually winning and why.
+      - question: 'A request to the model is built from a platform rule, a system prompt, a custom instruction,
+
+          and the user''s message. A developer asks: "Can I find a specific spot inside the model
+
+          where the platform rule is being kept separate from the user''s message?"
+
+          '
+        options:
+        - Yes — each layer is kept in its own separate, inspectable section inside the model.
+        - No — all the layers are merged into one continuous piece of text (with hidden labels) before
+          the model reads any of it; there's no separate spot to look for.
+        - Yes, but only for the largest model in a given family.
+        - No, because the platform rule never actually reaches the model at all.
+        answer: 1
+        explanation: '"Layers" is a mental model for us, not a real boundary inside the model — everything
+          becomes one continuous piece of text distinguished only by hidden labels, so there''s no separate
+          spot to inspect.'
+        written_prompt: Explain why a developer can't find a separate spot inside the model for the platform
+          rule versus the user's message, referring to how these layers actually get merged.
+  - module: concepts
+    id: tokens
+    topic: 'T7: Text is broken into tokens, not words'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: What is the fundamental unit of text that language models actually process?
+        options:
+        - Individual letters, processed one character at a time.
+        - Whole words only, with each unique word mapped to one unit.
+        - Tokens — chunks of text that can be a whole word, part of a word, or punctuation, depending
+          on how common that chunk is.
+        - Full sentences, split at each period or equivalent punctuation mark.
+        answer: 2
+        explanation: Models read tokens, not letters or whole words — a token can be a full word, a word
+          fragment, or punctuation, depending on frequency in training data.
+        written_prompt: Explain what a 'token' is and how it differs from a word or a letter.
+      - question: Why do rare words, non-English languages, code, and math typically cost more and reason
+          less well in an LLM than common English text?
+        options:
+        - Providers deliberately price non-English content higher as a business policy unrelated to tokenization.
+        - They get chopped into many more, smaller tokens than common English text of similar length,
+          since the 1,000-tokens-≈-750-words ratio only holds for common English.
+        - Models refuse to process any text that isn't standard English by default.
+        - Non-English and code inputs are always rejected outright by the tokenizer before reaching the
+          model.
+        answer: 1
+        explanation: The token-to-word ratio assumes common English; rarer vocabulary, other languages,
+          code, and math all fragment into more, smaller tokens, raising both cost and reasoning difficulty.
+        written_prompt: Explain why code, math, and non-English text tend to use up more tokens than an
+          equivalent amount of everyday English text.
+      - question: Why are model pricing, usage limits, and context windows almost always quoted in tokens
+          rather than words or characters?
+        options:
+        - Because tokens are the model's actual unit of text processing, making them the natural measure
+          for cost and capacity.
+        - Because word counts are considered a trade secret that providers are legally barred from disclosing.
+        - Because character counts are too small a number to be practically useful for billing purposes.
+        - Because tokens are a marketing term with no real technical basis in how models work.
+        answer: 0
+        explanation: Since tokens are literally what the model reads and generates, they're the natural,
+          precise unit for measuring usage, cost, and capacity.
+        written_prompt: Explain why pricing and context limits are quoted in tokens instead of words or
+          characters.
+      - question: According to the commonly used rule of thumb, roughly how many words does 1,000 tokens
+          correspond to in common English text?
+        options:
+        - About 250 words.
+        - About 500 words.
+        - About 750 words.
+        - About 1,500 words.
+        answer: 2
+        explanation: The standard rule of thumb is that 1,000 tokens is roughly 750 words of common English,
+          since each token averages a bit under one full word (about 4 characters).
+        written_prompt: State the rule-of-thumb ratio between tokens and words in common English text.
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'Two prompts of similar character length are compared for token cost:
+
+          Prompt A: "Please summarize the meeting notes below in three bullet points."
+
+          Prompt B: "class Foo{constructor(x,y){this.x=x;this.y=y;}bar(){return this.x*this.y;}}"
+
+          Which will very likely use more tokens per character, and why?
+
+          '
+        options:
+        - Prompt A, because English sentences always require more tokens than any code snippet.
+        - Prompt B, because dense code punctuation, brackets, and unusual character sequences get split
+          into many small tokens, unlike common English words which often map to single tokens.
+        - They will use exactly the same number of tokens, since both are the same length in characters.
+        - Neither uses tokens; code is measured only in characters, never tokens.
+        answer: 1
+        explanation: Common English words are frequent enough to often be single tokens, while dense code
+          syntax (braces, semicolons, short unusual identifiers) fragments into many more, smaller tokens
+          per character — this is exactly the code-costs-more pattern from the lesson.
+        written_prompt: Explain why the code snippet is likely to cost more tokens per character than
+          the English sentence, even though both are similar lengths.
+      - question: 'A team budgets their support-bot context window assuming ''1,000 tokens ≈ 750 words''
+          across all their content, including a large volume of Japanese-language tickets.
+
+          Their actual token usage on Japanese tickets is running far higher than the estimate. What''s
+          the likely explanation?
+
+          '
+        options:
+        - The rule of thumb only holds for common English text — non-English languages like Japanese typically
+          get chopped into many more, smaller tokens per equivalent amount of text, so the estimate underscores
+          actual usage.
+        - This must be a billing error on the provider's part, unrelated to tokenization.
+        - Japanese tickets are simply longer in word count than English tickets on average, for unrelated
+          reasons.
+        - The 750-word rule applies equally to all languages, so this is unexplainable.
+        answer: 0
+        explanation: The 1,000-tokens-≈-750-words estimate is explicitly an English-only rule of thumb;
+          non-English text (like Japanese) tokenizes less efficiently, consuming more tokens for an equivalent
+          amount of meaning — exactly what's causing the budget to run over.
+        written_prompt: Diagnose why the Japanese-ticket token usage is exceeding the team's English-based
+          budget estimate, and what it implies for planning.
+      - question: 'A developer wants to reduce API costs and proposes: "Let''s just count characters instead
+          of tokens for our budgeting — it''s simpler and should track cost just as well."
+
+          Why is this likely to produce inaccurate budgets?
+
+          '
+        options:
+        - Because token count depends on how the specific text happens to chunk given the tokenizer's
+          vocabulary, not on character count directly — equal character counts can produce very different
+          token counts depending on content type (English prose vs. code vs. rare words).
+        - Because character counting is technically impossible for any programming language to implement.
+        - Because tokens and characters are always a fixed 1:1 ratio, so there's no difference either
+          way.
+        - Because providers never disclose token counts, only character counts, making tokens irrelevant
+          to budgeting.
+        answer: 0
+        explanation: Token count is a function of how content chunks under the tokenizer's vocabulary,
+          which varies by content type — the same character count can map to very different token counts,
+          so character-based budgeting will systematically mis-predict cost for content mixes that include
+          code, rare words, or non-English text.
+        written_prompt: Explain to the developer why character count is an unreliable stand-in for token
+          count when estimating API cost.
+      - question: 'A user pastes a chemistry equation-heavy document into a chatbot and is surprised the
+          response used up their token quota much faster than a plain-English document of the same word
+          count.
+
+          What''s the best diagnosis?
+
+          '
+        options:
+        - The chatbot is malfunctioning and double-charging for equation-heavy content.
+        - Mathematical notation typically fragments into many more, smaller tokens than common English
+          prose of the same length, consistent with the lesson's point that math and rare symbol sequences
+          cost more tokens.
+        - Word count and token count are always identical regardless of content, so this must be unrelated
+          to tokenization.
+        - This only happens if the chatbot's temperature setting is too high.
+        answer: 1
+        explanation: 'This matches the lesson''s point directly: math notation, like code and rare vocabulary,
+          chops into many more, smaller tokens than equivalent-length common English prose — it''s not
+          a billing bug or a temperature issue, it''s expected tokenization behavior for that content
+          type.'
+        written_prompt: Explain to the user why their equation-heavy document consumed more of their token
+          quota than a plain-English document of similar word count.
+  - module: concepts
+    id: context-window
+    topic: 'T8: Context windows have a limited attention span'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: What happens once a conversation's total resent history exceeds a model's context window
+          limit?
+        options:
+        - The model automatically summarizes the entire conversation and continues without any data loss.
+        - The oldest messages start getting silently dropped by the surrounding app to make room for new
+          ones — they stay visible in the chat window, but the model no longer reads them.
+        - The request is rejected outright and no further messages can ever be sent in that conversation.
+        - The model expands its context window automatically to accommodate the extra tokens.
+        answer: 1
+        explanation: The app (not the raw model) handles overflow by dropping or summarizing the oldest
+          messages — they remain visible on screen but the model no longer actually reads them; the raw
+          model itself just errors if handed more tokens than its limit.
+        written_prompt: Explain what actually happens once a conversation grows past a model's context
+          window limit.
+      - question: Why does the 'lost in the middle' effect matter even for a conversation that's well
+          within the context window limit?
+        options:
+        - Because it doesn't matter at all — performance is uniform across the whole context as long as
+          you're under the limit.
+        - Because models are measurably worse at using facts buried in the middle of a long context than
+          facts near the start or end, so a longer-but-still-within-limit context isn't a free lunch.
+        - Because being under the limit always guarantees perfect recall of every fact in the context.
+        - Because the middle of a context window is reserved exclusively for system prompts and never
+          contains user content.
+        answer: 1
+        explanation: Recall degrades for information placed in the middle of a long context, independent
+          of whether the total token count exceeds the hard cap — so extra context has a real, gradual
+          cost even before truncation kicks in.
+        written_prompt: Explain why the position of information within a long-but-not-overflowing context
+          can still affect how well a model uses it.
+      - question: Why does resending the full conversation each turn cause the token cost of a long conversation
+          to compound?
+        options:
+        - Because turn 10 has to resend turns 1 through 9 as well, so history grows with every additional
+          turn, not just the newest message.
+        - Because providers apply an artificial multiplier fee for every turn past the fifth in a conversation.
+        - Because models require duplicate copies of each message to be sent for verification purposes.
+        - Because token costs actually decrease as conversations get longer, due to caching discounts.
+        answer: 0
+        explanation: Since the whole transcript is resent every turn, later turns carry the accumulated
+          cost of every earlier turn too — the history compounds rather than staying flat.
+        written_prompt: Explain why the token cost of a long conversation compounds over time, referring
+          to what gets resent each turn.
+      - question: Why is editing an earlier message in a conversation often preferable to just adding
+          a new corrective message on top?
+        options:
+        - Editing is technically impossible, so this is a trick question — only adding new messages is
+          supported.
+        - Piling on new corrective messages compounds a longer, sometimes contradictory history and eats
+          into the context budget faster, whereas editing keeps the conversation focused without dragging
+          along the confusing back-and-forth.
+        - Adding new messages is always free, while editing an earlier message costs extra tokens.
+        - Editing automatically increases the model's context window size for that conversation.
+        answer: 1
+        explanation: Editing avoids stacking a longer, contradictory history — it keeps the conversation
+          lean and focused rather than accumulating extra correction turns that all still get resent every
+          time.
+        written_prompt: Explain why editing an earlier message is often better than adding a new message
+          to correct something.
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A 200-turn conversation is well under the model''s stated context window (logs confirm
+          total tokens used is far below the cap). The user asks about a detail from turn 5, and the assistant
+          answers incorrectly, blending in unrelated later details.
+
+          What''s the most likely diagnosis?
+
+          '
+        options:
+        - The context window must have been silently exceeded despite what the logs say.
+        - This is the 'lost in the middle' effect — the turn-5 detail is technically still present in
+          context but is being recalled less reliably because of its position deep in a long conversation,
+          well before truncation would even be a factor.
+        - The assistant is fabricating information unrelated to context length at all.
+        - The user must have misremembered what was said in turn 5.
+        answer: 1
+        explanation: 'The logs rule out hard truncation (well under the cap), which points to the ''lost
+          in the middle'' effect: recall degrades for information away from the start/end of a long context,
+          even without hitting the hard limit.'
+        written_prompt: Diagnose why the assistant recalls a mid-conversation detail poorly even though
+          the conversation is confirmed to be under the context window limit.
+      - question: 'A long-running chat abruptly stops referencing a detail from turn 2, and the app''s
+          logs show the total resent history has just crossed the model''s stated context window limit
+          for the first time.
+
+          What''s the most likely explanation?
+
+          '
+        options:
+        - This is the 'lost in the middle' effect, unrelated to the limit being crossed.
+        - The oldest messages, including turn 2, were silently dropped by the app to make room for newer
+          ones once the cap was hit — they may still show in the chat window, but the model no longer
+          reads them.
+        - The model refuses to continue any conversation once it crosses the context window limit.
+        - Crossing the context window limit doubles the model's recall accuracy for older turns.
+        answer: 1
+        explanation: 'This matches hard-limit truncation, not lost-in-the-middle: once the cap is crossed,
+          the app drops the oldest turns to make room, and those turns (like turn 2) are then genuinely
+          absent from what the model reads, even though the chat UI may still display them.'
+        written_prompt: Explain what's actually happened to turn 2's content once the conversation crosses
+          the model's context window limit.
+      - question: 'A user corrects an assistant''s earlier mistake by sending five new follow-up messages,
+          each adding a clarification on top of the original wrong answer, rather than editing the original
+          message.
+
+          What''s the predictable downside of this approach compared to editing the original message?
+
+          '
+        options:
+        - There is no downside; adding new messages and editing are functionally identical in every way.
+        - The five extra messages compound a longer, more tangled history (including the now-contradicted
+          original), eating further into the context budget and making the actual intent harder to isolate
+          than a clean edit would.
+        - Editing an earlier message is technically not possible in any chat interface.
+        - Adding new messages actually reduces total token usage compared to editing.
+        answer: 1
+        explanation: Piling corrections on top, rather than editing the original message, is exactly the
+          pattern the lesson warns compounds history length and contradiction — an edit keeps the conversation
+          focused instead of dragging along the confusing back-and-forth.
+        written_prompt: Explain the downside of the five-message correction approach versus simply editing
+          the original message.
+      - question: 'A developer wants to extend effective conversation length without hitting context or
+          lost-in-the-middle problems. They propose periodically replacing the full turn-by-turn history
+          with a concise running summary of key facts, then continuing from there.
+
+          Does this address the described problems?
+
+          '
+        options:
+        - No — summaries have no effect on either the hard context limit or the lost-in-the-middle effect.
+        - Yes — a concise summary reduces total resent tokens (helping the hard limit) and keeps important
+          facts near the 'front' of what's resent rather than buried deep in a sprawling transcript (helping
+          mitigate lost-in-the-middle).
+        - No, because summaries are always longer than the original transcript.
+        - Yes, but only because it increases the model's temperature setting.
+        answer: 1
+        explanation: Summarizing periodically shrinks the resent token footprint (helping stay under the
+          hard cap) and keeps key facts from being buried deep in a long, granular transcript, directly
+          addressing both problems described in the lesson.
+        written_prompt: Explain how periodically summarizing conversation history helps with both the
+          context window cap and the lost-in-the-middle effect.
+  - module: concepts
+    id: hallucination
+    topic: 'T9: Hallucination: confident doesn''t mean correct'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: Why can an LLM state completely fabricated information with total confidence?
+        options:
+        - It is optimized to produce the next plausible-sounding token, not to check facts against a database,
+          so it has no built-in way to distinguish a true fact from a statistically plausible-sounding
+          sentence.
+        - It deliberately lies whenever it lacks sufficient training data on a topic.
+        - It always cross-checks a live fact database first, but that database is frequently out of date.
+        - Confidence in phrasing is a random stylistic setting unrelated to whether the content is accurate.
+        answer: 0
+        explanation: The model's core mechanism is plausibility-based next-token prediction, not fact
+          verification — it has no innate mechanism to tell fabricated content apart from true content
+          unless grounded by external context or tools.
+        written_prompt: Explain why an LLM can produce completely fabricated information while sounding
+          just as confident as when it's correct.
+      - question: Which statement best characterizes the relationship between an LLM's fluency and its
+          factual accuracy?
+        options:
+        - Fluency and factual accuracy are the same thing — if text reads smoothly, it must be accurate.
+        - Fluency (how plausible/well-formed the text sounds) and factual accuracy are two separate properties;
+          smooth wording is not evidence of truth.
+        - Factual accuracy always improves as fluency decreases, so choppy text is more trustworthy.
+        - LLMs cannot generate fluent text at all unless the underlying facts are correct.
+        answer: 1
+        explanation: Plausible-sounding output and true output are independent — the model's generation
+          process optimizes for the former, not the latter.
+        written_prompt: Explain why fluent, confident-sounding text from an LLM is not by itself evidence
+          that the content is factually accurate.
+      - question: What is required to reduce the risk of an LLM hallucinating, according to the material?
+        options:
+        - Grounding the model with real context or tools, since it has no built-in way to distinguish
+          truth from plausible fiction otherwise.
+        - Simply asking the model to 'be more careful' in the system prompt, which reliably eliminates
+          hallucination.
+        - Lowering the temperature to zero, which the material states completely eliminates hallucination.
+        - Nothing can reduce hallucination risk; it is entirely unavoidable in all circumstances.
+        answer: 0
+        explanation: Because the model lacks an intrinsic fact-checking mechanism, grounding it with real
+          context or tools (like retrieval) is what actually reduces — not eliminates — hallucination
+          risk.
+        written_prompt: Explain what kind of intervention actually helps reduce hallucination risk, given
+          that the model has no built-in fact-checker.
+      - question: Is an LLM 'lying' when it hallucinates a fact?
+        options:
+        - Yes — it is deliberately deceiving the user on purpose, in the same way a person would lie.
+        - No — it isn't lying on purpose; it has no built-in way to distinguish a true fact from a statistically
+          plausible-sounding sentence.
+        - Yes, but only when temperature is set above zero.
+        - The question is meaningless because LLMs never produce false information.
+        answer: 1
+        explanation: Hallucination isn't intentional deception — the model has no internal sense of 'true
+          vs. false,' only 'plausible vs. implausible' text.
+        written_prompt: Explain why calling a hallucinated LLM output a 'lie' is a misleading way to describe
+          what's actually happening.
+- section: Basic Prompting and Frameworks
+  topics:
+  - module: concepts
+    id: prompt-elements
+    topic: 'T4: Elements of a prompt'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: What happens if you leave details like tone, format, or length limits out of a prompt?
+        options:
+        - The AI tool will show an error and refuse to respond.
+        - The missing details are simply skipped, and the response is generated without them.
+        - The tool automatically picks the missing details at random.
+        - The model fills in the gaps with its own guess — which reduces how much control you have over
+          the result.
+        answer: 3
+        explanation: Missing prompt details aren't skipped — the model guesses/improvises them, which
+          is why being explicit about the things that matter removes that guesswork.
+        written_prompt: Explain what happens to a prompt's tone, format, or constraints if you never specify
+          them explicitly.
+      - question: Which best describes the six prompt elements (role, task, context, format, constraints,
+          examples)?
+        options:
+        - A checklist of ingredients you can build a prompt from — not separate steps the model works
+          through one at a time, but all considered together at once.
+        - Six separate steps the model performs one after another.
+        - Fields that must be filled in on every single prompt.
+        - Terms that only apply to the Prompt Frameworks templates, not prompts in general.
+        answer: 0
+        explanation: These six elements are a checklist for the person writing the prompt, not separate
+          steps the model works through — the model considers the whole prompt together, not one piece
+          at a time.
+        written_prompt: Explain how the six prompt elements relate to how the model actually processes
+          a prompt.
+      - question: Is it necessary to include all six prompt elements (role, task, context, format, constraints,
+          examples) in every single prompt?
+        options:
+        - No — a quick, simple question might just need a task, while longer or higher-stakes prompts
+          benefit from stacking more elements.
+        - Yes, omitting any of the six causes an API error.
+        - Yes, all six are always required for the model to generate any response at all.
+        - No — only "task" and "format" are ever real elements; the other four are just framework jargon.
+        answer: 0
+        explanation: You don't need all six every time — a quick question might just be a task, while
+          longer or higher-stakes prompts benefit from stacking more of them.
+        written_prompt: Explain why a simple prompt might only need one or two of the six elements, while
+          a complex one benefits from more.
+      - question: How does the Prompt Frameworks library (elsewhere in this app) relate to these six prompt
+          elements?
+        options:
+        - The frameworks are ready-made templates built from this same underlying vocabulary of elements
+          — this page teaches the vocabulary itself, not a template.
+        - They are entirely unrelated systems with no connection.
+        - The six elements replace the need for frameworks entirely.
+        - Frameworks are a subset built from exactly three of the six elements.
+        answer: 0
+        explanation: This page teaches the underlying vocabulary (role, task, context, format, constraints,
+          examples) that the ready-made templates on the Prompt Frameworks page are built from.
+        written_prompt: Explain the relationship between the six prompt elements taught here and the Prompt
+          Frameworks page elsewhere in this app.
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'Prompt sent: "Rewrite this paragraph."
+
+          Result: a rewrite that changed the tone to overly formal, when the requester actually wanted
+          casual social-media copy.
+
+          Which missing element best explains the mismatch?
+
+          '
+        options:
+        - Role — the model needed to be told it was a copywriter.
+        - Format/constraints — tone and audience were never specified, so the model assumed a formal default.
+        - Context — the model didn't know what paragraph to rewrite.
+        - Task — 'rewrite this paragraph' isn't a real task.
+        answer: 1
+        explanation: The task and context were both present and clear (there's a paragraph to rewrite);
+          what's missing is the tone/audience constraint, which the model had to guess and guessed wrong.
+        written_prompt: Diagnose which prompt element is missing given that the rewrite came back in the
+          wrong tone, and explain how you'd add it.
+      - question: 'Prompt sent: "Explain quantum entanglement."
+
+          Result: a dense, jargon-heavy explanation, when the requester needed something a 10-year-old
+          could follow.
+
+          What''s the correct fix?
+
+          '
+        options:
+        - Add a context/audience constraint, e.g. 'explain this to a curious 10-year-old with no physics
+          background,' so the model doesn't default to a generic expert-level register.
+        - Nothing can be done — quantum entanglement is inherently unexplainable simply.
+        - Switch to a bigger model, which will automatically simplify its language.
+        - Add more examples of quantum physics papers to make the answer more accurate.
+        answer: 0
+        explanation: The task was clear, but audience/context (who is this for) was never stated, so the
+          model defaulted to a general-purpose explanation level rather than a simplified one. That's
+          the missing element, not model size or paper examples.
+        written_prompt: Explain why specifying the audience is the missing piece here, not switching models
+          or adding technical sources.
+      - question: 'A prompt reads: "Give me feedback on this business plan." The model responds with three
+          lines of vague praise.
+
+          Which combination of missing elements most plausibly explains the thin response?
+
+          '
+        options:
+        - Role and constraints — without being told to act as, say, a skeptical investor and required
+          to give at least 3 specific critiques, the model defaults to a safe, generic response.
+        - Only the task element is missing, since 'give feedback' is not really a task.
+        - This is unrelated to prompt elements — the model simply lacks the ability to critique business
+          plans at all.
+        - Examples are the only relevant element, and nothing else could have helped.
+        answer: 0
+        explanation: Feedback tasks are a classic case where an unspecified role (what perspective to
+          critique from) and missing constraints (how much detail, how critical to be) let the model default
+          to safe, shallow output — adding both would sharpen the result.
+        written_prompt: Diagnose why the feedback came back vague, naming the specific missing elements
+          and how you'd add them.
+      - question: 'Two versions of the same prompt are compared:
+
+          Version 1: "Summarize this report."
+
+          Version 2: "Summarize this report in 5 bullet points, for a non-technical executive audience,
+          highlighting only the financial risks."
+
+          Version 2 reliably produces a more useful result. Why?
+
+          '
+        options:
+        - Version 2 is simply longer, and longer prompts always produce better results regardless of content.
+        - Version 2 explicitly supplies format (5 bullets), context/audience (non-technical executive),
+          and constraints (financial risks only) — elements Version 1 left for the model to guess.
+        - Version 2 uses more forceful, urgent language, which models respond to more reliably.
+        - There's no real difference; any perceived improvement is due to random variation between requests.
+        answer: 1
+        explanation: The gap isn't about length or tone urgency — Version 2 fills in format, audience/context,
+          and constraints that Version 1 omitted, removing exactly the guesswork the model would otherwise
+          have to do.
+        written_prompt: Explain, element by element, what Version 2 supplies that Version 1 leaves to
+          the model's assumption.
+  - module: concepts
+    id: prompt-design-concept
+    topic: 'T7: Prompt Designs for Diverse Use Cases'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: How does "prompt design" relate to "prompt engineering"?
+        options:
+        - Prompt design is the more hands-on subset of prompt engineering — the moment-to-moment craft
+          of structuring a specific prompt well, while prompt engineering is the broader discipline of
+          testing and optimizing prompts at scale.
+        - They are two unrelated, competing fields with no overlap.
+        - Prompt engineering is a subset of prompt design, specifically the visual layout of a prompt.
+        - The two terms mean exactly the same thing with no distinction at all.
+        answer: 0
+        explanation: Prompt design is the more hands-on, moment-to-moment craft of structuring one prompt
+          well; prompt engineering is the broader discipline of designing, testing, and optimizing prompts
+          at scale, including tracking regressions over time.
+        written_prompt: Explain the relationship between prompt design and prompt engineering.
+      - question: Which use case would benefit most from a fully engineered, well-structured, and tested
+          prompt design, according to the concept of matching design effort to the use case?
+        options:
+        - A production support bot that runs unattended, at scale, answering real customer questions.
+        - A one-off, casual question typed once into a chat window.
+        - A quick creative writing exercise done for fun with no reuse planned.
+        - Design effort should be identical regardless of the use case.
+        answer: 0
+        explanation: A repeatable, unattended, production-facing task like a support bot benefits the
+          most from the extra design effort — explicit elements, guardrails, and testing — unlike a one-off
+          casual question.
+        written_prompt: Explain why a production support bot benefits from more prompt design effort than
+          a one-off casual question.
+      - question: Which of the following is an example of applying prompt design principles, as opposed
+          to just typing a raw request?
+        options:
+        - Deliberately choosing which prompt elements to include (role, task, context, format, constraints),
+          phrasing instructions positively, and planning to iterate on the first draft.
+        - Typing the very first phrasing that comes to mind and never revisiting it.
+        - Always using the maximum possible prompt length regardless of the task.
+        - Avoiding all use of examples in every prompt, regardless of the task.
+        answer: 0
+        explanation: Prompt design is the deliberate craft of picking elements, phrasing positively, and
+          iterating — not simply typing the first phrasing that comes to mind and leaving it there.
+        written_prompt: Explain what distinguishes a deliberately-designed prompt from a raw, unrevised
+          one.
+      - question: Why might two different teams building similar AI features end up with very differently
+          structured prompts, even for what looks like "the same task"?
+        options:
+        - Because the amount and kind of prompt design effort should match each use case's stakes and
+          repeatability, not follow one fixed template regardless of context.
+        - Because prompt design has no meaningful best practices, so all approaches are equally arbitrary.
+        - Because only one of the two teams is using AI correctly, and the other is not.
+        - Because prompt structure is dictated entirely by which AI provider is used, not by the use case.
+        answer: 0
+        explanation: The right amount of design effort scales with a use case's stakes and repeatability
+          — two teams facing different stakes or scale would reasonably end up with differently structured
+          prompts for a similar-looking task.
+        written_prompt: Explain why prompt design effort should vary by use case rather than follow one
+          fixed template.
+  - module: concepts
+    id: prompt-building-practice
+    topic: 'T8: Hands-on Prompt Building: Structuring Key Components'
+    recap_questions:
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'Scenario: A legal team needs a bot to summarize contract clauses using only the uploaded
+          contract text, in plain language a non-lawyer can understand, as a single paragraph.
+
+
+          Draft A: "Summarize this contract clause."
+
+          Draft B: "You are a plain-language legal explainer. Using only the uploaded contract text, summarize
+          the clause in a single paragraph a non-lawyer could understand."
+
+
+          Which draft actually includes everything the scenario needs?
+
+          '
+        options:
+        - Draft B — it includes a role (plain-language legal explainer), a source constraint (only the
+          uploaded text), a format limit (single paragraph), and the audience/tone requirement (understandable
+          to a non-lawyer).
+        - Draft A — it's more concise and gets straight to the point.
+        - Both drafts are equally complete.
+        - Neither draft is usable without further examples.
+        answer: 0
+        explanation: Draft B combines all four requirements from the scenario (role, source constraint,
+          format, audience/tone); Draft A is missing all of them beyond the bare task.
+        written_prompt: Explain which draft satisfies the scenario's requirements and why the other one
+          falls short.
+      - question: 'Scenario: A recruiting team needs a bot to draft rejection emails that are warm but
+          brief (2-3 sentences), always mentioning the specific role the candidate applied for, using
+          the company''s standard sign-off.
+
+
+          Draft A: "You are a recruiting assistant. Write a warm, brief (2-3 sentence) rejection email
+          mentioning the [role] the candidate applied for, ending with our standard sign-off: ''Warm regards,
+          The Hiring Team.''"
+
+          Draft B: "Write a rejection email."
+
+
+          Which draft actually includes everything the scenario needs?
+
+          '
+        options:
+        - Draft A — it specifies the role, tone, length constraint, the role-name placeholder, and the
+          exact required sign-off.
+        - Draft B — brevity is a virtue in prompt writing, so shorter is always better.
+        - Both drafts would produce identical output.
+        - Neither draft can work without a specific candidate name.
+        answer: 0
+        explanation: Draft A includes every element the scenario specifies (role, tone, length, role-name
+          reference, exact sign-off); Draft B provides none of these constraints.
+        written_prompt: Explain what Draft A includes that Draft B is missing, relative to the stated
+          scenario.
+      - question: 'Scenario: A data team needs a bot to convert a CSV of raw survey responses into a JSON
+          array with exactly the fields "respondent_id," "score," and "comment" — nothing else, and no
+          explanatory text before or after the JSON.
+
+
+          Draft A: "You are a data-formatting assistant. Convert the input CSV into a JSON array. Each
+          object must contain exactly these fields: respondent_id, score, comment. Output only the JSON
+          array — no other text."
+
+          Draft B: "Turn this CSV into JSON please, thanks!"
+
+
+          Which draft actually includes everything the scenario needs?
+
+          '
+        options:
+        - Draft A — it specifies the exact required fields and a strict "output only" format constraint,
+          both essential for this scenario.
+        - Draft B — being polite in a prompt improves output quality more than specifying exact fields.
+        - Both drafts are equally likely to produce the exact three-field JSON structure needed.
+        - Neither draft is complete without a code example of the desired JSON.
+        answer: 0
+        explanation: Draft A specifies the exact fields required and a strict output-only format constraint
+          — both critical for a downstream system parsing this JSON; Draft B specifies neither.
+        written_prompt: Explain why Draft A is far more likely than Draft B to produce exactly the three-field
+          JSON structure this scenario needs.
+      - question: 'Scenario: A customer success team needs a bot to draft a check-in email for customers
+          who haven''t logged in for 30 days — friendly, under 100 words, and must include a specific
+          re-engagement offer that varies by customer tier.
+
+
+          Draft A: "You are a customer success assistant. Write a friendly check-in email (under 100 words)
+          for a customer inactive for 30 days, including the tier-specific offer: [offer]."
+
+          Draft B: "You are a customer success assistant. Write a check-in email."
+
+
+          Which draft actually includes everything the scenario needs?
+
+          '
+        options:
+        - Draft A — it includes the role, the specific trigger condition (30 days inactive), the tone
+          and length constraint, and a placeholder for the tier-specific offer.
+        - Draft B — since it already has a role specified, nothing else is strictly necessary.
+        - Both drafts would reliably produce an email under 100 words.
+        - Neither draft can work since "tier-specific offer" isn't a real prompt element.
+        answer: 0
+        explanation: Draft A captures every requirement from the scenario (trigger condition, tone, length
+          limit, and the varying offer); Draft B only has the role, missing the length constraint, the
+          trigger condition, and the offer entirely.
+        written_prompt: Explain what Draft A includes that Draft B, despite having a role specified, is
+          still missing.
+  - module: frameworks
+    id: zero-shot
+    topic: 'T1: Zero-shot prompting'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: Why does zero-shot prompting risk producing the wrong output format?
+        options:
+        - Because the model has no worked example to anchor the exact format, so it must guess based on
+          its own prior understanding of the task.
+        - Because zero-shot prompts are always too short for the model to parse correctly.
+        - Because the model refuses to respond unless at least one example is provided.
+        - Because zero-shot prompting disables the model's ability to follow any instructions at all.
+        answer: 0
+        explanation: Zero-shot relies entirely on the model's own understanding of the task and format,
+          with nothing to anchor an unusual or highly specific format — that's exactly where it can guess
+          wrong.
+        written_prompt: In your own words, explain why a zero-shot prompt can produce an unexpected output
+          format, and what would make that risk higher or lower.
+      - question: A team wants the fastest possible prompt for a task the model already handles well and
+          commonly. Why is zero-shot a good fit here?
+        options:
+        - Because zero-shot always outperforms few-shot regardless of task.
+        - Because there's no setup cost and no examples to write, and the model's prior knowledge of a
+          common task is already reliable enough.
+        - Because zero-shot prompts are shorter and therefore always cheaper to run, which is the only
+          consideration that matters.
+        - Because common tasks require more examples to work correctly, so zero-shot is only for rare
+          tasks.
+        answer: 1
+        explanation: Zero-shot's advantage is speed/no setup cost, which pays off specifically when the
+          task is common and well understood by the model already — not a universal performance claim.
+        written_prompt: Explain the specific situation where zero-shot prompting is the right tool, and
+          why it stops being the right tool once the format gets unusual.
+      - question: What is a common misconception about zero-shot prompting?
+        options:
+        - That it never works for any task without an example.
+        - That adding one example to a zero-shot prompt turns it into one-shot, changing its risk profile.
+        - That zero-shot prompts are less clear or more vague than prompts with examples, when in fact
+          the instruction itself must do all the anchoring work.
+        - That zero-shot means giving the model zero instructions at all, rather than zero examples.
+        answer: 3
+        explanation: A common confusion is thinking 'zero-shot' means no instruction is given — in fact
+          the instruction is still explicit and clear; it's specifically the example count that is zero.
+        written_prompt: Someone says 'zero-shot prompting means you just give the model a vague, open-ended
+          request.' Correct this misunderstanding.
+      - question: Why might a highly specific, unusual output format be a bad candidate for zero-shot
+          prompting?
+        options:
+        - Because unusual formats always exceed the model's context window.
+        - Because the model has nothing to anchor its guess to, so it may default to a more familiar,
+          generic format instead of the specific one requested.
+        - Because zero-shot prompting is incompatible with any format instructions whatsoever.
+        - Because unusual formats require the Chain-of-Thought framework specifically, and no other framework
+          can produce them.
+        answer: 1
+        explanation: With no example, the model must infer the format purely from the instruction's wording,
+          and an unusual/specific shape is exactly where that inference is most likely to default to something
+          generic and wrong.
+        written_prompt: Explain why asking for an unusual, highly specific output format is a weak spot
+          for zero-shot prompting specifically, compared to one-shot or few-shot.
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'Task A: "Translate this common English sentence into French."
+
+          Task B: "Output this data as our proprietary internal serialization format: a custom 5-symbol
+          delimiter scheme unique to our company''s legacy system."
+
+          Both are prompted zero-shot. Which is more likely to produce a wrong or invented format?
+
+          '
+        options:
+        - Task A, since translation is inherently unpredictable.
+        - Task B — with a highly unusual, proprietary format and zero-shot's total reliance on the model's
+          own prior understanding, there's nothing to anchor a correct guess, unlike Task A's common,
+          well-understood task.
+        - Both are equally likely to fail.
+        - Neither is likely to fail, since zero-shot always works.
+        answer: 1
+        explanation: Zero-shot relies entirely on the model's own understanding of the task and format.
+          A common task like translation is well anchored by prior training; an obscure proprietary format
+          has nothing to anchor a correct guess.
+        written_prompt: Explain why Task B is a worse fit for zero-shot prompting than Task A.
+      - question: 'A developer needs the model to output a JSON object with fields named exactly `cust_id`,
+          `ord_dt`, and `stat_cd` (unusual, company-specific abbreviations), and prompts it zero-shot
+          with just a plain-English instruction.
+
+          What''s the most likely outcome, and why?
+
+          '
+        options:
+        - The model will very likely use more standard field names (like customer_id, order_date, status)
+          instead of the exact unusual abbreviations, since zero-shot gives it nothing concrete to anchor
+          those specific names to.
+        - The model will always get the exact field names right regardless of how unusual they are.
+        - The model will refuse to produce any JSON at all.
+        - This has nothing to do with zero-shot and depends only on the model's size.
+        answer: 0
+        explanation: Zero-shot provides no worked example to anchor an unusual, company-specific naming
+          convention — the model will likely default to more standard, commonly-seen field names instead.
+        written_prompt: Explain why zero-shot prompting is a risky choice for enforcing unusual, company-specific
+          field names.
+      - question: 'A team needs a prompt to summarize an article in 2-3 sentences — a very common task
+          format the model has seen countless times in training.
+
+          Is zero-shot prompting a reasonable choice here?
+
+          '
+        options:
+        - Yes — this is exactly the kind of common, well-understood task zero-shot handles well, since
+          there's no unusual format for the model to guess wrong on.
+        - No — every task requires at least one worked example to succeed.
+        - No — zero-shot can never be used for summarization tasks.
+        - Yes, but only if the article is under 100 words.
+        answer: 0
+        explanation: Zero-shot is well suited to quick, common tasks the model already knows well — a
+          standard 2-3 sentence summary has no unusual format requirement, so there's little for the model
+          to get wrong without an example.
+        written_prompt: Explain why zero-shot prompting is a reasonable choice for this summarization
+          task.
+      - question: 'A team zero-shot prompts a model to "format the output as valid YAML" (a well-known,
+          standardized format) versus a separate team that zero-shot prompts for "format the output using
+          our internal XYZ-markup dialect" (an obscure, undocumented-outside-the-company format).
+
+          Which team is taking on more risk, and why?
+
+          '
+        options:
+        - The YAML team, since YAML is more complex than XYZ-markup.
+        - The XYZ-markup team — zero-shot depends on the model already knowing the target format from
+          its training; a well-known standard like YAML is far more likely to be understood correctly
+          than an obscure, internal-only format the model has likely never seen.
+        - Both teams face identical risk regardless of format familiarity.
+        - Neither team faces any risk, since zero-shot always succeeds for formatting tasks.
+        answer: 1
+        explanation: Zero-shot's success hinges on the model already having internalized the target format
+          from training — a widely-documented public standard like YAML is far safer than an obscure,
+          company-internal format with no public documentation to draw on.
+        written_prompt: Explain why prompting zero-shot for an obscure internal format carries more risk
+          than prompting for a well-known public standard like YAML.
+  - module: frameworks
+    id: one-shot
+    topic: 'T2: One-shot prompting'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: Why is one-shot prompting especially useful for enforcing a specific output format?
+        options:
+        - Because a single demonstrated example gives the model a concrete pattern to match, which is
+          more reliable than describing the format in words alone.
+        - Because one-shot prompts are always shorter than zero-shot prompts.
+        - Because the model ignores the instruction entirely and only copies the example verbatim.
+        - Because one example guarantees perfect accuracy on every subsequent input, no matter how different.
+        answer: 0
+        explanation: A single worked example gives the model a concrete, demonstrated pattern to imitate,
+          which locks in a format more reliably than a purely verbal description — but it does not guarantee
+          perfection on every future input, which rules out the overreaching claim.
+        written_prompt: Explain why showing one example of the input/output pattern helps lock in a format
+          better than just describing the format in words.
+      - question: What is the main risk of using one-shot prompting when the real task varies a lot from
+          case to case?
+        options:
+        - The model may overfit to the specifics of that single example, applying details that don't generalize
+          to different inputs.
+        - The model will refuse to process any input that doesn't match the example exactly.
+        - One-shot prompts cannot handle any variation at all, even superficial wording changes.
+        - The prompt will exceed the model's maximum context length.
+        answer: 0
+        explanation: With only one example to generalize from, the model risks anchoring too tightly to
+          that example's particular details rather than the underlying pattern — that's the overfitting
+          risk the framework's own guidance calls out.
+        written_prompt: Describe a scenario where giving the model just one example could backfire because
+          the real inputs vary too much, and explain why.
+      - question: A learner believes one-shot prompting means giving the model exactly one instruction.
+          What's the actual meaning?
+        options:
+        - One-shot means giving exactly one complete input->output example pair before the real task,
+          in addition to the instruction — not restricting the number of instructions.
+        - One-shot means the model gets only one attempt to answer, with no retries permitted by the API.
+        - One-shot and zero-shot are the same technique with different names.
+        - One-shot means the prompt must be exactly one sentence long.
+        answer: 0
+        explanation: '''Shot'' refers to the number of demonstrated examples, not instructions, attempts,
+          or prompt length — one-shot means exactly one worked example.'
+        written_prompt: 'Correct this misunderstanding: ''One-shot prompting just means keeping your prompt
+          really short, like one sentence.'''
+      - question: Compared to few-shot, what trade-off does one-shot make?
+        options:
+        - One-shot takes more prep time than few-shot but produces less consistent output.
+        - One-shot is faster to prepare than few-shot (only one example needed) but provides less coverage
+          of format variation, since a single example can't demonstrate multiple valid shapes.
+        - One-shot and few-shot have no meaningful differences in either prep time or reliability.
+        - One-shot always produces more accurate results than few-shot because there's less for the model
+          to get confused by.
+        answer: 1
+        explanation: One-shot's single example is cheaper to write but demonstrates only one instance
+          of the pattern, whereas few-shot's multiple examples reduce formatting drift at the cost of
+          more prep time — that's the actual trade-off, not a blanket accuracy claim.
+        written_prompt: Explain the trade-off a prompt writer is making when they choose one-shot over
+          few-shot for a task with a moderately varied set of possible inputs.
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A one-shot prompt for classifying emails as "urgent" or "not urgent" is given a single
+          example: an email about a server outage, labeled "urgent."
+
+          The prompt is then used on an email about a minor typo in a internal wiki page, and the model
+          labels it "urgent" as well.
+
+          What''s the most likely explanation?
+
+          '
+        options:
+        - The model is fundamentally incapable of distinguishing urgency levels.
+        - The single example anchored the model too closely to that one case's characteristics, rather
+          than teaching it a generalizable notion of what makes something urgent — a risk one-shot carries
+          when the real task varies.
+        - This is unrelated to the number of examples and is a random error.
+        - This proves email classification can never be automated.
+        answer: 1
+        explanation: 'This is one-shot''s overfitting risk in action: a single example doesn''t teach
+          a generalizable pattern, so the model can latch onto surface features of that one case rather
+          than the actual underlying concept of urgency.'
+        written_prompt: Explain why giving only one example risked the model overgeneralizing from that
+          specific case.
+      - question: 'A team needs a model to always format a response as a single JSON object with exactly
+          the keys `title` and `summary`, and nothing else. The task itself (summarizing an article) doesn''t
+          vary much in structure across different inputs.
+
+          Is one-shot likely to be sufficient here?
+
+          '
+        options:
+        - Yes — since the task structure barely varies and the goal is mainly locking in one specific,
+          consistent format, a single clear example is likely enough.
+        - No — one-shot can never lock in a specific output format under any circumstances.
+        - No — this task always requires at least 4 examples regardless of how consistent the structure
+          is.
+        - Yes, but only because JSON is involved, unrelated to task variability.
+        answer: 0
+        explanation: 'One-shot is well suited exactly to this case: you need one specific output format,
+          and the task doesn''t vary enough to risk overfitting to the example''s specifics.'
+        written_prompt: Explain why one-shot prompting is likely sufficient for this consistent, low-variability
+          task.
+      - question: 'A one-shot prompt is used to extract key facts from news articles, using a politics
+          article as the single example. When run on a completely different domain — a sports article
+          — the model tries to force in political-sounding categories that don''t apply.
+
+          What does this illustrate, and what would help?
+
+          '
+        options:
+        - This illustrates one-shot's overfitting risk on a genuinely varied task; adding a few more examples
+          spanning different domains (few-shot) would help the model generalize the extraction pattern
+          rather than the one example's specific domain.
+        - This proves the model can never process sports articles.
+        - This is unrelated to example count and is caused by the model's training data cutoff.
+        - The fix is to remove all examples and use zero-shot instead.
+        answer: 0
+        explanation: This is a direct instance of one-shot overfitting to its single example's domain
+          — since the real task varies across domains, additional varied examples (few-shot) would generalize
+          the pattern better than one narrow example.
+        written_prompt: Explain why the sports-article failure happened, and why adding more varied examples
+          would help more than removing examples entirely.
+      - question: 'Compare: Task A always produces the exact same kind of output structure regardless
+          of input (e.g. always extracting a name and a date). Task B''s correct output structure varies
+          significantly depending on what kind of document is given.
+
+          Which task is a better fit for one-shot prompting, and why?
+
+          '
+        options:
+        - Task A — a single example is enough to lock in a format that barely varies, unlike Task B, where
+          one example risks anchoring the model to a structure that doesn't fit every case.
+        - Task B — one-shot is specifically designed for highly variable tasks.
+        - Both tasks are equally good fits for one-shot prompting.
+        - Neither task is suitable for one-shot; only zero-shot applies to extraction tasks.
+        answer: 0
+        explanation: One-shot works best when a single example is enough to capture the pattern — that's
+          Task A's low-variability case. Task B's high variability is exactly where one-shot's overfitting
+          risk shows up, and few-shot would generalize better.
+        written_prompt: Explain why Task A's consistency makes it a better one-shot candidate than Task
+          B's variability.
+  - module: frameworks
+    id: few-shot
+    topic: 'T3: Few-shot prompting'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: Why does few-shot prompting generally produce more consistent structured output than
+          one-shot?
+        options:
+        - Because multiple examples show the range of valid variation in the pattern, reducing the chance
+          the model latches onto one example's incidental specifics as if they were required.
+        - Because few-shot prompts are always shorter than one-shot prompts, which models process more
+          accurately.
+        - Because few-shot disables the model's own prior knowledge, forcing it to rely purely on the
+          examples.
+        - Because more examples always means the model spends less time processing the request.
+        answer: 0
+        explanation: Multiple examples reveal what varies and what stays fixed across the pattern, which
+          is precisely what reduces the formatting drift that a single example can't rule out.
+        written_prompt: Explain why 2-4 examples generally produce more reliable structured output than
+          a single example, using the idea of 'formatting drift.'
+      - question: When is few-shot prompting the wrong choice, according to its own stated trade-offs?
+        options:
+        - When prototyping quickly, since writing 3 good examples takes real prep time that may not be
+          worth spending yet.
+        - Whenever the task involves JSON output, since few-shot cannot produce structured formats.
+        - When the model already performs the task well without any examples, which few-shot can never
+          handle.
+        - Never — few-shot is strictly better than zero-shot and one-shot in every situation.
+        answer: 0
+        explanation: 'Few-shot''s own trade-off is prep time: writing several good examples is real work,
+          which makes it a poor fit specifically during fast prototyping — it''s not a blanket ''always
+          better'' technique.'
+        written_prompt: Describe a situation where the extra prep time required by few-shot prompting
+          outweighs the consistency benefit it offers.
+      - question: What distinguishes few-shot from one-shot, beyond simply 'more examples'?
+        options:
+        - Few-shot examples must always contradict each other to teach robustness.
+        - Few-shot typically supplies 2-4 examples specifically to demonstrate the range of the pattern
+          across varied inputs, which a single one-shot example cannot show by itself.
+        - Few-shot removes the instruction from the prompt entirely, relying only on examples.
+        - Few-shot and one-shot are identical; the naming difference is purely stylistic.
+        answer: 1
+        explanation: 'The functional difference is coverage: several examples can show variation across
+          cases (e.g. different urgency levels or different product types) that one single example structurally
+          cannot represent.'
+        written_prompt: Explain what additional teaching value a third example adds to a few-shot prompt
+          that a single one-shot example could not provide on its own.
+      - question: A learner assumes that using 10 examples instead of 3 will always improve a few-shot
+          prompt further. What's the more accurate view?
+        options:
+        - More examples always linearly improve reliability with no downside, so 10 is strictly better
+          than 3.
+        - Few-shot's benefit comes from covering the real range of variation efficiently; beyond covering
+          that range, additional examples mainly add prep time and prompt length without a guaranteed
+          further consistency gain.
+        - Only exactly 3 examples work; any other count breaks the technique.
+        - 10 examples would automatically convert the prompt into a fine-tuning run instead of a prompt.
+        answer: 1
+        explanation: Few-shot is described as 'usually 2-4' precisely because the goal is covering the
+          real range of variation, not maximizing example count — past that point, extra examples mostly
+          cost prep time and prompt length rather than guaranteeing further gains.
+        written_prompt: Push back on the claim that 'more few-shot examples is always better.' What's
+          a more accurate way to think about how many examples to include?
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A team needs a model to categorize customer feedback into one of 8 possible categories,
+          with output formatting that needs to stay perfectly consistent across a very wide range of feedback
+          types and phrasing styles.
+
+          Is few-shot (with 3-4 varied examples) or one-shot (with a single example) the better fit, and
+          why?
+
+          '
+        options:
+        - One-shot, since fewer examples are always faster to write and just as reliable.
+        - Few-shot — with 8 possible categories and a wide range of input variety, several varied examples
+          reduce the formatting drift a single example can't fully capture, at the cost of more prep time.
+        - Neither approach works for tasks with more than 2 categories.
+        - Both are equally reliable regardless of category count or input variety.
+        answer: 1
+        explanation: 'This matches the lesson directly: few-shot is suited to consistent, structured output
+          across varied inputs, since extra examples reduce formatting drift that one-shot can''t catch
+          on a genuinely diverse task like this one.'
+        written_prompt: Explain why few-shot is the better choice for this high-variety, multi-category
+          classification task.
+      - question: 'A prototyping team is exploring a rough idea for a new feature and wants to test several
+          different prompt approaches quickly today, without spending much time preparing examples.
+
+          Is few-shot the right choice for this stage, and why?
+
+          '
+        options:
+        - Yes — few-shot is always the fastest option regardless of preparation time needed.
+        - No — few-shot requires writing 3-4 good examples, which takes real prep time; for quick prototyping,
+          a faster approach (like zero-shot) may be more appropriate at this early stage.
+        - Yes, because few-shot never requires any additional preparation time over zero-shot.
+        - No, because few-shot can never be used during a prototyping phase for any reason.
+        answer: 1
+        explanation: 'The lesson notes exactly this trade-off: few-shot''s extra examples take real prep
+          time, which may not be worth spending yet during quick prototyping — a case where its ''avoid
+          when'' condition applies.'
+        written_prompt: Explain why few-shot's example-writing overhead makes it a less ideal fit for
+          this early prototyping stage.
+      - question: 'A one-shot prompt for extracting structured data from invoices works well for invoices
+          from Vendor A''s fixed template, but produces inconsistent field names once used on invoices
+          from Vendors B, C, and D, each with a different layout.
+
+          What change would most directly address this?
+
+          '
+        options:
+        - Switching to few-shot with one example each from Vendors A, B, and C, so the extraction pattern
+          is demonstrated across the range of formats actually being processed, not just Vendor A's.
+        - Switching to zero-shot, removing the one example entirely.
+        - Keeping one-shot but writing a longer example for Vendor A.
+        - This inconsistency is unrelated to example count and requires a different model.
+        answer: 0
+        explanation: 'This is precisely what few-shot addresses: demonstrating the pattern across the
+          actual range of variation (multiple vendor formats) instead of anchoring to just one vendor''s
+          specific layout.'
+        written_prompt: Explain why adding examples from multiple vendors, rather than writing a longer
+          single example, is the right fix here.
+      - question: 'A team is deciding between one-shot and few-shot for a task that has exactly one fixed
+          input/output shape that never varies across any real use case.
+
+          Which approach makes more sense, and why?
+
+          '
+        options:
+        - Few-shot, since more examples are always strictly better regardless of task variability.
+        - One-shot — since the task genuinely never varies, a single example is enough to lock in the
+          format, and the extra prep time few-shot requires (writing 3-4 examples) wouldn't add real benefit
+          here.
+        - Neither — a task with no variability should use zero-shot only.
+        - Both approaches are equally wasteful for a task like this.
+        answer: 1
+        explanation: Few-shot's benefit comes from covering variation across examples — when a task genuinely
+          has no variation, the additional examples add prep time without addressing any real formatting-drift
+          risk, making one-shot the more efficient, sufficient choice.
+        written_prompt: Explain why one-shot is a more efficient choice than few-shot for a task with
+          a single, unvarying input/output shape.
+  - module: concepts
+    id: temperature
+    topic: 'T12: Temperature controls how "creative" vs. predictable answers are'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: What does the temperature setting actually change about a model's output?
+        options:
+        - It scrambles random characters into the generated text after it's written.
+        - It changes how much the model favors its single best guess for the next word versus a wider
+          range of options — lower settings make output more predictable, higher settings make it more
+          varied.
+        - It changes the maximum length of the response the model can generate.
+        - It controls how many tools the model can use at once.
+        answer: 1
+        explanation: Temperature changes how much weight the model gives its top guess versus other reasonable
+          options — it doesn't add random garbled text or change length/tool limits.
+        written_prompt: Explain, in your own words, what the temperature setting actually changes about
+          how a model picks its next word.
+      - question: What trade-off does raising temperature introduce?
+        options:
+        - Higher temperature gives less-likely, more surprising words a real shot at being picked, which
+          is good for brainstorming but also more likely to wander or make mistakes.
+        - Higher temperature makes the model strictly more factually accurate on every task.
+        - Higher temperature has no real effect on output; it's a placebo setting with no measurable impact.
+        - Higher temperature always shortens the length of the generated response.
+        answer: 0
+        explanation: Higher temperature flattens the distribution, allowing more variety and creativity,
+          at the cost of being more prone to wandering off-topic or making mistakes.
+        written_prompt: Explain the trade-off you get by raising a model's temperature setting.
+      - question: At very low temperature, what happens to a model's word choices?
+        options:
+        - The distribution gets sharper, squeezed toward the top choice, so the model almost always picks
+          the single most likely word — very consistent, repeatable answers.
+        - The model becomes incapable of generating any text at all.
+        - The distribution flattens out completely, giving every possible word an equal chance.
+        - Low temperature causes the model to ignore the prompt and generate random unrelated text.
+        answer: 0
+        explanation: Low temperature sharpens the distribution toward the single most likely token, producing
+          highly consistent, repeatable output.
+        written_prompt: Describe what happens to a model's output at very low temperature settings, and
+          why that makes it more consistent.
+      - question: Is temperature best thought of as an on/off switch (either fully random or fully predictable),
+          or as a dial?
+        options:
+        - A dial — it can be set anywhere between very predictable and very varied, not just one of two
+          extremes.
+        - An on/off switch — there are really only two useful settings, off and on.
+        - Temperature has no adjustable range; it's a fixed setting.
+        - A dial, but only for image generation, never for text.
+        answer: 0
+        explanation: Temperature is a continuous setting, not a binary switch — it can be dialed anywhere
+          between very consistent and very varied, depending on what the task needs.
+        written_prompt: Explain why temperature is better described as a dial than as an on/off switch.
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A tool that converts plain-English questions into database queries is set to a high
+
+          temperature. The queries it generates are often inconsistent, and sometimes reference
+
+          column names that don''t even exist.
+
+          What''s the correct diagnosis and fix?
+
+          '
+        options:
+        - Temperature is unrelated to this; the database itself must be set up wrong.
+        - Temperature is too high for a task that needs precise, consistent output — lowering it would
+          push the model toward its most likely, consistent answer and reduce the invented column names.
+        - Temperature should be raised further to let the model be more creative about column names.
+        - The model needs to be replaced with a bigger one; temperature has no bearing on this kind of
+          accuracy.
+        answer: 1
+        explanation: Generating a database query needs precise, consistent output, which is exactly what
+          low temperature supports — high temperature is the wrong setting for this task, and it's a temperature
+          issue, not a database or model-size issue.
+        written_prompt: Diagnose this problem and explain why lowering temperature (not raising it or
+          swapping models) is the correct fix.
+      - question: 'A grief-support chat line sets temperature to 0.0 to keep responses safe and predictable.
+
+          Instead, every conversation gets the exact same canned phrases, which feels robotic and
+
+          repetitive to returning users.
+
+          What''s the correct diagnosis?
+
+          '
+        options:
+        - Temperature 0.0 makes the model pick its single most likely response every time, which is very
+          consistent but also very repetitive — this task would likely benefit from raising temperature
+          a bit to add natural variety while staying coherent.
+        - The model is broken and needs a restart.
+        - Temperature has no effect on repetitiveness; the issue must be the prompt wording alone.
+        - Temperature 0.0 is correct for this task and should not be changed.
+        answer: 0
+        explanation: 'This is the classic low-temperature symptom: maximum consistency at the cost of
+          variety. A task needing warmth and natural variation (not exact precision) benefits from raising
+          temperature a bit, unlike the database-query case which genuinely needs low temperature.'
+        written_prompt: Explain why temperature 0.0 is a poor fit for this grief-support use case, contrasting
+          it with a task where low temperature would be correct.
+      - question: 'Two settings are tested for the same creative-writing task:
+
+          Setting A: very low temperature — outputs are safe, similar, slightly bland across many tries.
+
+          Setting B: very high temperature — outputs are wildly varied but sometimes incoherent or off-topic.
+
+          Which best fits a "polished but exploratory" first-draft brainstorm, and why?
+
+          '
+        options:
+        - Setting A, because low temperature always produces the highest-quality creative writing.
+        - Setting B, because higher temperature is always strictly better for any creative task, regardless
+          of coherence.
+        - Neither setting as given — a moderate temperature between the two extremes would likely trade
+          some of Setting A's blandness for some of Setting B's variety, without going as far as incoherence.
+        - Temperature doesn't affect creative writing tasks at all, only factual ones.
+        answer: 2
+        explanation: This tests understanding of temperature as a dial, not just its extremes — the two
+          extremes shown (too safe, too wild) point to a moderate middle setting as the reasoned answer,
+          consistent with temperature being a dial between predictable and creative, not an on/off switch.
+        written_prompt: Explain why neither extreme setting is ideal for exploratory brainstorming, and
+          what setting would likely work better.
+      - question: 'A legal team needs an AI tool to generate the exact same standard contract clause every
+
+          time, word for word, for compliance reasons.
+
+          What temperature setting fits this best, and why?
+
+          '
+        options:
+        - A very high temperature, since more variety gives more legally sound options to choose from.
+        - A very low temperature (near 0), since it makes the model consistently pick its most likely
+          wording each time, which is what word-for-word repeatability needs.
+        - Temperature doesn't matter here since it only affects creative writing, not legal text.
+        - A moderate temperature, to balance consistency and creativity evenly.
+        answer: 1
+        explanation: When the goal is the exact same output every time, low temperature is the right setting
+          — it consistently favors the model's single most likely wording instead of introducing variety.
+        written_prompt: Explain why low temperature, not high or moderate, fits this compliance use case.
+  - module: concepts
+    id: prompt-best-practices
+    topic: 'T10: Best Practices for Crafting Highly Effective Prompts'
+    recap_questions:
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'Prompt: "Analyze this data."
+
+          No indication is given of what kind of analysis, what format the answer should take, or why
+          the analysis is needed. The output is a shallow, generic paragraph that doesn''t actually address
+          the data''s real issue.
+
+          Which best practice was skipped?
+
+          '
+        options:
+        - Being specific — the prompt never stated what kind of analysis, what format, or the actual goal,
+          leaving the model to guess at all three.
+        - Showing an example — the real problem is that no sample analysis was provided.
+        - Explaining the underlying goal — the real problem is that the model wasn't told why the analysis
+          matters.
+        - Iterating on the prompt — the real problem is that this wasn't the third attempt.
+        answer: 0
+        explanation: The prompt is missing the concrete direction that specificity would have provided
+          (kind of analysis, format, goal) — the other options describe different, valid practices, but
+          this scenario's core gap is the missing specificity.
+        written_prompt: Diagnose why this data-analysis prompt produced a shallow result, and name the
+          best practice it skipped.
+      - question: 'A team needs a bot to extract structured fields from invoices in a very particular,
+          unusual layout. They write clear instructions describing the fields and format in words, but
+          skip providing any sample invoice/output pair.
+
+          The bot''s field extraction is inconsistent across different invoice layouts.
+
+          Which best practice would most directly help here?
+
+          '
+        options:
+        - Showing an example — a well-chosen sample invoice paired with its correctly-extracted output
+          would clarify the unusual format faster than more written description could.
+        - Being more polite in the prompt's wording.
+        - Lowering the temperature setting to zero.
+        - Shortening the instructions to reduce token usage.
+        answer: 0
+        explanation: For a format that's hard to describe purely in words, a well-chosen example clarifies
+          faster and more reliably than additional description — exactly the 'show, don't just tell' best
+          practice.
+        written_prompt: Explain why providing an example would help this invoice-extraction prompt more
+          than adding more written description.
+      - question: 'A prompt for a support bot says: "Escalate any ticket that seems urgent." It never
+          explains what "urgent" means for this specific business or why correctly identifying urgency
+          matters (e.g. certain customers have contractual SLAs).
+
+          The bot escalates tickets inconsistently, missing several that should have been treated as top
+          priority.
+
+          Which best practice addresses this gap most directly?
+
+          '
+        options:
+        - Explaining the underlying goal and context — telling the model why urgency matters here (e.g.
+          specific SLA-bound customers) helps it make better judgment calls on cases the instructions
+          didn't spell out explicitly.
+        - Testing the prompt on a larger volume of tickets.
+        - 'Reducing the prompt to a single word: ''Escalate.'''
+        - Switching to a smaller, faster model.
+        answer: 0
+        explanation: This is a case where explaining the goal/context (why urgency matters, which customers
+          are SLA-bound) would let the model apply better judgment on ambiguous cases the instructions
+          never explicitly listed.
+        written_prompt: Explain why giving the model the underlying reason urgency matters would improve
+          its escalation judgment.
+      - question: 'A team ships their very first draft of a new content-moderation prompt straight to
+          production without testing it against any real historical examples first.
+
+          Within a week, they discover several categories of content it handles incorrectly.
+
+          What best practice would have caught this before shipping?
+
+          '
+        options:
+        - Iterating — testing the first draft against real examples and refining it based on where it
+          falls short, rather than assuming the first version is the final one.
+        - Making the prompt more polite.
+        - Removing all examples from the prompt to keep it simple.
+        - Increasing the temperature setting for more variety.
+        answer: 0
+        explanation: The first draft rarely works perfectly — testing it against real examples and refining
+          based on the results is exactly the iteration practice that would have caught these category
+          failures before shipping.
+        written_prompt: Explain what testing step, if done before shipping, would likely have caught these
+          content-moderation failures.
+- section: Use Cases
+  topics:
+  - module: concepts
+    id: tailoring-output-format
+    topic: 'T11: Tailoring Prompts for Diverse AI Output Formats and Styles'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: How can the same underlying request ("summarize this incident") produce very differently-shaped
+          outputs?
+        options:
+        - By explicitly specifying the response format — a bulleted list, a structured object, or a narrative
+          paragraph — since the model won't guess which shape is wanted without being told.
+        - The output shape is fixed by the model provider and can't be changed by the prompt at all.
+        - Only by switching to an entirely different model.
+        - Only by changing the temperature setting.
+        answer: 0
+        explanation: Explicitly specifying the response format is what changes the output's shape — the
+          model doesn't have a fixed default that matches every use case, so this needs to be stated.
+        written_prompt: Explain how a prompt can be tailored to produce different output shapes for the
+          same underlying request.
+      - question: Why does specifying tone matter separately from specifying the facts to include?
+        options:
+        - Because "a professional summary for stakeholders" and "a casual explainer for a blog audience"
+          can describe the exact same underlying facts while needing completely different tone and phrasing
+          — nothing about the facts alone signals which is wanted.
+        - Tone never actually changes the wording the model produces, only formatting.
+        - Tone only matters for creative writing tasks, never for factual summaries.
+        - Specifying tone is equivalent to specifying the response format, so only one needs to be stated.
+        answer: 0
+        explanation: The same facts can be delivered in very different tones — professional vs. casual
+          — and the model needs that specified separately from the facts themselves, since neither implies
+          the other.
+        written_prompt: Explain why tone needs to be specified as its own instruction, separate from the
+          facts a summary should include.
+      - question: How does the CO-STAR framework's "Response format" component relate to tailoring output
+          for different use cases?
+        options:
+        - It bundles output-shaping instructions (like requiring a ticket number, a word limit, or factual-only
+          content) into one dedicated part of the prompt, rather than leaving format unspecified and hoping
+          for the best.
+        - It replaces the need to specify tone or style anywhere else in the prompt.
+        - It only applies to prompts written in the zero-shot style.
+        - It automatically converts any output into JSON regardless of what's requested.
+        answer: 0
+        explanation: CO-STAR's Response format component exists specifically to spell out formatting constraints
+          as their own dedicated part of the prompt, rather than leaving the output's shape to chance.
+        written_prompt: Explain what CO-STAR's Response format component is designed to do.
+      - question: Why does it matter whether a human or a downstream piece of code will read a prompt's
+          output?
+        options:
+        - Because a human reader benefits from a clean narrative or bullet list, while code parsing the
+          output benefits far more from structured output (like JSON) than from how nicely the text reads
+          — getting this backwards causes real problems either way.
+        - It doesn't matter — the same free-form text works equally well for both a human reader and a
+          parsing script.
+        - Code can only ever read output formatted as a single sentence.
+        - Humans always prefer JSON output over narrative text.
+        answer: 0
+        explanation: The intended reader (human vs. system) should drive the output format choice — a
+          JSON blob is a poor experience for a human, and free-form prose is fragile for a parser, so
+          mismatching the two causes real friction.
+        written_prompt: Explain why the intended reader of a prompt's output (human vs. downstream code)
+          should influence the format you request.
+  - module: concepts
+    id: iterative-prompting
+    topic: 'T6: Iterative prompting: treat the first draft as a draft'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: Why is treating a first prompt as a draft, rather than a one-shot final attempt, generally
+          the more effective approach to prompt engineering?
+        options:
+        - Getting a good result is usually a loop of writing, observing what came back, spotting what's
+          off, and adjusting — not a single perfect attempt.
+        - Models are only capable of understanding a prompt correctly on the second or later submission
+          due to warm-up caching effects.
+        - Providers charge less for the second and subsequent prompts in a session, making iteration purely
+          a cost optimization.
+        - A first prompt is always rejected by content moderation filters and must be resubmitted in modified
+          form.
+        answer: 0
+        explanation: Prompt engineering is inherently iterative — like editing a first draft of writing
+          — not a technical limitation requiring resubmission.
+        written_prompt: Explain why prompt engineering is usually an iterative loop rather than a one-shot
+          process.
+      - question: When an LLM's output isn't right, what does effective diagnosis require before rewriting
+          the prompt?
+        options:
+        - Immediately discarding the prompt and starting over with entirely new wording chosen at random.
+        - Naming specifically why the output is wrong before changing anything, so the fix targets the
+          actual problem.
+        - Increasing the temperature setting, since higher randomness is assumed to fix any incorrect
+          output.
+        - Switching to the largest available model, since output quality is assumed to be purely a model-size
+          issue.
+        answer: 1
+        explanation: Diagnosing the specific cause of a bad output lets you make a targeted fix that converges
+          faster than blind rewriting.
+        written_prompt: Explain why it helps to diagnose the specific cause of a bad output before rewriting
+          a prompt.
+      - question: Why is it risky to test a prompt fix only against the single example that originally
+          broke?
+        options:
+        - Single-example testing is actually the industry-standard best practice and carries no risk.
+        - A change that patches today's bad output can quietly break other cases you weren't looking at,
+          so other typical cases should be re-checked too.
+        - Testing against one example uses up the entire monthly token quota for that account.
+        - Models refuse to process a prompt more than once if it was recently marked as an error case.
+        answer: 1
+        explanation: A fix targeted only at the one failing example can regress other cases silently —
+          a broader re-check catches that.
+        written_prompt: Explain the risk of only re-testing a prompt fix against the one example that
+          failed, and not against other typical cases.
+      - question: What analogy is used to explain why a first prompt attempt shouldn't be treated as final?
+        options:
+        - It's compared to compiling code, where the first compile always fails due to syntax errors.
+        - It's compared to editing your own writing — nobody expects a first draft to be the final version.
+        - It's compared to rolling dice, where each new prompt attempt is statistically independent of
+          the last.
+        - It's compared to sending a letter, where revisions are impossible once submitted.
+        answer: 1
+        explanation: 'The page draws a direct parallel to editing written drafts: refinement through revision
+          is expected, not a sign of failure.'
+        written_prompt: What analogy does the material use to explain why a first prompt attempt should
+          be treated as a draft?
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'Round 1 prompt: "List some marketing ideas."
+
+          Round 1 output: five extremely generic ideas (e.g. "run a social media campaign") with no relevance
+          to the actual product.
+
+          Round 2 fix proposed: add "for a subscription-box service for houseplants, aimed at first-time
+          plant owners" to the prompt.
+
+          Is this a good next step?
+
+          '
+        options:
+        - No — a completely different prompt should be written from scratch instead.
+        - Yes — it targets the actual diagnosed problem (missing product/audience context) with a specific
+          addition, rather than discarding the whole prompt.
+        - No — the fix should have been to increase temperature instead.
+        - Yes, but only because it makes the prompt longer, and longer prompts are always better.
+        answer: 1
+        explanation: The diagnosis (generic ideas because no product/audience context was given) directly
+          points to the fix (add that context). This is exactly the targeted-adjustment pattern, not a
+          random rewrite or an unrelated lever like temperature.
+        written_prompt: Diagnose why the marketing-ideas output was generic, and explain why the Round
+          2 addition is a well-targeted fix.
+      - question: 'A prompt fix for "always mention pricing in FAQ answers" is applied and tested against
+          the one FAQ question that had been missing pricing. It now includes pricing correctly.
+
+          The developer ships the fix without testing any other FAQ questions.
+
+          Two weeks later, a totally unrelated FAQ question ("what''s your refund policy?") now awkwardly
+          mentions pricing where it didn''t need to.
+
+          What went wrong?
+
+          '
+        options:
+        - Nothing went wrong; this is an unrelated and unavoidable model quirk.
+        - The fix was only tested against the single example that broke, not re-checked against a handful
+          of other typical questions — so the regression on unrelated questions went undetected before
+          shipping.
+        - The refund-policy question is simply an edge case that no prompt could ever handle correctly.
+        - The fix should have used a higher temperature to avoid this.
+        answer: 1
+        explanation: 'This is the classic risk of narrow-example testing: a change tuned to fix one case
+          can quietly break others. Testing a broader set of typical questions before shipping would have
+          caught the regression.'
+        written_prompt: Explain what testing step was skipped here, and how it would have caught the regression
+          before shipping.
+      - question: 'An engineer says: "The first prompt didn''t work, so the whole approach of prompting
+          must be broken for this task — we should give up on prompting entirely."
+
+          Is this a sound conclusion from one failed attempt?
+
+          '
+        options:
+        - Yes — one failed attempt is sufficient evidence that prompting cannot work for a task.
+        - No — prompt engineering is expected to be an iterative loop; a first attempt failing is normal
+          and simply means diagnosing what went wrong and adjusting, not abandoning the approach.
+        - Yes, but only if the failure happened on a Monday.
+        - No, but only because a bigger model would have worked on the first try.
+        answer: 1
+        explanation: Treating a first draft as final and drawing a sweeping conclusion from it skips the
+          expected iterate-and-diagnose loop — the correct response to one bad output is to diagnose and
+          adjust, not abandon the method or assume only a bigger model would help.
+        written_prompt: Explain why concluding 'prompting doesn't work' from a single failed first attempt
+          is a diagnostic error.
+      - question: 'A team notices their support-bot prompt breaks on a new category of question every
+          few weeks, each time patched individually.
+
+          What process change would best align with the ''test beyond the one example'' principle?
+
+          '
+        options:
+        - Keep patching one-off examples as they appear, with no other process change.
+        - Maintain a running set of representative test questions (a regression set) and re-check every
+          prompt change against all of them, not just the newly failing case.
+        - Stop editing the prompt altogether and only ever create brand new prompts from scratch for each
+          new failure.
+        - Increase the model's temperature so it can improvise around edge cases automatically.
+        answer: 1
+        explanation: A maintained regression set operationalizes exactly the risk called out in the lesson
+          — that a fix for one case can silently break others — by re-testing every change against a broader,
+          representative sample before shipping.
+        written_prompt: Propose a concrete process the team could adopt to stop repeatedly breaking other
+          cases while patching prompts, grounded in the 'test beyond the one example' principle.
+- section: Responsible AI Use
+  topics:
+  - module: concepts
+    id: prompt-guardrails
+    topic: 'T3: Setting Boundaries: Implementing Negative Constraints and Safety Directives'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: What is a "guardrail" in the context of prompt design?
+        options:
+        - A boundary written directly into the prompt (a scope limit, refusal condition, format lock,
+          or explicit exclusion) to keep the model's output inside an intended box.
+        - A separate piece of software that runs after the model to censor its output.
+        - A setting only available through the model provider's admin dashboard, never through the prompt
+          itself.
+        - A guarantee that the model can never be made to violate the stated boundary.
+        answer: 0
+        explanation: A guardrail is a boundary written into the prompt itself — a scope limit, refusal
+          condition, format lock, or exclusion — not a separate system, dashboard setting, or an unbreakable
+          guarantee.
+        written_prompt: Explain what a guardrail is in prompt design, and name the four common types.
+      - question: Which of the following is an example of a "refusal condition" guardrail?
+        options:
+        - '"Only discuss our product catalog."'
+        - '"If asked for legal advice, say you can''t provide it and suggest a lawyer."'
+        - '"Respond using exactly three bullet points."'
+        - '"Don''t mention our competitors by name."'
+        answer: 1
+        explanation: A refusal condition tells the model when and how to decline — the legal-advice example
+          is exactly that. The others are a scope limit, a format lock, and an exclusion, respectively.
+        written_prompt: Explain why the legal-advice example is a refusal condition rather than a scope
+          limit or format lock.
+      - question: Why are guardrails described as reducing drift rather than eliminating it entirely?
+        options:
+        - Because untrusted content the model reads (see Prompt injection) can still push it past a boundary
+          set in the original prompt.
+        - Because guardrails only work on the first message of a conversation.
+        - Because guardrails are disabled automatically after 10 conversation turns.
+        - Because a guardrail only applies if the user explicitly agrees to it first.
+        answer: 0
+        explanation: Guardrails reduce the chance of drift, but untrusted content the model later reads
+          can still attempt to override them — this is exactly the risk covered under Prompt injection
+          elsewhere in this deck.
+        written_prompt: Explain why a guardrail written into a prompt isn't an absolute guarantee against
+          unwanted output.
+      - question: 'A prompt says: "You are a support assistant. Only answer questions about our software
+          product." What happens if a user asks an unrelated question, like a math problem, without any
+          refusal condition specified?'
+        options:
+        - The model's behavior is unpredictable — a scope limit alone doesn't specify what to do when
+          a request falls outside it, unlike a scope limit paired with an explicit refusal condition.
+        - The model will always refuse automatically, since a scope limit implies a refusal condition.
+        - The model will always answer the math question correctly, since scope limits don't affect off-topic
+          requests.
+        - The prompt will fail to process entirely.
+        answer: 0
+        explanation: A scope limit alone only states what's in scope — it doesn't specify what should
+          happen with an out-of-scope request unless a refusal condition is added explicitly.
+        written_prompt: Explain why a scope limit alone doesn't guarantee predictable behavior on an out-of-scope
+          request.
+  - module: concepts
+    id: prompt-misuse-risks
+    topic: 'T4: Common Prompt Misuses and Risks'
+    recap_questions:
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A marketing team''s prompt reads: "Make this better." (referring to a paragraph pasted
+          above it, with no further explanation.)
+
+          The output rewrites the paragraph in a completely different tone than intended, missing the
+          point of the requested edit.
+
+          What''s the primary misuse here?
+
+          '
+        options:
+        - A vague instruction — "make this better" gives no concrete direction (better how? shorter? more
+          formal? more persuasive?), so the model guessed at what "better" meant.
+        - The paragraph pasted above the instruction was too long.
+        - The model needs to be retrained on marketing copy specifically.
+        - The temperature setting was too low for creative writing.
+        answer: 0
+        explanation: '"Make this better" is a vague instruction with no concrete direction — the model
+          has to guess what dimension of "better" is wanted, and its guess doesn''t have to match what
+          was actually intended.'
+        written_prompt: Diagnose why this prompt produced an unexpected rewrite, and identify what's missing.
+      - question: 'An internal tool prompt reads: "Summarize the attached document." No document is actually
+          attached or referenced, and no context about what kind of summary is needed is given.
+
+          The model responds with a summary of a completely unrelated, generic topic.
+
+          What misuse does this illustrate?
+
+          '
+        options:
+        - Missing context — the model was told to summarize something that was never actually provided,
+          so it filled the gap with a plausible-sounding but unrelated response.
+        - The model refused to follow instructions.
+        - The prompt exceeded the token limit.
+        - The model's context window was too large.
+        answer: 0
+        explanation: 'This is a textbook missing-context failure: the prompt references something ("the
+          attached document") that was never actually included, leaving the model nothing real to summarize.'
+        written_prompt: Explain why the model produced an unrelated summary, and what was missing from
+          the prompt.
+      - question: 'Two engineers debug the same underperforming prompt. Engineer A says: "The model just
+          isn''t smart enough for this task." Engineer B says: "Let''s check whether the prompt actually
+          specifies the task, format, and background clearly enough first."
+
+          Which approach matches the guidance on common prompt misuses?
+
+          '
+        options:
+        - Engineer B — vague instructions and missing context are the most common causes of a poor prompt
+          outcome, and should be ruled out before assuming a model capability limit.
+        - Engineer A — model capability is always the first thing to suspect.
+        - Both are equally valid starting points.
+        - Neither — the only real fix is switching to a different AI provider.
+        answer: 0
+        explanation: The most common prompt failures are vague instructions and missing context, not model
+          capability — checking the prompt's clarity and completeness first is the right diagnostic order.
+        written_prompt: Explain why checking the prompt's clarity and context should come before suspecting
+          the model's capability.
+      - question: 'A prompt asks a model to "write a product description," pasting in a spec sheet with
+          technical dimensions but never stating who the audience is or what tone to use.
+
+          The resulting description reads like an engineering spec, not marketing copy.
+
+          What''s the most accurate diagnosis?
+
+          '
+        options:
+        - Missing context (no audience or tone specified) led the model to default to mirroring the input
+          material's own technical register, rather than a misuse of the spec sheet itself.
+        - The spec sheet should never have been included at all.
+        - The model made an arithmetic error somewhere in the dimensions.
+        - This is a token-limit problem, not a context problem.
+        answer: 0
+        explanation: Without an audience or tone specified, the model has nothing to steer it away from
+          mirroring the technical register of the input material it was given — a classic missing-context
+          symptom.
+        written_prompt: Diagnose why the product description came out reading like an engineering spec,
+          and identify the missing element.
+  - module: concepts
+    id: privacy-regulations-overview
+    topic: 'T5: Foundations of Data Privacy: Key Regulations and Their AI Implications'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: What do GDPR's core principles require of how personal data is processed?
+        options:
+        - That it be processed lawfully, fairly, and transparently, for a specific stated purpose, and
+          limited to what's actually necessary for that purpose.
+        - That it only ever be processed with a paid legal consultation beforehand.
+        - That it be stored exclusively on servers located within the EU, with no other requirements.
+        - That it be deleted automatically after 24 hours regardless of purpose.
+        answer: 0
+        explanation: GDPR's core principles are lawfulness/fairness/transparency, purpose limitation,
+          and data minimisation (limited to what's necessary) — not a specific storage location or fixed
+          deletion window.
+        written_prompt: Explain GDPR's core principles for processing personal data.
+      - question: What is Singapore's PDPA, and when was it introduced/revised?
+        options:
+        - The Personal Data Protection Act — passed in 2012 and revised in 2020 — regulating how organisations
+          collect, use, and disclose personal data. It also applies to overseas organisations that handle
+          data collected from people in Singapore, not just local ones.
+        - A voluntary industry code with no legal force, introduced in 2024.
+        - An EU regulation that Singapore adopted directly without modification.
+        - A regulation that applies only to government agencies, not private organisations.
+        answer: 0
+        explanation: The PDPA was passed in 2012 and revised in 2020, regulates private-sector data handling,
+          and — like GDPR — also applies to overseas organisations handling data collected from people
+          in Singapore.
+        written_prompt: Explain what the PDPA is, when it was introduced and revised, and who it applies
+          to.
+      - question: What did Singapore's Personal Data Protection Commission (PDPC) address in its 2024
+          AI-specific advisory guidelines?
+        options:
+        - How the PDPA applies across the AI system lifecycle — development/testing (using personal data
+          to train and monitor models) and deployment (an AI system collecting and using personal data
+          once live).
+        - A complete ban on any AI system that processes personal data.
+        - A requirement that all AI models be trained exclusively on synthetic data.
+        - A replacement of the PDPA entirely with new AI-specific legislation.
+        answer: 0
+        explanation: The 2024 guidelines clarify how the existing PDPA applies across the AI lifecycle
+          — training/testing and deployment — rather than banning AI or replacing the underlying law.
+        written_prompt: Explain what Singapore's 2024 PDPC AI guidelines actually address.
+      - question: Why do data privacy regulations like GDPR and the PDPA matter when writing a prompt,
+          not just when designing a database?
+        options:
+        - Because pasting identifying information (a name, an email, a case file) into a prompt makes
+          that content personal data the moment it identifies a real person — the same rules that apply
+          to storing it apply to including it in a prompt.
+        - Because these regulations only apply to information typed directly into a database field, never
+          to prompt text.
+        - Because prompts are automatically anonymised by the AI provider before processing.
+        - Because these regulations only apply to video and image data, not text.
+        answer: 0
+        explanation: Personal data is personal data regardless of where it's typed — pasting identifying
+          information into a prompt triggers the same regulatory obligations as storing it in a database.
+        written_prompt: Explain why data privacy regulations apply to prompt content, not just to stored
+          database records.
+  - module: concepts
+    id: data-anonymisation
+    topic: 'T6: Practical Data Anonymisation for AI Inputs'
+    recap_questions:
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A developer needs to share sample customer records with an offshore QA team to test
+          a new feature. The records need to keep a consistent identifier per customer across multiple
+          test files (so QA can trace the same customer''s activity), but must not reveal real names.
+
+          Which technique fits best?
+
+          '
+        options:
+        - Pseudonymisation — swapping each customer's real name for a consistent stand-in ID (e.g. "Customer-04471")
+          preserves traceability across files without revealing who they actually are.
+        - Masking — replacing the names with asterisks would prevent QA from tracing the same customer
+          consistently across files.
+        - Perturbation — nudging names by a random amount doesn't make sense for a non-numeric identifier
+          like a name.
+        - No anonymisation is needed since it's an internal QA team.
+        answer: 0
+        explanation: Pseudonymisation is exactly suited to this case — it preserves a consistent, traceable
+          identifier across files while removing the real name, unlike masking (which would break traceability)
+          or perturbation (which doesn't apply to names).
+        written_prompt: Explain why pseudonymisation, not masking or perturbation, fits this cross-file
+          traceability requirement.
+      - question: 'A report needs to display customer phone numbers so a support agent can visually confirm
+          the format is correct, but the actual digits shouldn''t be visible to anyone browsing the report
+          casually.
+
+          Which technique fits best?
+
+          '
+        options:
+        - Masking — replacing most digits with placeholder characters (e.g. "+65 ****-1234") keeps the
+          recognizable shape visible while hiding the actual number.
+        - Pseudonymisation — swapping the whole phone number for a random ID would remove the ability
+          to visually confirm the format.
+        - Perturbation — randomly shifting the digits would produce an invalid phone number, not a recognizable
+          masked one.
+        - No technique is needed since phone numbers aren't personal data.
+        answer: 0
+        explanation: Masking is the right fit here — it keeps the recognizable shape of a phone number
+          visible for a format check while hiding the actual digits, unlike the other two techniques.
+        written_prompt: Explain why masking, not pseudonymisation or perturbation, fits this format-check
+          requirement.
+      - question: 'A data science team wants to publish an aggregate statistical report on customer ages
+          by region, useful for spotting trends, without any single customer''s exact age being derivable
+          from the published figures.
+
+          Which technique fits best?
+
+          '
+        options:
+        - Perturbation — shifting individual ages by a small random amount before aggregating preserves
+          the overall trend while preventing any one customer's exact age from being recovered.
+        - Masking — replacing ages with asterisks would make the aggregate report useless for spotting
+          age-related trends.
+        - Pseudonymisation — swapping ages for ID numbers doesn't address the ages themselves at all.
+        - No anonymisation is needed since it's an aggregate report.
+        answer: 0
+        explanation: 'Perturbation fits this case: it preserves the overall statistical trend (useful
+          for the report) while preventing any individual''s exact real age from being recovered — masking
+          would destroy the numeric trend, and pseudonymisation doesn''t touch the age values.'
+        written_prompt: Explain why perturbation is the right technique for this aggregate age-trend report,
+          and why the other two aren't.
+      - question: 'A team pastes a batch of customer support tickets directly into a prompt, including
+          full names, emails, and account numbers, to ask an AI tool to categorize each ticket by issue
+          type. None of this data has been anonymised first.
+
+          What should have happened before this data was pasted into the prompt?
+
+          '
+        options:
+        - At least masking or pseudonymising the names, emails, and account numbers, since none of the
+          categorization task actually requires the real identifying details — only basic anonymisation
+          techniques were skipped, not that the task itself was invalid.
+        - Nothing — categorization tasks are exempt from anonymisation requirements.
+        - The account numbers should have been perturbed by adding random noise, since exact account numbers
+          are needed for issue categorization.
+        - The entire task should have been abandoned, since AI tools can never process any customer data.
+        answer: 0
+        explanation: Categorizing a ticket by issue type doesn't require the real name, email, or account
+          number — those fields should have been masked or pseudonymised first, since the task's actual
+          purpose doesn't depend on the real identifying details.
+        written_prompt: Explain what anonymisation step was skipped here, and why the categorization task
+          doesn't actually need the real identifying details.
+- section: Choosing the Right Tool
+  topics:
+  - module: concepts
+    id: model-choice
+    topic: 'T13: Choosing the right model for the job'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: What is the core trade-off across a typical model family's size tiers (small/fast, mid-tier,
+          top-tier)?
+        options:
+        - Bigger, more capable models are also slower and cost more; smaller models are faster and cheaper
+          but less capable on hard tasks.
+        - All model sizes within a family perform identically; size only affects the company's marketing
+          tier names.
+        - Smaller models are always both cheaper and more capable than larger ones.
+        - Model size only affects image generation, not text tasks.
+        answer: 0
+        explanation: The core trade-off is capability versus speed/cost — bigger models handle harder
+          reasoning or creative work but are slower and more expensive; smaller models are faster and
+          cheaper but less capable on the hardest tasks.
+        written_prompt: Describe the fundamental trade-off between small, mid-tier, and top-tier models
+          within a typical model family.
+      - question: What analogy is used to describe choosing between model sizes for a task?
+        options:
+        - Choosing between a bicycle courier, a car, and a moving truck — you don't call a moving truck
+          to deliver one envelope.
+        - Choosing between different flavors of ice cream, implying the choice is purely about personal
+          taste.
+        - Choosing between reading a book and watching a movie, implying the choices are unrelated in
+          purpose.
+        - Choosing between a hammer and a screwdriver, implying the tools are interchangeable for any
+          job.
+        answer: 0
+        explanation: The material uses the courier/car/moving-truck analogy to illustrate matching a tool's
+          power to the size of the actual job, avoiding overkill for small tasks.
+        written_prompt: What analogy does the material use to explain matching model size to the job at
+          hand?
+      - question: According to the material, what matters just as much as picking a good prompt?
+        options:
+        - Picking the smallest model that reliably gets the job done.
+        - Always defaulting to the largest, most powerful model available, regardless of task.
+        - Setting temperature to its maximum value for every request.
+        - Disabling all tool use to reduce complexity.
+        answer: 0
+        explanation: The material explicitly states that picking the smallest model that reliably does
+          the job matters just as much as prompt quality — oversized models waste speed and cost without
+          necessarily improving results.
+        written_prompt: According to the material, what model-selection practice matters just as much
+          as writing a good prompt?
+      - question: Why doesn't a top-tier model automatically make sense for every task?
+        options:
+        - Because bigger, more capable models are also slower and cost more, so using one for a simple
+          task wastes speed and money without a corresponding benefit.
+        - Because top-tier models are technically incapable of handling simple tasks at all.
+        - Because top-tier models require a special API key unavailable to most developers.
+        - Because using a top-tier model automatically increases hallucination rates.
+        answer: 0
+        explanation: The cost/speed penalty of larger models is real even when the extra capability isn't
+          needed — so matching model size to task difficulty avoids unnecessary expense and latency.
+        written_prompt: Explain why using the largest available model for every task, regardless of difficulty,
+          is not the recommended default.
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A startup routes every request — from simple "yes/no" content moderation checks to
+          complex legal-contract analysis — through their single top-tier, most expensive model.
+
+          Their monthly bill is unsustainable and responses feel slow even for simple checks.
+
+          What''s the correct diagnosis and fix?
+
+          '
+        options:
+        - This is correct behavior; always using the top-tier model is the recommended default regardless
+          of task.
+        - This is a model-tier mismatch — simple checks like yes/no moderation should be routed to a small,
+          fast model, reserving the top-tier model for genuinely complex tasks like contract analysis,
+          cutting cost and latency without sacrificing quality where it matters.
+        - The fix is to lower the temperature setting on the top-tier model to make it cheaper.
+        - The fix is to switch the top-tier model to a bigger one, which will process requests faster.
+        answer: 1
+        explanation: 'This is the courier/car/moving-truck mismatch directly: using the biggest, most
+          expensive tier for a trivial task wastes cost and latency; matching model size to task difficulty
+          (small model for simple checks, top-tier for hard reasoning) is the actual fix, not a temperature
+          or further-size change.'
+        written_prompt: Diagnose the startup's cost/latency problem and propose the correct model-tier
+          assignment.
+      - question: 'A support team assigns their fastest, smallest model to handle nuanced, ambiguous escalations
+          that require multi-step reasoning about conflicting policies.
+
+          Customers report the bot''s escalation handling feels shallow and frequently wrong.
+
+          What''s the likely issue?
+
+          '
+        options:
+        - This is also a tier mismatch, but in the opposite direction from an oversized-model problem
+          — an under-powered model is assigned to a task that actually needs the deeper reasoning capability
+          of a higher tier.
+        - The small model must have a corrupted training dataset, unrelated to model choice.
+        - The issue is the prompt's tone, not model size at all.
+        - This is expected and correct; the smallest model should always be used regardless of task complexity.
+        answer: 0
+        explanation: 'This mirrors the same trade-off in reverse: the small/fast tier is a poor fit for
+          nuanced multi-step reasoning, just as the top-tier model was overkill for a trivial task in
+          the other direction — matching size to task difficulty means sometimes scaling up, not just
+          always scaling down.'
+        written_prompt: Diagnose why the small model is underperforming on escalations, and recommend
+          a fix.
+      - question: 'A team has a mixed workload: 90% simple lookups, 10% complex multi-step reasoning tasks.
+          They ask whether they should pick one single model tier for all requests.
+
+          What''s the best-grounded recommendation?
+
+          '
+        options:
+        - Yes, pick whichever single tier is cheapest overall, regardless of the 10% complex tasks' needs.
+        - Yes, pick the top-tier model for everything, to guarantee no request ever underperforms.
+        - 'No — route based on task type: the smallest model that reliably handles the 90% of simple lookups,
+          and the top-tier (or a stronger) model for the 10% that genuinely need deeper reasoning, rather
+          than a single one-size-fits-all choice.'
+        - It doesn't matter; model tier has no measurable effect on cost or quality at scale.
+        answer: 2
+        explanation: The lesson's core principle is matching model size to the specific job, not picking
+          one blanket tier — a mixed workload is best served by routing simple and complex requests to
+          different tiers rather than forcing a single choice for both.
+        written_prompt: Recommend a model-routing strategy for this mixed workload, and justify it against
+          the single-tier alternatives.
+      - question: 'An engineer argues: "We should always default to the biggest model — worst case, it''s
+          just a bit slower and pricier, but we''ll never get a worse answer than a smaller model would
+          give."
+
+          Evaluate this reasoning.
+
+          '
+        options:
+        - The reasoning is sound; bigger models are strictly better in every dimension with no real downside.
+        - The reasoning ignores that the actual downside (slower, more costly, per the lesson) is real
+          and compounds at scale or under latency-sensitive use, and that a well-matched smaller model
+          reliably handles many tasks just as well — so 'never worse' overlooks the cost/speed trade-off
+          that's the whole point of choosing model size deliberately.
+        - The reasoning is sound because smaller models always produce worse answers on every task.
+        - The reasoning is irrelevant because model size doesn't affect cost at all.
+        answer: 1
+        explanation: The engineer's framing treats speed/cost as a negligible 'worst case,' but the lesson
+          frames that trade-off as the central reason to choose deliberately — for high-volume or latency-sensitive
+          tasks, that 'a bit slower and pricier' adds up and a right-sized smaller model may perform just
+          as well for the actual task.
+        written_prompt: Push back on the engineer's 'always default to biggest' reasoning, using the actual
+          trade-offs described in the lesson.
+  - module: concepts
+    id: parameters-model-size
+    topic: 'T14: Parameters and model size'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: What is a 'parameter' in the context of an LLM's size (e.g., '70 billion parameters')?
+        options:
+        - One adjustable number inside the model, learned during training, tweaked to make predictions
+          slightly better each time — model size is just the total count of these numbers.
+        - One single fact the model has memorized about the world.
+        - One sentence from the training dataset used to teach the model.
+        - One line of code in the model's software implementation.
+        answer: 0
+        explanation: A parameter is a single learned, adjustable weight — the model's total parameter
+          count (7B, 70B, etc.) is just the sum of all these individually tunable numbers.
+        written_prompt: Explain what a 'parameter' actually is, and what a model's total parameter count
+          represents.
+      - question: Why can't you 'delete' one specific fact from a model by editing a single parameter?
+        options:
+        - Because no single fact lives in one parameter you could point to — knowledge is spread across
+          millions of parameters working together, each contributing to many things at once.
+        - Because parameters are physically encrypted and cannot be edited under any circumstances.
+        - Because deleting any parameter always destroys the entire model instantly.
+        - Because facts are stored in a completely separate database from the parameters, not in the parameters
+          at all.
+        answer: 0
+        explanation: Knowledge in an LLM is distributed across millions of parameters working in combination
+          — there's no single addressable location storing one discrete fact that could be cleanly removed.
+        written_prompt: Explain why you can't remove one specific fact from a trained model by editing
+          a single parameter.
+      - question: Is parameter count a perfect proxy for a model's overall quality?
+        options:
+        - No — training data and technique matter enormously too; at a given generation, bigger generally
+          means more capable, slower, and more expensive, but it's not a perfect proxy.
+        - Yes — parameter count alone perfectly determines quality with no exceptions.
+        - No — parameter count has absolutely no relationship to capability whatsoever.
+        - Yes, but only for models trained before 2020.
+        answer: 0
+        explanation: The material is explicit that parameter count is not a perfect proxy for quality
+          — training data quality and technique matter enormously alongside raw size.
+        written_prompt: Explain why parameter count alone is not a perfect predictor of a model's quality.
+      - question: What is the relationship between parameter count and the trade-offs of speed and cost?
+        options:
+        - More parameters roughly means more capacity to store patterns and nuance, but also generally
+          means more capable, slower, and more expensive.
+        - More parameters always makes a model faster and cheaper to run.
+        - Parameter count is completely unrelated to a model's speed or operating cost.
+        - Fewer parameters always produce strictly higher-quality output than more parameters.
+        answer: 0
+        explanation: More parameters generally increases capacity for capturing nuance, but at the cost
+          of speed and expense — the trade-off runs in the same direction as choosing a bigger model tier
+          generally.
+        written_prompt: Describe the general relationship between a model's parameter count and its speed/cost
+          trade-offs.
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A small model (3B parameters), fine-tuned specifically on a company''s own invoice-processing
+          documents, correctly extracts invoice totals 98% of the time.
+
+          An engineer proposes: "Let''s replace it with the biggest general-purpose model available (300B+
+          parameters) — more parameters means it will definitely do better."
+
+          Evaluate this claim.
+
+          '
+        options:
+        - The claim is correct — parameter count alone reliably determines which model wins on any specific
+          task.
+        - The claim is questionable — a small model specifically fine-tuned for this narrow task can match
+          or beat a much larger general-purpose model on that exact task, since parameter count is not
+          a perfect proxy for quality on a narrow, specialized job.
+        - The claim is correct because you can identify exactly which of the 300B parameters store invoice-extraction
+          knowledge and copy them over.
+        - The claim is irrelevant because parameter count has zero relationship to any model's capability.
+        answer: 1
+        explanation: 'This is the central ''bigger isn''t always better for your task'' point: a specifically-tuned
+          small model on a narrow job often matches or beats a much larger general model, and parameter
+          count is explicitly not a perfect quality proxy — it''s not that parameters are irrelevant,
+          just not a guarantee here.'
+        written_prompt: Evaluate the engineer's claim, explaining what parameter count does and doesn't
+          predict for this narrow task.
+      - question: 'A user complains: "This model gave me a wrong fact about a historical event. Can the
+          support team just edit the one parameter storing that fact and fix it?"
+
+          Is this a workable request?
+
+          '
+        options:
+        - Yes — each fact is stored in exactly one identifiable parameter that can be directly edited.
+        - No — no single fact lives in one parameter you could point to; knowledge is distributed across
+          millions of parameters working together, each contributing to many different things at once,
+          so there's no single number to edit to 'fix' one fact.
+        - Yes, but only for models under 10 billion parameters.
+        - No, because parameters cannot be modified once training is complete under any circumstances.
+        answer: 1
+        explanation: 'This directly tests the distributed-representation point: knowledge is spread across
+          many parameters simultaneously, so there''s no single addressable ''fact parameter'' a support
+          team could edit to correct one piece of information.'
+        written_prompt: Explain to the user why 'just edit the parameter with that fact' isn't a workable
+          request, using what you know about how knowledge is stored in a model.
+      - question: 'Two models are compared on a narrow legal-clause classification task:
+
+          Model X: 7B parameters, fine-tuned on 50,000 labeled legal clauses.
+
+          Model Y: 400B parameters, general-purpose, no task-specific tuning.
+
+          Model X scores higher accuracy on this specific task. What does this best illustrate?
+
+          '
+        options:
+        - This is an anomaly and shouldn't be possible, since more parameters always wins.
+        - This illustrates that parameter count is not a perfect proxy for quality — training data and
+          technique (here, task-specific fine-tuning) matter enormously, and a smaller, well-tuned model
+          can outperform a much larger general one on its specific narrow task.
+        - This proves parameter count is completely meaningless and has no relationship to capability
+          at all.
+        - Model Y must be defective, since bigger models can never lose to smaller ones.
+        answer: 1
+        explanation: 'This is a direct, concrete instance of the lesson''s stated exception: while more
+          parameters generally means more general capacity, task-specific training can let a much smaller
+          model win on that specific task — the general rule (bigger tends to be more capable) still exists,
+          it''s just not absolute.'
+        written_prompt: Explain what this comparison illustrates about the relationship between parameter
+          count and task-specific performance.
+      - question: 'A procurement team is choosing between models purely by comparing parameter counts
+          listed in each vendor''s marketing material, treating the largest number as automatically the
+          best choice for their narrow customer-service ticket routing task.
+
+          What''s the flaw in this approach?
+
+          '
+        options:
+        - There is no flaw; parameter count alone is a perfectly reliable way to rank models for any task.
+        - Parameter count alone ignores training data quality, technique, and task-fit — a smaller model
+          properly tuned for ticket routing could match or beat the largest general model, while being
+          cheaper and faster, so ranking purely by parameter count risks overpaying for capability that
+          doesn't help this specific task.
+        - The flaw is that parameter counts in marketing material are always fabricated and therefore
+          meaningless.
+        - The flaw is that parameter count only matters for image-generation models, not text models.
+        answer: 1
+        explanation: 'This applies the lesson''s core caution directly to a procurement decision: picking
+          by raw parameter count alone, without considering fine-tuning and task fit, risks choosing an
+          oversized, more expensive model that doesn''t actually perform better on the narrow task at
+          hand.'
+        written_prompt: Explain the flaw in ranking models purely by parameter count for this narrow ticket-routing
+          task, and what the team should consider instead.
+- section: Troubleshooting AI Interactions
+  topics:
+  - module: concepts
+    id: ai-troubleshooting-framework
+    topic: 'T13: Diagnostic Framework for AI Output Malfunctions'
+    recap_questions:
+    - koa: K
+      assessment_mode: auto_marked
+      questions:
+      - question: What is the single biggest troubleshooting mistake described for AI tool malfunctions?
+        options:
+        - Treating symptoms instead of finding the root cause — jumping straight to retraining the model
+          or rewriting the whole prompt before actually confirming what's broken.
+        - Spending too much time isolating the specific failing input before attempting any fix.
+        - Testing a fix on a small number of cases before rolling it out broadly.
+        - Checking whether retrieval returned the right chunks before assuming the model is at fault.
+        answer: 0
+        explanation: The described mistake is exactly the opposite of careful diagnosis — jumping to a
+          big fix (retraining, a full rewrite) before confirming the actual root cause, rather than isolating
+          and testing first.
+        written_prompt: Explain the single biggest troubleshooting mistake described for diagnosing AI
+          malfunctions.
+      - question: What are the four steps of the diagnostic framework, in order?
+        options:
+        - Isolate the failure, categorize it against known failure types, test one targeted fix, confirm
+          it resolved the original symptom.
+        - Retrain the model, redeploy it, monitor for a week, then isolate the failure.
+        - Categorize the failure, ship a fix immediately, isolate the input afterward, skip confirmation.
+        - Confirm the symptom is gone, then isolate the failure, then categorize it, then test a fix.
+        answer: 0
+        explanation: The framework's order is isolate, categorize, test one targeted fix, then confirm
+          — testing before isolating or skipping confirmation defeats the purpose of a systematic diagnosis.
+        written_prompt: List the four steps of the diagnostic framework in their correct order.
+      - question: Why does the framework say categorizing a failure (prompt issue vs. retrieval issue
+          vs. model-capability limit vs. configuration setting) matters before attempting a fix?
+        options:
+        - Because each category calls for a different kind of fix — treating a retrieval problem as if
+          it were a model-capability problem (or vice versa) leads to fixing the wrong thing entirely.
+        - Because categorizing is only a formality with no effect on which fix is chosen.
+        - Because every category of failure has exactly the same fix regardless of cause.
+        - Because categorizing takes the place of testing the fix afterward.
+        answer: 0
+        explanation: Different failure categories need different fixes — misdiagnosing a retrieval problem
+          as a model-capability problem (for example) means the actual root cause never gets addressed.
+        written_prompt: Explain why correctly categorizing a failure matters before attempting a fix.
+      - question: Why does the framework say this deck's specific failure categories (hallucination, bias,
+          context-window loss, rate limits, etc.) aren't replaced by the framework itself?
+        options:
+        - Because the framework is about how to navigate between and prioritize known failure categories
+          — it still requires actually knowing those categories to categorize a failure correctly in the
+          first place.
+        - Because the framework makes knowing any specific failure category unnecessary.
+        - Because the framework only applies to failures not covered anywhere else in this curriculum.
+        - Because the framework replaces the need to test any fix before shipping it.
+        answer: 0
+        explanation: The framework is a navigation method, not a substitute for actually knowing the specific
+          failure categories — you still need that underlying knowledge to categorize a failure correctly.
+        written_prompt: Explain the relationship between this general diagnostic framework and the deck's
+          specific failure-category concepts.
+  - module: concepts
+    id: recognising-ai-pitfalls
+    topic: 'T14: Common AI Pitfalls: Recognising Hallucinations, Bias, and Repetitive Responses'
+    recap_questions:
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'An AI research assistant is asked to cite three academic sources for a claim. It confidently
+          provides three full citations, complete with authors, years, and journal names — but none of
+          the three papers actually exist.
+
+          Which pitfall is this?
+
+          '
+        options:
+        - Hallucination — a confident, plausible-sounding answer (the fabricated citations) that is simply
+          not true.
+        - Bias — the citations reflect a training-data skew.
+        - Repetition — the model is looping the same citation structure.
+        - This is a rate-limiting issue, unrelated to any of the three pitfalls.
+        answer: 0
+        explanation: Fabricated citations that sound real but don't exist are a textbook hallucination
+          — a confident, plausible answer that isn't actually true.
+        written_prompt: Diagnose this citation scenario and explain why it's a hallucination rather than
+          one of the other two pitfalls.
+      - question: 'An AI is asked to write a short story featuring "a CEO and their assistant meeting
+          for coffee," with no further detail. It consistently writes the CEO as male and the assistant
+          as female, across many separate generations, despite no gender ever being specified.
+
+          Which pitfall is this?
+
+          '
+        options:
+        - Bias — a default assumption (CEO as male, assistant as female) that reflects a skew in training
+          data, not a verified fact about the prompt.
+        - Hallucination — the story is fabricating false information.
+        - Repetition — the model is stuck in a sampling loop.
+        - This is a context-window issue, unrelated to any of the three pitfalls.
+        answer: 0
+        explanation: 'This is the classic bias pattern: a default gender assumption reflecting training-data
+          skew, not a factual error or a sampling/repetition symptom.'
+        written_prompt: Diagnose this story-writing scenario and explain why it's a bias pattern rather
+          than one of the other two pitfalls.
+      - question: 'A chatbot generating five different marketing taglines for the same product returns
+          five taglines that are structurally almost identical ("Discover the power of ___", "Discover
+          the magic of ___", "Discover the joy of ___"...), showing very little real variety.
+
+          Which pitfall is this?
+
+          '
+        options:
+        - Repetition — the model is stuck looping the same sentence structure and opening phrase, a symptom
+          often tied to a sampling/temperature setting.
+        - Hallucination — the taglines contain fabricated product claims.
+        - Bias — the taglines reflect a demographic stereotype.
+        - This is a structured-output formatting issue, unrelated to any of the three pitfalls.
+        answer: 0
+        explanation: Structurally near-identical outputs across multiple generations is the repetition
+          pattern, typically pointing to a sampling/temperature issue rather than a factual or fairness
+          problem.
+        written_prompt: Diagnose this tagline-generation scenario and explain why it's a repetition pattern
+          rather than one of the other two pitfalls.
+      - question: 'A resume-screening tool consistently rates candidates from one particular university
+          lower, even when their listed qualifications are objectively equivalent to candidates from other
+          schools — a pattern traced back to how such names appeared in the model''s training data.
+
+          Which pitfall is this, and why does it matter to correctly identify it as such rather than as
+          a hallucination?
+
+          '
+        options:
+        - Bias — the pattern comes from a training-data skew, not a fabricated fact, so the fix is reviewing
+          and correcting the systematic skew, not simply verifying a single false claim the way a hallucination
+          fix would.
+        - Hallucination — the ratings must be based on a fabricated fact about the university.
+        - Repetition — the model is looping the same rating value.
+        - This is a rate-limiting issue and doesn't require classification as any of the three pitfalls.
+        answer: 0
+        explanation: This is bias — a systematic skew from training data affecting a whole group consistently,
+          which needs a different fix (reviewing and correcting the pattern) than a one-off fabricated
+          fact would.
+        written_prompt: Diagnose this resume-screening scenario and explain why correctly identifying
+          it as bias (not hallucination) changes what the appropriate fix looks like.
+  - module: concepts
+    id: systematic-troubleshooting
+    topic: 'T15: Systematic Resolution: Step-by-Step AI Troubleshooting'
+    recap_questions:
+    - koa: A
+      assessment_mode: auto_marked
+      questions:
+      - question: 'A team notices a code-generation assistant producing subtly broken code for one specific
+          type of request. They haven''t yet confirmed exactly which requests trigger it, or why.
+
+          What is the correct first step, following the standard troubleshooting procedure?
+
+          '
+        options:
+        - Isolate the failure — pin down exactly which specific inputs reliably trigger the broken code
+          before trying to categorize the cause or attempt any fix.
+        - Immediately try switching to a different, larger model.
+        - Rewrite the entire system prompt from scratch as a precaution.
+        - Increase the temperature setting to see if that resolves it.
+        answer: 0
+        explanation: The procedure starts with isolating the failure — confirming exactly which inputs
+          trigger it — before categorizing a likely cause or attempting a fix; jumping to a model swap
+          or a full rewrite skips this step entirely.
+        written_prompt: Explain why isolating the failing inputs should come before any fix is attempted.
+      - question: 'An engineer has isolated a chatbot''s failure to a specific set of tickets, and categorized
+          it as a retrieval issue — the wrong chunks are being retrieved for certain phrasing.
+
+          Which of the following is the correct next step?
+
+          '
+        options:
+        - Test one targeted fix (e.g. adjusting chunking or query rewriting) on just the isolated cases,
+          then confirm those specific tickets are now retrieving the right chunks.
+        - Retrain the entire underlying model from scratch.
+        - Change the model, the prompt, and the retrieval settings simultaneously.
+        - Ship the categorization finding as the final report with no further action.
+        answer: 0
+        explanation: After isolating and categorizing, the next step is testing one targeted fix on the
+          isolated cases and confirming it worked — not retraining the model (unrelated to a retrieval
+          issue) or changing multiple things at once.
+        written_prompt: Explain the correct next step after isolating and categorizing this retrieval
+          failure.
+      - question: 'A team fixes a chatbot issue by changing three things at once: the system prompt, the
+          temperature setting, and the underlying model version. The original symptom disappears.
+
+          What problem does this create, according to the standard troubleshooting procedure?
+
+          '
+        options:
+        - It's now impossible to know which of the three changes (if not all three) actually fixed the
+          issue, making it hard to maintain, roll back selectively, or apply the same fix confidently
+          elsewhere.
+        - There's no problem — as long as the symptom disappeared, the specific cause doesn't matter.
+        - This is the correct way to test a fix, since more changes at once means a higher chance of success.
+        - This approach violates a formatting rule but has no practical downside.
+        answer: 0
+        explanation: Changing multiple things simultaneously means you can't attribute the fix to any
+          specific change — a core problem the standard procedure's 'test one targeted change' step is
+          designed to avoid.
+        written_prompt: Explain what goes wrong when three changes are made simultaneously to fix an issue,
+          even if the symptom disappears.
+      - question: 'A team has tested a targeted fix for a malfunction on the specific isolated cases where
+          it appeared, and confirmed the original symptom is now gone in those cases.
+
+          What is the appropriate final step before considering the issue fully resolved?
+
+          '
+        options:
+        - Confirm the fix doesn't introduce a new problem elsewhere (e.g. check other request types still
+          behave correctly) before rolling it out more broadly, since 'confirm' means checking for new
+          issues, not just that the original symptom is gone.
+        - Nothing further is needed — once the original symptom is gone in the tested cases, the process
+          is complete.
+        - Revert the fix immediately since testing is now finished.
+        - Repeat the isolate step again from scratch, ignoring the confirmed fix.
+        answer: 0
+        explanation: Confirming a fix means checking it resolved the original symptom without introducing
+          a new one — that includes verifying unrelated cases still behave correctly before rolling the
+          change out more broadly.
+        written_prompt: Explain what 'confirm' should actually include before considering a fix fully
+          resolved and ready to roll out.

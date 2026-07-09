@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Quiz — Join</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+<style>
+  :root{
+    --bg:#F8F9F9; --paper:#FFFFFF; --ink:#212427; --muted:#757F8A;
+    --border:#C8CCD0; --border-strong:#757F8A;
+    --blue:#19599F; --blue-bg:#D3E5F8;
+    --brand:#134479; --brand-light:#1F6FC6;
+    --green:#32855C; --green-bg:#E3ECE7;
+    --wrong:#D9262F; --wrong-bg:#FBE2E4;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3{font-family:'Space Grotesk','Inter',sans-serif; margin:0;}
+  .wrap{max-width:480px;margin:0 auto;padding:28px 18px 60px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.06em; margin:0 0 6px; text-align:center;
+  }
+  .card{
+    background:var(--paper); border:1px solid var(--border); border-radius:var(--radius);
+    padding:24px; margin-top:16px;
+  }
+  label{display:block; font-weight:600; font-size:0.9rem; margin:16px 0 6px;}
+  label:first-of-type{margin-top:0;}
+  input[type=text]{
+    width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:var(--radius);
+    font-size:1rem; font-family:inherit; background:var(--bg); color:var(--ink);
+  }
+  input#code-input{text-transform:uppercase; letter-spacing:.1em; font-family:'IBM Plex Mono',monospace;}
+
+  button.primary{
+    display:block; width:100%; margin-top:20px; padding:16px;
+    border:none; border-radius:var(--radius); background:var(--brand); color:#fff;
+    font-size:1.05rem; font-weight:600; cursor:pointer; font-family:'Space Grotesk',sans-serif;
+  }
+  button.primary:hover{background:var(--brand-light);}
+  button.primary:disabled{opacity:.5; cursor:not-allowed;}
+
+  #status{margin-top:14px; font-size:0.9rem; color:var(--wrong); text-align:center;}
+
+  .q-progress{font-family:'IBM Plex Mono',monospace; color:var(--muted); font-size:0.85rem; margin-bottom:6px; text-align:center;}
+  .q-text{font-size:1.25rem; font-weight:600; margin:6px 0 20px; text-align:center;}
+
+  .option-btn{
+    display:block; width:100%; text-align:left; padding:16px; border-radius:var(--radius);
+    border:1px solid var(--border); background:var(--paper); margin-bottom:10px;
+    font-size:1rem; font-family:inherit; color:var(--ink); cursor:pointer;
+  }
+  .option-btn:hover{border-color:var(--blue); background:var(--blue-bg);}
+  .option-btn .letter{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--muted); margin-right:10px;}
+  .option-btn.picked{border-color:var(--brand); background:var(--blue-bg);}
+  .option-btn:disabled{cursor:default;}
+  .option-btn:disabled:not(.picked){opacity:.5;}
+
+  .waiting{text-align:center; padding:30px 0; color:var(--muted);}
+  .waiting .big{font-size:1.4rem; font-weight:600; color:var(--ink); font-family:'Space Grotesk',sans-serif; margin-bottom:6px;}
+
+  .timer{
+    text-align:center; font-family:'IBM Plex Mono',monospace; font-size:1.6rem; font-weight:600;
+    color:var(--brand); margin-bottom:14px;
+  }
+  .timer.low{color:var(--wrong);}
+  button.secondary{
+    padding:12px; border:1px solid var(--border-strong); border-radius:var(--radius); background:transparent;
+    color:var(--ink); font-size:0.92rem; font-weight:500; cursor:pointer; font-family:inherit;
+  }
+  button.secondary:disabled{opacity:.4; cursor:not-allowed;}
+  .btn-row{display:flex; gap:10px; margin-top:16px;}
+  .btn-row button{flex:1;}
+  .answer-progress{text-align:center; color:var(--muted); font-size:0.85rem; margin-top:12px;}
+
+  .bar-row{margin-bottom:16px;}
+  .bar-label{display:flex; justify-content:space-between; font-size:0.92rem; margin-bottom:6px;}
+  .bar-label .txt{flex:1; padding-right:10px;}
+  .bar-label .pct{font-family:'IBM Plex Mono',monospace; font-weight:600; flex-shrink:0;}
+  .bar-track{background:var(--bg); border:1px solid var(--border); border-radius:999px; height:12px; overflow:hidden;}
+  .bar-fill{height:100%; background:var(--blue); border-radius:999px; transition:width .4s ease;}
+  .bar-row.correct .bar-fill{background:var(--green);}
+  .bar-row.correct .bar-label .txt{color:var(--green); font-weight:600;}
+  .bar-row.correct .bar-label .txt::after{content:" ✓ correct"; font-size:0.78rem;}
+  .bar-row.mine .bar-label .txt::before{content:"👉 "; }
+
+  .result-banner{
+    text-align:center; padding:10px; border-radius:var(--radius); font-weight:600;
+    margin-bottom:18px; font-family:'Space Grotesk',sans-serif;
+  }
+  .result-banner.correct{background:var(--green-bg); color:var(--green);}
+  .result-banner.wrong{background:var(--wrong-bg); color:var(--wrong);}
+  .explanation{
+    margin-top:16px; padding:14px 16px; background:var(--bg); border:1px solid var(--border);
+    border-radius:var(--radius); font-size:0.9rem;
+  }
+  .score{
+    text-align:center; font-family:'IBM Plex Mono',monospace; color:var(--muted); font-size:0.85rem; margin-top:16px;
+  }
+
+  .view{display:none;}
+  .view.active{display:block;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow" id="quiz-title">Live Quiz</p>
+
+  <!-- Join form -->
+  <div class="view active" id="view-join">
+    <div class="card">
+      <label for="code-input">Join code</label>
+      <input type="text" id="code-input" maxlength="6" placeholder="ABCDE" autocomplete="off">
+      <label for="name-input">Your name</label>
+      <input type="text" id="name-input" placeholder="e.g. Sam" autocomplete="name">
+      <button class="primary" id="join-btn">Join</button>
+      <p id="status"></p>
+    </div>
+  </div>
+
+  <!-- Waiting for host to start / between questions -->
+  <div class="view" id="view-waiting">
+    <div class="card waiting">
+      <p class="big" id="waiting-title">You're in!</p>
+      <p id="waiting-sub">Waiting for the host to start…</p>
+    </div>
+  </div>
+
+  <!-- Question active -->
+  <div class="view" id="view-question">
+    <div class="card">
+      <p class="q-progress" id="q-progress"></p>
+      <p class="q-text" id="q-text"></p>
+      <div id="q-options"></div>
+    </div>
+  </div>
+
+  <!-- Locked in, waiting for reveal -->
+  <div class="view" id="view-locked">
+    <div class="card waiting">
+      <p class="big">Answer locked in ✓</p>
+      <p>Waiting for the host to reveal results…</p>
+    </div>
+  </div>
+
+  <!-- Self-paced, timed -->
+  <div class="view" id="view-active">
+    <div class="card">
+      <div class="timer" id="active-timer">--:--</div>
+      <p class="q-progress" id="active-progress"></p>
+      <p class="q-text" id="active-q-text"></p>
+      <div id="active-q-options"></div>
+      <div class="btn-row">
+        <button class="secondary" id="active-prev-btn">Previous</button>
+        <button class="secondary" id="active-next-btn">Next</button>
+      </div>
+      <p class="answer-progress" id="active-answered-count"></p>
+    </div>
+  </div>
+
+  <!-- Results / review -->
+  <div class="view" id="view-results">
+    <div class="card">
+      <div class="result-banner" id="result-banner" style="display:none;"></div>
+      <p class="q-progress" id="r-progress"></p>
+      <p class="q-text" id="r-text"></p>
+      <div id="bars"></div>
+      <div class="explanation" id="explanation"></div>
+      <p class="score" id="score"></p>
+    </div>
+  </div>
+
+  <!-- Ended -->
+  <div class="view" id="view-ended">
+    <div class="card" style="text-align:center;">
+      <h2>Thanks for playing!</h2>
+      <p class="score" id="final-score" style="margin-top:10px;"></p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+  import { loadQuestionSet } from './questions.js';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let questions = [];
+  let sessionId = null;
+  let participantId = null;
+  let sessionMode = 'lockstep';
+  let currentIndex = -1;
+  let navIndex = 0;          // learner's own position while self-pacing through an "active" session
+  let countdownTimer = null;
+  let timeUp = false;
+  const myAnswers = {};      // questionIndex -> option_index this learner picked
+  const scoredIndices = new Set();
+  let score = { correct: 0, total: 0 };
+
+  function clientId() {
+    let id = localStorage.getItem('live-quiz-client-id');
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem('live-quiz-client-id', id);
+    }
+    return id;
+  }
+
+  const views = ['join', 'waiting', 'question', 'locked', 'active', 'results', 'ended'];
+  function showView(name) {
+    for (const v of views) {
+      document.getElementById('view-' + v).classList.toggle('active', v === name);
+    }
+  }
+
+  function optionLetters() { return ['A', 'B', 'C', 'D', 'E', 'F']; }
+
+  function setStatus(msg) {
+    document.getElementById('status').textContent = msg;
+  }
+
+  async function joinSession() {
+    const code = document.getElementById('code-input').value.trim().toUpperCase();
+    const name = document.getElementById('name-input').value.trim();
+    if (!code || !name) { setStatus('Enter a code and your name.'); return; }
+
+    document.getElementById('join-btn').disabled = true;
+    setStatus('Joining…');
+
+    const { data: session, error: findError } = await supabase
+      .from('live_quiz_sessions')
+      .select('id, code, status, question_index, question_source, question_section, question_label, ends_at, mode')
+      .eq('code', code)
+      .maybeSingle();
+
+    if (findError || !session) {
+      setStatus('No quiz found with that code.');
+      document.getElementById('join-btn').disabled = false;
+      return;
+    }
+
+    try {
+      const set = await loadQuestionSet({
+        source: session.question_source,
+        section: session.question_section,
+        label: session.question_label,
+      });
+      questions = set.questions;
+      document.getElementById('quiz-title').textContent = set.title;
+    } catch (err) {
+      setStatus('Could not load this quiz\'s questions.');
+      document.getElementById('join-btn').disabled = false;
+      return;
+    }
+
+    sessionId = session.id;
+
+    const { data: participant, error: joinError } = await supabase
+      .from('live_quiz_participants')
+      .upsert(
+        { session_id: sessionId, client_id: clientId(), name },
+        { onConflict: 'session_id,client_id' }
+      )
+      .select()
+      .single();
+
+    if (joinError) {
+      setStatus(joinError.message || 'Could not join.');
+      document.getElementById('join-btn').disabled = false;
+      return;
+    }
+
+    participantId = participant.id;
+    document.getElementById('waiting-title').textContent = `You're in, ${name}!`;
+
+    const { data: myRows } = await supabase
+      .from('live_quiz_answers')
+      .select('question_index, option_index')
+      .eq('session_id', sessionId)
+      .eq('participant_id', participantId);
+    for (const r of myRows || []) myAnswers[r.question_index] = r.option_index;
+
+    subscribeRealtime();
+    await applySessionState(session);
+  }
+
+  function subscribeRealtime() {
+    supabase
+      .channel(`join-${sessionId}-${clientId()}`)
+      .on('postgres_changes', {
+        event: 'UPDATE', schema: 'public', table: 'live_quiz_sessions',
+        filter: `id=eq.${sessionId}`,
+      }, (payload) => {
+        applySessionState(payload.new);
+      })
+      .subscribe();
+  }
+
+  async function applySessionState(row) {
+    currentIndex = row.question_index;
+    sessionMode = row.mode || 'lockstep';
+
+    if (row.status === 'lobby') {
+      stopCountdown();
+      showView('waiting');
+      document.getElementById('waiting-sub').textContent = 'Waiting for the host to start…';
+      return;
+    }
+
+    if (row.status === 'question') {
+      if (myAnswers[currentIndex] !== undefined) {
+        showView('locked');
+      } else {
+        renderQuestion();
+      }
+      return;
+    }
+
+    if (row.status === 'active') {
+      enterActivePhase(row.ends_at);
+      return;
+    }
+
+    if (row.status === 'results' || row.status === 'review') {
+      stopCountdown();
+      await renderResults();
+      return;
+    }
+
+    if (row.status === 'ended') {
+      stopCountdown();
+      const answeredIdx = Object.keys(myAnswers).map(Number);
+      const total = answeredIdx.length;
+      const correct = answeredIdx.filter((idx) => questions[idx] && questions[idx].answer === myAnswers[idx]).length;
+      document.getElementById('final-score').textContent =
+        total ? `You answered ${total} question${total === 1 ? '' : 's'} — ${correct} correct.` : 'The host ended the quiz.';
+      showView('ended');
+    }
+  }
+
+  function stopCountdown() {
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  }
+
+  function formatClock(ms) {
+    const totalSeconds = Math.max(0, Math.round(ms / 1000));
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
+  }
+
+  function enterActivePhase(endsAt) {
+    stopCountdown();
+    timeUp = false;
+    const endTime = new Date(endsAt).getTime();
+    const timerEl = document.getElementById('active-timer');
+    const tick = () => {
+      const remaining = endTime - Date.now();
+      timerEl.textContent = formatClock(remaining);
+      timerEl.classList.toggle('low', remaining < 60000);
+      if (remaining <= 0 && !timeUp) {
+        timeUp = true;
+        renderActiveQuestion();
+        stopCountdown();
+      }
+    };
+    tick();
+    countdownTimer = setInterval(tick, 1000);
+    renderActiveQuestion();
+    showView('active');
+  }
+
+  function renderActiveQuestion() {
+    const q = questions[navIndex];
+    document.getElementById('active-progress').textContent = `Question ${navIndex + 1} of ${questions.length}`;
+    document.getElementById('active-q-text').textContent = q.question;
+    const box = document.getElementById('active-q-options');
+    box.innerHTML = '';
+    const picked = myAnswers[navIndex];
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn' + (i === picked ? ' picked' : '');
+      btn.innerHTML = `<span class="letter">${optionLetters()[i]}</span>${opt}`;
+      btn.disabled = picked !== undefined || timeUp;
+      btn.addEventListener('click', () => submitActiveAnswer(i));
+      box.appendChild(btn);
+    });
+    document.getElementById('active-prev-btn').disabled = navIndex === 0;
+    document.getElementById('active-next-btn').textContent = navIndex + 1 < questions.length ? 'Next' : 'Done';
+    const answeredCount = Object.keys(myAnswers).length;
+    document.getElementById('active-answered-count').textContent =
+      timeUp ? "Time's up — waiting for the host to start the review…" : `${answeredCount} of ${questions.length} answered`;
+  }
+
+  async function submitActiveAnswer(optionIndex) {
+    if (myAnswers[navIndex] !== undefined || timeUp) return;
+    myAnswers[navIndex] = optionIndex;
+    renderActiveQuestion();
+    const { error } = await supabase.from('live_quiz_answers').insert({
+      session_id: sessionId,
+      participant_id: participantId,
+      question_index: navIndex,
+      option_index: optionIndex,
+    });
+    if (error) {
+      console.error(error);
+      delete myAnswers[navIndex];
+      renderActiveQuestion();
+    }
+  }
+
+  function renderQuestion() {
+    const q = questions[currentIndex];
+    document.getElementById('q-progress').textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+    document.getElementById('q-text').textContent = q.question;
+    const box = document.getElementById('q-options');
+    box.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<span class="letter">${optionLetters()[i]}</span>${opt}`;
+      btn.addEventListener('click', () => submitAnswer(i));
+      box.appendChild(btn);
+    });
+    showView('question');
+  }
+
+  async function submitAnswer(optionIndex) {
+    if (myAnswers[currentIndex] !== undefined) return;
+    myAnswers[currentIndex] = optionIndex;
+    document.querySelectorAll('#q-options .option-btn').forEach((b) => (b.disabled = true));
+
+    const { error } = await supabase.from('live_quiz_answers').insert({
+      session_id: sessionId,
+      participant_id: participantId,
+      question_index: currentIndex,
+      option_index: optionIndex,
+    });
+    if (error) console.error(error);
+
+    showView('locked');
+  }
+
+  async function renderResults() {
+    const q = questions[currentIndex];
+    const { data: answers, error } = await supabase
+      .from('live_quiz_answers')
+      .select('option_index')
+      .eq('session_id', sessionId)
+      .eq('question_index', currentIndex);
+    if (error) { console.error(error); return; }
+
+    const total = answers.length;
+    const label = sessionMode === 'timed' ? 'review' : 'results';
+    document.getElementById('r-progress').textContent = `Question ${currentIndex + 1} of ${questions.length} — ${label}`;
+    document.getElementById('r-text').textContent = q.question;
+
+    const bars = document.getElementById('bars');
+    bars.innerHTML = '';
+    const mine = myAnswers[currentIndex];
+    q.options.forEach((opt, i) => {
+      const count = answers.filter((a) => a.option_index === i).length;
+      const pct = total ? Math.round((count / total) * 100) : 0;
+      const row = document.createElement('div');
+      row.className = 'bar-row' + (i === q.answer ? ' correct' : '') + (i === mine ? ' mine' : '');
+      row.innerHTML = `
+        <div class="bar-label"><span class="txt">${optionLetters()[i]}. ${opt}</span><span class="pct">${pct}%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      `;
+      bars.appendChild(row);
+    });
+
+    const banner = document.getElementById('result-banner');
+    if (mine === undefined) {
+      banner.style.display = 'none';
+    } else {
+      banner.style.display = 'block';
+      const correct = mine === q.answer;
+      banner.className = 'result-banner ' + (correct ? 'correct' : 'wrong');
+      banner.textContent = correct ? 'You got it right! 🎉' : 'Not quite this time.';
+      if (!scoredIndices.has(currentIndex)) {
+        scoredIndices.add(currentIndex);
+        score.total += 1;
+        if (correct) score.correct += 1;
+      }
+    }
+
+    document.getElementById('explanation').textContent = q.explanation || '';
+    document.getElementById('score').textContent = score.total ? `Score so far: ${score.correct} / ${score.total}` : '';
+    showView('results');
+  }
+
+  async function init() {
+    const params = new URLSearchParams(location.search);
+    const codeFromUrl = params.get('code');
+    if (codeFromUrl) document.getElementById('code-input').value = codeFromUrl.toUpperCase();
+  }
+
+  document.getElementById('join-btn').addEventListener('click', joinSession);
+  document.getElementById('name-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') joinSession();
+  });
+  document.getElementById('active-prev-btn').addEventListener('click', () => {
+    if (navIndex > 0) { navIndex -= 1; renderActiveQuestion(); }
+  });
+  document.getElementById('active-next-btn').addEventListener('click', () => {
+    if (navIndex + 1 < questions.length) { navIndex += 1; renderActiveQuestion(); }
+  });
+
+  init().catch((err) => console.error(err));
+</script>
+</body>
+</html>
