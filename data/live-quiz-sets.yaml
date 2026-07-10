@@ -4,12 +4,15 @@
 # 1. A flat live-quiz file (same shape as live-quiz-demo.yaml: a `title` and
 #    a flat `questions` list) — just set `source`.
 #
-# 2. A class recap file (the same sections[].topics[].recap_questions[]
-#    shape the self-paced Class Player reads, e.g.
-#    class-genai-prompt-eng-professionals-recap.yaml) — set `source` AND
-#    `section` (must exactly match a `section:` value in that file). All of
-#    that section's K + A recap questions, across every topic in it, get
-#    flattened into one ordered live-quiz question list.
+# 2. A class plan + section, read live from data/class-plans.yaml and the
+#    KOA testbank files (concepts-testbank.yaml / frameworks-testbank.yaml /
+#    skills-concepts-testbank.yaml) — set `classPlan` to a class-plans.yaml
+#    `id`, and `section` to one of its `sections[].name` values (omit
+#    `section` to pull every section's topics in one set). This is the exact
+#    same data the self-paced Class Player generates its own recap from,
+#    fetched fresh every time — never a stale, hand-copied snapshot. Add a
+#    new class in class-plans.yaml (see CLASS_PLANS_README.md) and every one
+#    of its sections is automatically choosable here too, no code changes.
 #
 # This is what lets the exact same authored MCQ content power both the
 # self-paced Class Player recap (single-player) and this live host-controlled
@@ -20,25 +23,25 @@ sets:
     source: "live-quiz-demo.yaml"
 
   - label: "GenAI for Professionals — LLM101 recap"
-    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    classPlan: "genai-prompt-eng-professionals"
     section: "LLM101"
 
   - label: "GenAI for Professionals — Basic Prompting and Frameworks recap"
-    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    classPlan: "genai-prompt-eng-professionals"
     section: "Basic Prompting and Frameworks"
 
   - label: "GenAI for Professionals — Use Cases recap"
-    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    classPlan: "genai-prompt-eng-professionals"
     section: "Use Cases"
 
   - label: "GenAI for Professionals — Responsible AI Use recap"
-    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    classPlan: "genai-prompt-eng-professionals"
     section: "Responsible AI Use"
 
   - label: "GenAI for Professionals — Choosing the Right Tool recap"
-    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    classPlan: "genai-prompt-eng-professionals"
     section: "Choosing the Right Tool"
 
   - label: "GenAI for Professionals — Troubleshooting AI Interactions recap"
-    source: "class-genai-prompt-eng-professionals-recap.yaml"
+    classPlan: "genai-prompt-eng-professionals"
     section: "Troubleshooting AI Interactions"
