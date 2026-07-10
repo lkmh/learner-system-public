@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Share your testimonial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F8F9F9; --paper:#FFFFFF; --ink:#212427; --muted:#757F8A;
+    --border:#C8CCD0; --border-strong:#757F8A;
+    --blue:#19599F; --blue-bg:#D3E5F8;
+    --brand:#134479; --brand-hover:#0C2D4F;
+    --orange:#EEA62B;
+    --green:#32855C;
+    --pink:#E34A94; --pink-hover:#D12076; --pink-bg:#F8E7EF;
+    --wrong:#D9262F; --wrong-bg:#FBE2E4;
+    --radius:8px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
+    line-height:1.5;
+  }
+  h1,h2{font-family:'Space Grotesk','Inter',sans-serif; margin:0;}
+  main{max-width:520px;margin:0 auto;padding:32px 20px 60px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.06em; margin:0 0 6px;
+  }
+  h1{font-size:1.6rem; margin-bottom:6px; color:var(--brand); letter-spacing:-0.01em;}
+  p.subtitle{color:var(--muted); margin-top:0; margin-bottom:24px; font-size:0.95rem;}
+
+  .card{
+    background:var(--paper); border:1px solid var(--border); border-radius:var(--radius);
+    padding:24px;
+  }
+  @media (max-width:600px){ .card{ padding:16px; } }
+
+  label{display:block; font-weight:600; margin:18px 0 6px; font-size:0.9rem; color:var(--ink);}
+  label:first-of-type{margin-top:0;}
+  input[type="text"], textarea{
+    width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius);
+    background:var(--paper); color:var(--ink); font-size:1rem; font-family:inherit;
+  }
+  input[type="text"]:focus, textarea:focus{ outline:none; border-color:var(--blue); }
+  textarea{ min-height:110px; resize:vertical; }
+
+  .starter-hint{ margin:-2px 0 8px; color:var(--muted); font-size:0.85rem; }
+  .starter-list{
+    display:flex; flex-direction:column; gap:4px; max-height:170px; overflow-y:auto;
+    margin-bottom:10px; padding:6px; border:1px dashed var(--border); border-radius:var(--radius);
+    background:var(--bg);
+  }
+  .starter-item{
+    text-align:left; background:transparent; border:none; color:var(--muted);
+    font-size:0.83rem; line-height:1.4; padding:5px 7px; cursor:pointer;
+    border-radius:6px; font-family:inherit;
+  }
+  .starter-item:hover{ background:var(--blue-bg); color:var(--brand); }
+
+  .row-2{ display:flex; gap:12px; }
+  .row-2 > div{ flex:1; }
+
+  .star-rating{ display:flex; gap:4px; }
+  .star-rating button{
+    background:none; border:none; padding:2px; font-size:1.9rem; line-height:1;
+    color:var(--border); cursor:pointer;
+  }
+  .star-rating button.filled{ color:var(--orange); }
+
+  .photo-picker{ display:flex; align-items:center; gap:14px; margin-top:6px; }
+  .photo-preview{
+    width:72px; height:72px; border-radius:50%; background:var(--border);
+    background-size:cover; background-position:center; flex-shrink:0;
+  }
+  .photo-btn{
+    padding:10px 16px; border-radius:var(--radius); border:1px solid var(--brand);
+    background:var(--paper); color:var(--brand); font-size:0.92rem; font-weight:600;
+    font-family:'Space Grotesk',sans-serif; cursor:pointer;
+  }
+  .photo-btn:hover{ background:#EDF5FC; }
+  input[type="file"]{ display:none; }
+
+  button[type="submit"]{
+    margin-top:26px; width:100%; padding:14px; border:none; border-radius:var(--radius);
+    background:var(--pink); color:#fff; font-size:1rem; font-weight:700;
+    font-family:'Space Grotesk',sans-serif; cursor:pointer;
+  }
+  button[type="submit"]:hover{ background:var(--pink-hover); }
+  button[type="submit"]:disabled{ opacity:0.5; cursor:not-allowed; }
+
+  #status{ margin-top:14px; font-size:0.9rem; text-align:center; }
+  #status.error{ color:var(--wrong); }
+
+  .done{ text-align:center; padding:60px 0; }
+  .done h2{ margin-bottom:8px; color:var(--brand); }
+  .done p{ color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div id="form-view">
+    <p class="eyebrow">LKX · Testimonials</p>
+    <h1>Share your testimonial</h1>
+    <p class="subtitle">Tell us about your experience — a photo makes it feel real, and you can snap one right from your phone.</p>
+
+    <div class="card">
+      <form id="testimonial-form">
+        <label for="name">Your name</label>
+        <input type="text" id="name" name="name" required autocomplete="name">
+
+        <div class="row-2">
+          <div>
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required autocomplete="organization-title" placeholder="e.g. Product Manager">
+          </div>
+          <div>
+            <label for="company">Company</label>
+            <input type="text" id="company" name="company" required autocomplete="organization" placeholder="e.g. Acme Corp">
+          </div>
+        </div>
+
+        <label for="class-attended">Class attended</label>
+        <input type="text" id="class-attended" name="class-attended" required placeholder="e.g. GenAI and Prompt Engineering for Professionals">
+
+        <label>Rating</label>
+        <div class="star-rating" id="star-rating" role="radiogroup" aria-label="Star rating">
+          <button type="button" class="star" data-value="1" aria-label="1 star">★</button>
+          <button type="button" class="star" data-value="2" aria-label="2 stars">★</button>
+          <button type="button" class="star" data-value="3" aria-label="3 stars">★</button>
+          <button type="button" class="star" data-value="4" aria-label="4 stars">★</button>
+          <button type="button" class="star" data-value="5" aria-label="5 stars">★</button>
+        </div>
+        <input type="hidden" id="stars" name="stars" value="5">
+
+        <label for="quote">Your testimonial</label>
+        <p class="starter-hint">Need a starting point? Tap one, then make it yours:</p>
+        <div class="starter-list" id="starter-list"></div>
+        <textarea id="quote" name="quote" required placeholder="What's one thing from this session you can use directly in your work?"></textarea>
+
+        <label>Photo <span style="font-weight:400;color:var(--muted)">(optional, but recommended)</span></label>
+        <div class="photo-picker">
+          <div class="photo-preview" id="photo-preview"></div>
+          <button type="button" class="photo-btn" id="photo-btn">Take a selfie</button>
+          <input type="file" id="photo-input" accept="image/*" capture="user">
+        </div>
+
+        <button type="submit" id="submit-btn">Submit testimonial</button>
+        <div id="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="done" id="done-view" style="display:none">
+    <h2>Thank you!</h2>
+    <p>Your testimonial has been submitted and is awaiting review.</p>
+  </div>
+</main>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  import { SUPABASE_URL, SUPABASE_ANON_KEY, PHOTO_BUCKET } from './config.js';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const form = document.getElementById('testimonial-form');
+  const photoBtn = document.getElementById('photo-btn');
+  const photoInput = document.getElementById('photo-input');
+  const photoPreview = document.getElementById('photo-preview');
+  const statusEl = document.getElementById('status');
+  const submitBtn = document.getElementById('submit-btn');
+  const starsInput = document.getElementById('stars');
+  const starButtons = document.querySelectorAll('#star-rating .star');
+
+  let selectedFile = null;
+
+  function paintStars(value) {
+    starButtons.forEach((btn) => {
+      btn.classList.toggle('filled', Number(btn.dataset.value) <= value);
+    });
+  }
+  paintStars(Number(starsInput.value));
+
+  starButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      starsInput.value = btn.dataset.value;
+      paintStars(Number(btn.dataset.value));
+    });
+  });
+
+  const STARTERS = [
+    "I walked out with three prompt templates I started using in my job the very next day.",
+    "The framework section alone was worth it — I've already rewritten half my team's prompts with it.",
+    "I finally understand why our chatbot hallucinates, and more importantly, how to stop it.",
+    "This wasn't theory — I left with a checklist I now run through before shipping any AI feature.",
+    "I used what I learned about context windows to fix a bug in our support bot the same week.",
+    "Practical, not academic. I came in with a real problem and left with a real fix.",
+    "The token and cost breakdown alone is already saving us real money on our API bill.",
+    "I now have a repeatable process for testing prompts before they go live, instead of just guessing.",
+    "This changed how I brief my team on AI tools — less trial and error, more structure.",
+    "I've already reused three things from this session in client work this week.",
+  ];
+
+  const starterList = document.getElementById('starter-list');
+  const quoteEl = document.getElementById('quote');
+  STARTERS.forEach((line) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'starter-item';
+    btn.textContent = line;
+    btn.addEventListener('click', () => {
+      quoteEl.value = line;
+      quoteEl.focus();
+    });
+    starterList.appendChild(btn);
+  });
+
+  photoBtn.addEventListener('click', () => photoInput.click());
+
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files[0];
+    if (!file) return;
+    selectedFile = file;
+    photoPreview.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
+    photoBtn.textContent = 'Retake photo';
+  });
+
+  function setStatus(message, kind) {
+    statusEl.textContent = message;
+    statusEl.className = kind || '';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    setStatus('Submitting…');
+
+    try {
+      let photoUrl = null;
+
+      if (selectedFile) {
+        const ext = (selectedFile.name.split('.').pop() || 'jpg').toLowerCase();
+        const path = `${crypto.randomUUID()}.${ext}`;
+
+        const { error: uploadError } = await supabase
+          .storage
+          .from(PHOTO_BUCKET)
+          .upload(path, selectedFile, { contentType: selectedFile.type });
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase
+          .storage
+          .from(PHOTO_BUCKET)
+          .getPublicUrl(path);
+
+        photoUrl = publicUrlData.publicUrl;
+      }
+
+      const { error: insertError } = await supabase
+        .from('testimonials')
+        .insert({
+          name: form.name.value.trim(),
+          title: form.title.value.trim(),
+          company: form.company.value.trim(),
+          class_attended: form['class-attended'].value.trim(),
+          stars: Number(starsInput.value),
+          quote: form.quote.value.trim(),
+          photo_url: photoUrl,
+        });
+
+      if (insertError) throw insertError;
+
+      document.getElementById('form-view').style.display = 'none';
+      document.getElementById('done-view').style.display = 'block';
+    } catch (err) {
+      console.error(err);
+      setStatus(err.message || 'Something went wrong. Please try again.', 'error');
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
